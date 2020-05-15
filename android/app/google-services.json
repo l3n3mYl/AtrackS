@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "804718803215",
+    "firebase_url": "https://atraxs.firebaseio.com",
+    "project_id": "atraxs",
+    "storage_bucket": "atraxs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:804718803215:android:a7e8fa2cae095296eae67a",
+        "android_client_info": {
+          "package_name": "AtraxS.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "804718803215-phqglml80qr8mr40ftqeoqc8vicqu60k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "AtraxS.com",
+            "certificate_hash": "a819b489373b835d7397f4a0dcb97a793c771820"
+          }
+        },
+        {
+          "client_id": "804718803215-gr0lqd043dhcho014vufng9t4g2n6sll.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdc2kv_65kglcZWJcOgFFoNdLAGjLIQ20"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "804718803215-gr0lqd043dhcho014vufng9t4g2n6sll.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
