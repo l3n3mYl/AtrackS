@@ -1,23 +1,20 @@
-
 import 'package:com/Models/user.dart';
-import 'package:com/Services/auth.dart';
+import 'package:com/Registration/final_registration_screen.dart';
 import 'package:flutter/material.dart';
 
 final Color mainColor = Color.fromRGBO(71, 68, 70, 1);
 final Color textColor = Color.fromRGBO(163, 149, 135, 1);
 final Color accentColor = Color.fromRGBO(213, 1, 1, 1);
 
-class RegistrationScreen extends StatefulWidget {
+class FirstRegistrationScreen extends StatefulWidget {
 
   @override
-  _RegistrationScreenState createState() => _RegistrationScreenState();
+  _FirstRegistrationScreenState createState() => _FirstRegistrationScreenState();
 }
 
-class _RegistrationScreenState extends State<RegistrationScreen> {
+class _FirstRegistrationScreenState extends State<FirstRegistrationScreen> {
   User _user = new User();
-  final AuthService _auth = new AuthService();
   final _formKey = GlobalKey<FormState>();
-//  bool checkPass = false;
 
   @override
   Widget build(BuildContext context) {
@@ -118,11 +115,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 SizedBox(height: 20.0,),
                 RaisedButton(
-                  child: Text('Register'),
-                  onPressed: () async {
+                  child: Text('Next'),
+                  onPressed: () {
                     if(_formKey.currentState.validate()){
                       print(_user.name);
                       print(_user.pass);
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => FinalRegistrationScreen(_user)));
                     }
                   },
                 )
