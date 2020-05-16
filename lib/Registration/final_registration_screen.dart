@@ -16,15 +16,18 @@ class FinalRegistrationScreen extends StatefulWidget {
 
 class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
 
-  final GlobalKey _formKey = new GlobalKey();
+  final _formKey = GlobalKey<FormState>();
 
   bool isNumeric(String s){
+    bool numeric = true;
     if(s == null) return false;
     try{
-      return double.parse(s) != null;
-    } catch (e) {
-      return null;
+      double num = double.parse(s);
+    } catch (error) {
+      numeric = false;
     }
+    if(numeric) return true;
+    else return false;
   }
 
 
@@ -37,8 +40,6 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 55.0),
@@ -103,8 +104,11 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 55.0),
                   child: TextFormField(
                     validator: (weightField) {
-                      if(double.parse(weightField) < 0 || double.parse(weightField) >= 200.0) return 'Leave the field empty or enter a valid weight';
-                      else if(isNumeric(weightField)) return 'Only numbers';
+                      if(weightField.isNotEmpty){
+                        if(!isNumeric(weightField)) return 'OnlyNumbers';
+                        if(double.parse(weightField) < 0 || double.parse(weightField) >= 200.0) return 'Leave the field empty or enter a valid weight';
+                        else return null;
+                      }
                       else return null;
                     },
                     textAlign: TextAlign.left,
@@ -125,7 +129,9 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                         border: UnderlineInputBorder(
                             borderSide: BorderSide(color: accentColor))),
                     onChanged: (weightField){
-                      widget.user.w = weightField;
+                      if(weightField.isEmpty){
+                        widget.user.w = "0";
+                      } else widget.user.w = weightField;
                     },
                   ),
                 ),
@@ -133,8 +139,11 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 55.0),
                   child: TextFormField(
                     validator: (heightField) {
-                      if(double.parse(heightField) < 0 || double.parse(heightField) >= 269.9) return 'Leave the field empty or enter a valid height';
-                      else if(isNumeric(heightField)) return 'Only numbers';
+                      if(heightField.isNotEmpty){
+                        if(!isNumeric(heightField)) return 'OnlyNumbers';
+                        if(double.parse(heightField) < 0 || double.parse(heightField) >= 269.9) return 'Leave the field empty or enter a valid height';
+                        else return null;
+                      }
                       else return null;
                     },
                     textAlign: TextAlign.left,
@@ -146,7 +155,7 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                     ),
                     cursorColor: accentColor,
                     decoration: InputDecoration(
-                        hintText: 'Weight in kg (Optional)',
+                        hintText: 'Height in cm (Optional)',
                         hintStyle: TextStyle(color: textColor),
                         enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: accentColor)),
@@ -155,13 +164,16 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                         border: UnderlineInputBorder(
                             borderSide: BorderSide(color: accentColor))),
                     onChanged: (heightField){
-                      widget.user.h = heightField;
+                      if(heightField.isEmpty){
+                        widget.user.h = "0";
+                      } else widget.user.h = heightField;
                     },
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 55.0),
                   child: DropdownButton<String>(
+                    hint: Text('Gender'),
                     items: [
                       DropdownMenuItem(
                         value: "M",
@@ -177,7 +189,11 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                       )
                     ],
                     onChanged: (gender) {
-                      widget.user.g = gender;
+                      if(gender == null){
+                        widget.user.g = "None";
+                      }
+                      else widget.user.g = gender;
+                      return gender;
                     },
                   ),
                 ),
@@ -185,12 +201,14 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                 RaisedButton(
                   child: Text('Register'),
                   onPressed: () {
-                    print(widget.user.name);
-                    print(widget.user.pass);
-                    print(widget.user.mail);
-                    print(widget.user.w);
-                    print(widget.user.h);
-                    print(widget.user.g);
+                    if(_formKey.currentState.validate()){
+                      print(widget.user.name);
+                      print(widget.user.pass);
+                      print(widget.user.mail);
+                      print(widget.user.w);
+                      print(widget.user.h);
+                      print(widget.user.g);
+                    }
                   },
                 )
               ],

@@ -123,6 +123,10 @@ class _FirstRegistrationScreenState extends State<FirstRegistrationScreen> {
                       Navigator.of(context).push(MaterialPageRoute(builder: (_) => FinalRegistrationScreen(_user)));
                     }
                   },
+                ),
+                RaisedButton(
+                  child: Text('skip'),
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => FinalRegistrationScreen(_user))),
                 )
               ],
             ),
