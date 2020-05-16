@@ -1,3 +1,4 @@
+import 'package:com/Registration/registration_screen.dart';
 import 'package:com/Services/auth.dart';
 import 'package:flutter/material.dart';
 
@@ -118,6 +119,12 @@ class SignInScreen extends StatelessWidget {
                 child: Text('Sign Out from facebook'),
                 onPressed: () async {
                   await _authService.signOutFacebook();
+                },
+              ),
+              RaisedButton(
+                child: Text('Register'),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => RegistrationScreen()));
                 },
               )
             ],
