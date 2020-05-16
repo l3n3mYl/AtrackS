@@ -17,6 +17,7 @@ class FinalRegistrationScreen extends StatefulWidget {
 class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
 
   final _formKey = GlobalKey<FormState>();
+  String dropDownValue = 'Male';
 
   bool isNumeric(String s){
     bool numeric = true;
@@ -174,26 +175,19 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 55.0),
                   child: DropdownButton<String>(
                     hint: Text('Gender'),
-                    items: [
-                      DropdownMenuItem(
-                        value: "M",
-                        child: Text("Male"),
-                      ),
-                      DropdownMenuItem(
-                        value: "F",
-                        child: Text("Female"),
-                      ),
-                      DropdownMenuItem(
-                        value: "MENTAL",
-                        child: Text("Mental Illness"),
-                      )
-                    ],
+                    value: dropDownValue,
+                    items: <String>[
+                      'Male',
+                      'Female',
+                      'Mental',
+                    ].map<DropdownMenuItem<String>>((String value){
+                      return DropdownMenuItem<String>(value: value, child: Text(value));
+                    }).toList(),
                     onChanged: (gender) {
-                      if(gender == null){
-                        widget.user.g = "None";
-                      }
-                      else widget.user.g = gender;
-                      return gender;
+                      widget.user.g = gender;
+                      setState(() {
+                        dropDownValue = gender;
+                      });
                     },
                   ),
                 ),
