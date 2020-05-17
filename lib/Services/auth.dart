@@ -84,7 +84,30 @@ class AuthService {
             accessToken: result.accessToken.token);
         final FirebaseUser user =
             (await FirebaseAuth.instance.signInWithCredential(credential)).user;
-        return user;
+
+        //Create a new user in case this is the first time user has signed in
+        User newUser = User(
+          email: user.email,
+          gender: 'Null',
+          height: 'Null',
+          weight: 'Null',
+          username: user.displayName,
+        );
+
+        //Check if the user already exists
+        bool exists = await _reference.collection('users').getDocuments().then((QuerySnapshot snapshot) {
+          snapshot.documents.forEach((f) {
+            if(f.documentID == user.uid) return true;
+            else return false;
+          });
+          return true;
+        });
+
+        if(!exists){
+          await _reference.collection('users').document(user.uid).setData(newUser.userInfoToMap());
+        }
+
+        return 'Success';
       }
     } catch (e) {
       print(e.toString());
