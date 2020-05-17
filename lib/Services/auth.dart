@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com/Models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -6,12 +7,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final Firestore _reference = Firestore.instance;
+  final User newUser = User();
 
   Future registerWithEmailAndPass(User newUser) async {
     try{
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: newUser.mail, password: newUser.pass);
-      FirebaseUser user = result.user;
-      return user;
+      FirebaseUser fUser = result.user;
+      await _reference.collection('users').document(fUser.uid).setData(newUser.userInfoToMap());
+      return 'Success';
     } catch (e) {
       print(e.toString());
       return null;
@@ -91,7 +95,7 @@ class AuthService {
   Future signOutFacebook() async {
     try {
       await FacebookLogin().logOut();
-      print('Signed Out Success');
+      print('Signed Out From Facebook');
     } catch (e) {
       print(e.toString());
       return null;
@@ -101,7 +105,7 @@ class AuthService {
   Future signOutGoogle() async {
     try {
       await _googleSignIn.signOut();
-      print('Signed out from google');
+      print('Signed out from Google');
     } catch (e) {
       print(e.toString());
     }
