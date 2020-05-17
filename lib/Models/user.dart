@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 class User{
   String username, password, email, weight, height, gender;
 
@@ -47,6 +49,18 @@ class User{
 
   set g (String gender) {
     this.gender = gender;
+  }
+
+  Map<String, Object> userInfoToMap(){
+    Map<String, Object> stats = {
+      "Username" : name,
+      "Email" : mail,
+      "Weight" : w,
+      "Height" : h,
+      "Gender" : g
+    };
+
+    return stats;
   }
 
   User({this.username, this.password, this.email, this.weight, this.height, this.gender});
