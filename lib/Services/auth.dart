@@ -66,7 +66,29 @@ class AuthService {
 
       await _googleSignIn.signIn();
 
-      print(user.toString());
+      //Create a new user in case of registration needed
+      User newUser = User(
+        email: user.email,
+        gender: 'Null',
+        height: 'Null',
+        weight: 'Null',
+        username: user.displayName
+      );
+
+      //Check if the user already exists in the database
+      bool exists = false;
+      await _reference.collection('users').getDocuments()
+      .then((QuerySnapshot snapshot) {
+        snapshot.documents.forEach((f) {
+          if(f.documentID == user.uid || f.data['Email'] == user.email) exists = true;
+        });
+      });
+
+      //Add new user info if there was none prior
+      if(!exists){
+        await _reference.collection('users').document(user.uid).setData(newUser.userInfoToMap());
+      }
+
       return user;
     } catch (e) {
       print(e.toString());
@@ -103,6 +125,7 @@ class AuthService {
           return true;
         });
 
+        //Add new user info if there was none prior
         if(!exists){
           await _reference.collection('users').document(user.uid).setData(newUser.userInfoToMap());
         }
