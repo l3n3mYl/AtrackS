@@ -117,12 +117,11 @@ class AuthService {
         );
 
         //Check if the user already exists
-        bool exists = await _reference.collection('users').getDocuments().then((QuerySnapshot snapshot) {
+        bool exists = false;
+        await _reference.collection('users').getDocuments().then((QuerySnapshot snapshot) {
           snapshot.documents.forEach((f) {
-            if(f.documentID == user.uid) return true;
-            else return false;
+            if(f.documentID == user.uid || f.data['Email'] == user.email) exists = true;
           });
-          return true;
         });
 
         //Add new user info if there was none prior
