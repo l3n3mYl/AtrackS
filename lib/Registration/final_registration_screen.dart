@@ -1,4 +1,5 @@
 import 'package:com/Models/user.dart';
+import 'package:com/Services/auth.dart';
 import 'package:flutter/material.dart';
 
 final Color mainColor = Color.fromRGBO(71, 68, 70, 1);
@@ -17,7 +18,9 @@ class FinalRegistrationScreen extends StatefulWidget {
 class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
 
   final _formKey = GlobalKey<FormState>();
+  final AuthService _auth = AuthService();
   String dropDownValue = 'Male';
+  String error = '';
 
   bool isNumeric(String s){
     bool numeric = true;
@@ -194,16 +197,26 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                 SizedBox(height: 20.0,),
                 RaisedButton(
                   child: Text('Register'),
-                  onPressed: () {
+                  onPressed: () async {
                     if(_formKey.currentState.validate()){
-                      print(widget.user.name);
-                      print(widget.user.pass);
-                      print(widget.user.mail);
-                      print(widget.user.w);
-                      print(widget.user.h);
-                      print(widget.user.g);
+                      dynamic result = await _auth.registerWithEmailAndPass(widget.user);
+                      if(result != null) print(result.toString());
+                      else {
+                        setState(() {
+                          error = 'This email address is already taken or wrongly formated';
+                        });
+                      }
                     }
                   },
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Text(
+                  error,
+                  style: TextStyle(
+                    color: Colors.red
+                  ),
                 )
               ],
             ),
