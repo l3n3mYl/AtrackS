@@ -89,7 +89,7 @@ class AuthService {
         await _reference.collection('users').document(user.uid).setData(newUser.userInfoToMap());
       }
 
-      return user;
+      return 'Success';
     } catch (e) {
       print(e.toString());
       return null;
