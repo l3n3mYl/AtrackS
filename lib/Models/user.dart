@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 class User{
   String username, password, email, weight, height, gender;
 

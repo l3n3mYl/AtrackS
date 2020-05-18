@@ -1,19 +1,17 @@
 import 'package:com/Registration/first_registration_screen.dart';
+import 'package:com/SecretMenu/menu_management.dart';
 import 'package:com/Services/auth.dart';
 import 'package:flutter/material.dart';
 
-final Color mainColor = Color.fromRGBO(71, 68, 70, 1);
-final Color textColor = Color.fromRGBO(163, 149, 135, 1);
-final Color accentColor = Color.fromRGBO(213, 1, 1, 1);
-
 class SignInScreen extends StatelessWidget {
-  String email = '';
-  String password = '';
-
   final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
+
+    String email = '';
+    String password = '';
+
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -79,6 +77,7 @@ class SignInScreen extends StatelessWidget {
                   dynamic auth =
                       await _authService.signInEmailAndPass(email, password);
                   if (auth != null) {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen()));
                     print('SUCESS');
                   } else {
                     print('SOMETHING WENT WRONG');

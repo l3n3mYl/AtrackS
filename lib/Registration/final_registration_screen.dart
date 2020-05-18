@@ -26,7 +26,7 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
     bool numeric = true;
     if(s == null) return false;
     try{
-      double num = double.parse(s);
+      double.parse(s);
     } catch (error) {
       numeric = false;
     }
