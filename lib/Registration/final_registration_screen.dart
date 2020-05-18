@@ -1,4 +1,5 @@
 import 'package:com/Models/user.dart';
+import 'package:com/SecretMenu/menu_management.dart';
 import 'package:com/Services/auth.dart';
 import 'package:flutter/material.dart';
 
@@ -200,7 +201,7 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                   onPressed: () async {
                     if(_formKey.currentState.validate()){
                       dynamic result = await _auth.registerWithEmailAndPass(widget.user);
-                      if(result != null) print(result.toString());
+                      if(result != null) Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen()));
                       else {
                         setState(() {
                           error = 'This email address is already taken or wrongly formated';
