@@ -24,12 +24,10 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
     final newYBottom = newYTop + renderBox.size.height;
 
     if (newYTop != selectorYTop) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => {
-        selectorYTop = newYTop
-      });
-      WidgetsBinding.instance.addPostFrameCallback((_) => {
-        selectorYBottom = newYBottom
-      });
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => {selectorYTop = newYTop});
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => {selectorYBottom = newYBottom});
     }
   }
 
@@ -92,7 +90,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
 //    final animationIntervalDuration = 0.2;//TODO: DELETE IF EVERYTHING WORKS AFTER IMPLEMENTATION
 
     final perListItemDelay =
-    menuController.state != MenuState.closing ? 0.15 : 0.0;
+        menuController.state != MenuState.closing ? 0.15 : 0.0;
 
     for (var i = 0; i < widget.menu.items.length; i++) {
       final animationIntervalStart = i * perListItemDelay;
@@ -109,10 +107,12 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
         menuListItem: new _MenuListItem(
           title: widget.menu.items[i].title,
           isSelected: isSelected,
-          onTap: () {
-            widget.onMenuItemSelected(widget.menu.items[i].id);
-            menuController.close();
-          },
+          onTap: widget.menu.items[i].title != ''
+              ? () {
+                  widget.onMenuItemSelected(widget.menu.items[i].id);
+                  menuController.close();
+                }
+              : null,
         ),
       ));
     }
@@ -138,7 +138,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
             menuController.state == MenuState.closing ||
             selectorYTop == null) {
           final RenderBox menuScreenRenderBox =
-          context.findRenderObject() as RenderBox;
+              context.findRenderObject() as RenderBox;
 
           if (menuScreenRenderBox != null) {
             final menuScreenHeight = menuScreenRenderBox.size.height;
@@ -163,11 +163,13 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
               children: [
                 createMenuTitle(menuController),
                 createMenuItems(menuController),
-                shouldRenderSelector ? new ItemSelector(
-                  opacity: selectorOpacity,
-                  bottomY: actualSelectorYBot,
-                  topY: actualSelectorYTop,
-                ) : new Container()
+                shouldRenderSelector
+                    ? new ItemSelector(
+                        opacity: selectorOpacity,
+                        bottomY: actualSelectorYBot,
+                        topY: actualSelectorYTop,
+                      )
+                    : new Container()
               ],
               textDirection: TextDirection.ltr,
             ),
@@ -189,7 +191,6 @@ class ItemSelector extends ImplicitlyAnimatedWidget {
 }
 
 class _ItemSelectorState extends AnimatedWidgetBaseState<ItemSelector> {
-
   Tween<double> _topY, _bottomY, _opacity;
 
   @override
@@ -197,19 +198,19 @@ class _ItemSelectorState extends AnimatedWidgetBaseState<ItemSelector> {
     _topY = visitor(
       _topY,
       widget.topY,
-          (dynamic value) => new Tween<double>(begin: value),
+      (dynamic value) => new Tween<double>(begin: value),
     );
 
     _bottomY = visitor(
       _bottomY,
       widget.bottomY,
-          (dynamic value) => new Tween<double>(begin: value),
+      (dynamic value) => new Tween<double>(begin: value),
     );
 
     _opacity = visitor(
       _opacity,
       widget.opacity,
-          (dynamic value) => new Tween<double>(begin: value),
+      (dynamic value) => new Tween<double>(begin: value),
     );
   }
 
@@ -283,7 +284,7 @@ class _AnimatedMenuListItem
     }
 
     _translation = visitor(_translation, slide,
-            (dynamic value) => new Tween<double>(begin: value));
+        (dynamic value) => new Tween<double>(begin: value));
 
     _opacity = visitor(
         _opacity, opacity, (dynamic value) => new Tween<double>(begin: value));

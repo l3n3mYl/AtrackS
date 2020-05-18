@@ -49,9 +49,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
               title: new Text(widget.contentScreen.title, style: TextStyle(fontWeight: FontWeight.bold),),
               leading: new IconButton(
                 icon: new Icon(FontAwesomeIcons.bars),
-                onPressed: () {
-                  menuController.toggle();
-                },
+                onPressed: () => menuController.toggle()
               ),
             ),
             body: widget.contentScreen.contentBuilder(context),
