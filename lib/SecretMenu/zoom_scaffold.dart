@@ -60,6 +60,7 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
     );
   }
 
+
   zoomAndSlideContent(Widget content) {
     var scalePercent, slidePercent;
 

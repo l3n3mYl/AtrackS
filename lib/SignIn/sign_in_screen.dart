@@ -78,7 +78,6 @@ class SignInScreen extends StatelessWidget {
                       await _authService.signInEmailAndPass(email, password);
                   if (auth != null) {
                     Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen()));
-                    print('SUCESS');
                   } else {
                     print('SOMETHING WENT WRONG');
                   }
@@ -90,7 +89,7 @@ class SignInScreen extends StatelessWidget {
                   dynamic auth = await _authService.signInGooglePlus();
                   print(auth.toString());
                   if (auth != null) {
-                    print('SUCESS');
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen()));
                   } else {
                     print('SOMETHING WENT WRONG');
                   }
@@ -108,7 +107,7 @@ class SignInScreen extends StatelessWidget {
                   dynamic auth = await _authService.signInFacebook();
                   print(auth.toString());
                   if (auth != null) {
-                    print('Sucess');
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen()));
                   } else {
                     print('Something went wrong with db login');
                   }
@@ -125,6 +124,11 @@ class SignInScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => FirstRegistrationScreen()));
                 },
+              ),
+              RaisedButton(
+                //TODO: Delete
+                child: Text('MAIN SCREEN'),
+                onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen())),
               )
             ],
           ),
