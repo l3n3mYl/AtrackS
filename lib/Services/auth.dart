@@ -31,24 +31,14 @@ class AuthService {
 
   Future registerWithEmailAndPass(User newUser) async {
     try{
+      //TODO: CHeck if the email already exists not to overwrite the data
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: newUser.mail, password: newUser.pass);
       FirebaseUser fUser = result.user;
       await _reference.collection('users').document(fUser.uid).setData(newUser.userInfoToMap());
       await _reference.collection('nutrition').document(fUser.uid).setData(_newNutrition.nutritionInfoToMap());
       await _reference.collection('exercises').document(fUser.uid).setData(_newExercises.exerciseInfoToMap());
 
-      return 'Success';
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
-  }
-
-  Future signInAnon() async {
-    try {
-      AuthResult result = await _auth.signInAnonymously();
-      FirebaseUser user = result.user;
-      return user;
+      return fUser;
     } catch (e) {
       print(e.toString());
       return null;
@@ -113,7 +103,7 @@ class AuthService {
         await _reference.collection('exercises').document(user.uid).setData(_newExercises.exerciseInfoToMap());
       }
 
-      return 'Success';
+      return user;
     } catch (e) {
       print(e.toString());
       return null;
@@ -155,7 +145,7 @@ class AuthService {
           await _reference.collection('exercises').document(user.uid).setData(_newExercises.exerciseInfoToMap());
         }
 
-        return 'Success';
+        return user;
       }
     } catch (e) {
       print(e.toString());

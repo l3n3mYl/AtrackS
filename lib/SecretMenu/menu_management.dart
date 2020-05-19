@@ -1,26 +1,22 @@
+import 'package:com/ProgressScreen/main_progress_screen.dart';
 import 'package:com/SecretMenu/menu_background.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
+
+  final FirebaseUser _user;
+
+  MainScreen(this._user);
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 
 //TODO: DELETE THIS SCREEN AND REPLACE WITH A NORMAL ONE
-final Screen firstScreen = new Screen(
-  title: 'Delete this after',
-  contentBuilder: (builder){
-    return  Scaffold(
-      body: Container(
-        color: Colors.red,
-        width: double.infinity,
-        height: double.infinity,
-      ),
-    );
-  }
-);
+
 final Screen secondScreen = new Screen(
     title: 'Delete this after',
     contentBuilder: (builder){
@@ -57,6 +53,7 @@ final Screen fourthScreen = new Screen(
       );
     }
 );
+
 final Screen fifthScreen = new Screen(
     title: 'Delete this after',
     contentBuilder: (builder){
@@ -65,6 +62,11 @@ final Screen fifthScreen = new Screen(
           color: Colors.deepOrange,
           width: double.infinity,
           height: double.infinity,
+          child: Column(
+            children: <Widget>[
+              Text('asd')
+            ],
+          ),
         ),
       );
     }
@@ -83,7 +85,10 @@ final Screen settingsScreen = new Screen(
 );
 
 class _MainScreenState extends State<MainScreen> {
-  var activeScreen = firstScreen;//TODO: make a new screen
+
+//  final progressScreen = new Smh(widget._user).screen();
+
+//  var activeScreen = Smh(widget._user).screen();//TODO: make a new screen
   var selectedMenuItemScreen = '1';//TODO: CHANGE TO A NORMAL ID
 
   final menu = new Menu(items: [
@@ -98,6 +103,11 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final progressScreen = new MainProgressScreenRootClass(widget._user).screen();
+
+    var activeScreen = progressScreen;
+
     return ZoomScaffold(
       menuScreen: new MenuScreen(
         selectedItemId: selectedMenuItemScreen,
@@ -106,7 +116,7 @@ class _MainScreenState extends State<MainScreen> {
 
           if (itemId == '1') {
             setState(() {
-              activeScreen = firstScreen;
+              activeScreen = progressScreen;
             });
           } else if (itemId == '2') {
             setState(() {
