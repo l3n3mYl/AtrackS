@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:com/Models/exercises.dart';
+import 'package:com/Models/nutrition.dart';
 import 'package:com/Models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -10,11 +12,31 @@ class AuthService {
   final Firestore _reference = Firestore.instance;
   final User newUser = User();
 
+  final Nutrition _newNutrition = Nutrition(
+    calories: "0",
+    carbs: "0",
+    fats: "0",
+    protein: "0",
+    water: "0",
+  );
+
+  final Exercises _newExercises = Exercises(
+    cycling: "0",
+    jogging: "0",
+    pullUps: "0",
+    pushUps: "0",
+    sitUps: "0",
+    steps: "0",
+  );
+
   Future registerWithEmailAndPass(User newUser) async {
     try{
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: newUser.mail, password: newUser.pass);
       FirebaseUser fUser = result.user;
       await _reference.collection('users').document(fUser.uid).setData(newUser.userInfoToMap());
+      await _reference.collection('nutrition').document(fUser.uid).setData(_newNutrition.nutritionInfoToMap());
+      await _reference.collection('exercises').document(fUser.uid).setData(_newExercises.exerciseInfoToMap());
+
       return 'Success';
     } catch (e) {
       print(e.toString());
@@ -87,6 +109,8 @@ class AuthService {
       //Add new user info if there was none prior
       if(!exists){
         await _reference.collection('users').document(user.uid).setData(newUser.userInfoToMap());
+        await _reference.collection('nutrition').document(user.uid).setData(_newNutrition.nutritionInfoToMap());
+        await _reference.collection('exercises').document(user.uid).setData(_newExercises.exerciseInfoToMap());
       }
 
       return 'Success';
@@ -127,6 +151,8 @@ class AuthService {
         //Add new user info if there was none prior
         if(!exists){
           await _reference.collection('users').document(user.uid).setData(newUser.userInfoToMap());
+          await _reference.collection('nutrition').document(user.uid).setData(_newNutrition.nutritionInfoToMap());
+          await _reference.collection('exercises').document(user.uid).setData(_newExercises.exerciseInfoToMap());
         }
 
         return 'Success';
