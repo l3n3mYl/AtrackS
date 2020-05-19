@@ -201,7 +201,7 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                   onPressed: () async {
                     if(_formKey.currentState.validate()){
                       dynamic result = await _auth.registerWithEmailAndPass(widget.user);
-                      if(result != null) Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen()));
+                      if(result != null) Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen(result)));
                       else {
                         setState(() {
                           error = 'This email address is already taken or wrongly formated';

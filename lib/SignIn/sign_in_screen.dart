@@ -77,7 +77,7 @@ class SignInScreen extends StatelessWidget {
                   dynamic auth =
                       await _authService.signInEmailAndPass(email, password);
                   if (auth != null) {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen(auth)));
                   } else {
                     print('SOMETHING WENT WRONG');
                   }
@@ -87,9 +87,8 @@ class SignInScreen extends StatelessWidget {
                 child: Text('Login with Google+'),
                 onPressed: () async {
                   dynamic auth = await _authService.signInGooglePlus();
-                  print(auth.toString());
                   if (auth != null) {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen(auth)));
                   } else {
                     print('SOMETHING WENT WRONG');
                   }
@@ -105,9 +104,8 @@ class SignInScreen extends StatelessWidget {
                 child: Text('Sign In with Facebook'),
                 onPressed: () async {
                   dynamic auth = await _authService.signInFacebook();
-                  print(auth.toString());
                   if (auth != null) {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen(auth)));
                   } else {
                     print('Something went wrong with db login');
                   }
@@ -125,11 +123,6 @@ class SignInScreen extends StatelessWidget {
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => FirstRegistrationScreen()));
                 },
               ),
-              RaisedButton(
-                //TODO: Delete
-                child: Text('MAIN SCREEN'),
-                onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => MainScreen())),
-              )
             ],
           ),
         ),
