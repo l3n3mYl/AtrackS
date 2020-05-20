@@ -5,26 +5,27 @@ class DatabaseManagement {
 
   final Firestore _reference = Firestore.instance;
 
-  Future<List<dynamic>> retrieveExerciseInfoByUid(FirebaseUser user) async {
-    List exerciseInfo = new List();
+  Future<Map<String, dynamic>> retrieveExerciseInfoByUid(FirebaseUser user) async {
+//    List exerciseInfo = new List();
+    Map<String, dynamic> exerciseInfo = new Map();
     try{
-      await _reference.collection('exercises').getDocuments().then((QuerySnapshot snapshots) {
-      snapshots.documents.forEach((doc) {
-        if(doc.documentID == user.uid){
-          exerciseInfo = doc.data.values.toList();
-        }
+//      await _reference.collection('exercises').getDocuments().then((QuerySnapshot snapshots) {
+//      snapshots.documents.forEach((doc) {
+//        if(doc.documentID == user.uid){
+////          exerciseInfo = doc.data.values.toList();
+//        }
+//      });
+//    });
+      await _reference.collection('exercises').getDocuments().then((value) {
+        value.documents.forEach((doc){
+          exerciseInfo = doc.data;
+        });
       });
-    });
-      print(exerciseInfo);
     return exerciseInfo;
     } catch(e) {
       print(e.toString());
       return null;
     }
-
-    print(exerciseInfo);
-
-//    return exerciseInfo;
   }
 
 }
