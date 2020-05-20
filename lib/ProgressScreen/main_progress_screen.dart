@@ -1,3 +1,4 @@
+import 'package:com/Design/colours.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/Services/db_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,28 +35,37 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
   @override
   Widget build(BuildContext context) {
 
-  Future<List<dynamic>> _future = _db.retrieveExerciseInfoByUid(widget._user);
+  Future<Map<String, dynamic>> _future = _db.retrieveExerciseInfoByUid(widget._user);
+  List<Widget> children = new List();
     return Scaffold(
       body: Container(
-        color: Colors.cyanAccent,
-        child: FutureBuilder<List<dynamic>>(
+        color: mainColor,
+        child: FutureBuilder<Map<String, dynamic>>(
           future: _future,
           builder: (context, snapshot){
-            List<Widget> children;
             if(snapshot.hasData){
-              final List<dynamic> exerciseInfoList = snapshot.data;
+              children.clear();
+              final Map<String, dynamic> exerciseInfoList = snapshot.data;
               final int exerciseLen = exerciseInfoList.length;
-              children = <Widget>[
-                Text('Result: $exerciseInfoList'),
-                Text('Len: ${exerciseLen.toString()}')
-              ];
-//              children = <Widget>[
-//                Icon(Icons.check_circle_outline,color: Colors.green,size: 60,),
-//                Padding(
-//                  padding: const EdgeInsets.only(top: 16.0),
-//                  child: Text('Result: ${snapshot.data}'),
-//                )
-//            ];
+              for(var i = 0; i <exerciseLen; ++i){
+                children.add(
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Text(snapshot.data.keys.elementAt(i)),
+                            Text(snapshot.data.values.elementAt(i))
+                          ],
+                        )
+                      ],
+                    ),
+                  )
+                );
+              }
             } else if(snapshot.hasError){
               children = <Widget>[
                 Text('There was an error')
