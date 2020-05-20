@@ -1,6 +1,7 @@
 import 'package:com/ProgressScreen/main_progress_screen.dart';
 import 'package:com/SecretMenu/menu_background.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
+import 'package:com/Services/pedometer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -79,6 +80,7 @@ final Screen settingsScreen = new Screen(
           color: Colors.cyanAccent,
           width: double.infinity,
           height: double.infinity,
+          child: StepCounter(),
         ),
       );
     }
@@ -86,10 +88,7 @@ final Screen settingsScreen = new Screen(
 
 class _MainScreenState extends State<MainScreen> {
 
-//  final progressScreen = new Smh(widget._user).screen();
-
-//  var activeScreen = Smh(widget._user).screen();//TODO: make a new screen
-  var selectedMenuItemScreen = '1';//TODO: CHANGE TO A NORMAL ID
+  var selectedMenuItemScreen = '2';//TODO: CHANGE TO A NORMAL ID
 
   final menu = new Menu(items: [
     MenuItem(id: '1', title: 'Progress'),
@@ -101,12 +100,14 @@ class _MainScreenState extends State<MainScreen> {
     MenuItem(id: '7', title: 'Settings'),
   ]);
 
+  var activeScreen = secondScreen;
+
   @override
   Widget build(BuildContext context) {
 
-    final progressScreen = new MainProgressScreenRootClass(widget._user).screen();
+//    final progressScreen = new MainProgressScreenRootClass(widget._user).screen();
 
-    var activeScreen = progressScreen;
+//    var activeScreen = progressScreen;
 
     return ZoomScaffold(
       menuScreen: new MenuScreen(
@@ -116,7 +117,7 @@ class _MainScreenState extends State<MainScreen> {
 
           if (itemId == '1') {
             setState(() {
-              activeScreen = progressScreen;
+              activeScreen = new MainProgressScreenRootClass(widget._user).screen();
             });
           } else if (itemId == '2') {
             setState(() {

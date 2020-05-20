@@ -37,6 +37,8 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
 
   Future<Map<String, dynamic>> _future = _db.retrieveExerciseInfoByUid(widget._user);
   List<Widget> children = new List();
+
+  //TODO: make everything tidy
     return Scaffold(
       body: Container(
         color: mainColor,
