@@ -9,12 +9,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: any
-  firebase_auth: any
-  cloud_firestore: any
-  google_sign_in: any
-  flutter_facebook_login: any
+  firebase_core:
+  firebase_auth:
+  cloud_firestore:
+  google_sign_in:
+  flutter_facebook_login:
   font_awesome_flutter:
+
+  pedometer: ^1.2.0
+  percent_indicator:
+  flutter_launcher_icons:
 
   cupertino_icons: ^0.1.2
 
@@ -22,13 +26,18 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/step.png"
+
 flutter:
 
   uses-material-design: true
 
   assets:
     - images/
-    - assets/
+    - assets/images/
   fonts:
     - family: Pacifico
       fonts:
