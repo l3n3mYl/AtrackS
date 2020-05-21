@@ -1,338 +1,171 @@
-
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:math';
 
+import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pedometer/pedometer.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:sensors/sensors.dart' as AccelerometerEvents;
+import 'package:sensors/sensors.dart';
 
-
-class StepCounter extends StatefulWidget {
-  @override
-  _StepCounterState createState() => _StepCounterState();
+abstract class StepListener{
+  void step(int timeNs);
 }
 
-class _StepCounterState extends State<StepCounter> {
+class SensorFilter {
 
-  String muestrePasos = "";
-  String _km = "Unknown";
-  String _calories = "Unknown";
+  SensorFilter();
 
-  String _stepCountValue = 'Unknown';
-  StreamSubscription<int> _subscription;
+  Float sum(List<Float> array){
+    double retval = 0 as double;
+    for (var i = 0; i < array.length; ++i){
+      retval += array[i] as double;
+    }
 
-  double _numerox; //numero pasos
-  double _convert;
-  double _kmx;
-  double burnedx;
-  double _porciento;
-  // double percent=0.1;
+    Float fRetval = retval as Float;
+
+    return fRetval;
+  }
+
+  List<double> cross(List<double> listA, List<double> listB){
+    List<double> retList = new List(3);
+    retList[0] = listA[1] * listB[2] - listA[2] * listB[1];
+    retList[1] = listA[2] * listB[0] - listA[0] * listB[2];
+    retList[2] = listA[0] * listB[1] - listA[1] * listB[0];
+
+    return retList;
+  }
+
+  double norm(List<double> list){
+    double retval = 0;
+    for(var i = 0; i < list.length; ++i){
+      retval += list[i] * list[i];
+    }
+
+    return sqrt(retval);
+  }
+
+  double dot(List<double> a, List<double> b){
+    double retval = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    return retval;
+  }
+
+  List<double> normalize(List<double> a){
+    List<double> retval = new List(a.length);
+    double normal = norm(a);
+    for(var i = 0; i < a.length; ++i) {
+      retval[i] = a[i] / normal;
+    }
+    return retval;
+  }
+
+}
+
+class StepDetector {
+  static int accelRingSize = 50;
+  static int velRingSize = 10;
+
+  final double stepThreshold = 50 as double;
+  final int stepDelayMs = 250000000;
+
+  int accelRingCounter = 0;
+  int velRingCounter = 0;
+  int lastStepTimeMs = 0;
+  double oldVelocityEstimate = 0;
+  List<Float> velRing = new List(velRingSize);
+  List<Float> accelRingX = new List(accelRingSize);
+  List<Float> accelRingY = new List(accelRingSize);
+  List<Float> accelRingZ = new List(accelRingSize);
+
+  StepListener listener;
+
+  void updateAccel(int timeNs, double x, double y, double z){
+    List<double> currentAccel = new List(3);
+    currentAccel[0] = x;
+    currentAccel[1] = y;
+    currentAccel[2] = z;
+    accelRingCounter++;
+    accelRingX[accelRingCounter % accelRingSize] = currentAccel[0] as Float;
+    accelRingY[accelRingCounter % accelRingSize] = currentAccel[1] as Float;
+    accelRingZ[accelRingCounter % accelRingSize] = currentAccel[2] as Float;
+
+    List<double> worldZ = new List(3);
+    worldZ[0] = (SensorFilter().sum(accelRingX) as double) / min(accelRingCounter, accelRingSize);
+    worldZ[1] = (SensorFilter().sum(accelRingY) as double) / min(accelRingCounter, accelRingSize);
+    worldZ[2] = (SensorFilter().sum(accelRingZ) as double) / min(accelRingCounter, accelRingSize);
+
+    double normalizationFactor = SensorFilter().norm(worldZ);
+
+    worldZ[0] /= normalizationFactor;
+    worldZ[1] /= normalizationFactor;
+    worldZ[2] /= normalizationFactor;
+
+    Float currentZ = SensorFilter().dot(worldZ, currentAccel) - normalizationFactor as Float;
+    velRingCounter++;
+    velRing[velRingCounter % velRingSize] = currentZ;
+    double velocityEstimate = SensorFilter().sum(velRing) as double;
+
+    if(velocityEstimate > stepThreshold && oldVelocityEstimate <= stepThreshold
+        && (timeNs - lastStepTimeMs > stepDelayMs)){
+      listener.step(timeNs);
+      lastStepTimeMs = timeNs;
+    }
+    oldVelocityEstimate = velocityEstimate;
+  }
+}
+
+final Screen pedomedo = new Screen(
+  title: 'Pedomedo',
+  contentBuilder: (ctx) => PedometerScreen()
+);
+
+class PedometerScreen extends StatefulWidget {
+  @override
+  _PedometerScreenState createState() => _PedometerScreenState();
+}
+
+class _PedometerScreenState extends State<PedometerScreen> {
+
+  AccelerometerEvent accelerometerEvent;
+  StreamSubscription _subscription;
+  
+  static const int shakeRows = 20;
+  static const int shakeColumns = 20;
+  static const double shakeCellSize = 10.0;
+
+  List<double> accelerometerValues;
+  
+  List<StreamSubscription<dynamic>> streamSubs = <StreamSubscription<dynamic>>[];
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    //initPlatformState();
-    setUpPedometer();
+    streamSubs.add(AccelerometerEvents.accelerometerEvents.listen((AccelerometerEvents.AccelerometerEvent event) {
+      setState(() {
+        accelerometerValues = <double>[event.x, event.y, event.z];
+      });
+    }));
   }
 
-  //inicia codigo pedometer
-  void setUpPedometer() {
-    Pedometer pedometer = new Pedometer();
-    _subscription = pedometer.pedometerStream.listen(_onData,
-        onError: _onError, onDone: _onDone, cancelOnError: true);
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    for(StreamSubscription<dynamic> subscription in streamSubs){
+      subscription.cancel();
+    }
   }
-
-  void _onData(int stepCountValue) async {
-    // print(stepCountValue); //impresion numero pasos por consola
-    setState(() {
-      _stepCountValue = "$stepCountValue";
-      // print(_stepCountValue);
-    });
-
-    var dist = stepCountValue; //pasamos el entero a una variable llamada dist
-    double y = (dist + .0); //lo convertimos a double una forma de varias
-
-    setState(() {
-      _numerox =
-          y; //lo pasamos a un estado para ser capturado ya convertido a double
-    });
-
-    var long3 = (_numerox);
-    long3 = num.parse(y.toStringAsFixed(2));
-    var long4 = (long3 / 10000);
-
-    int decimals = 1;
-    int fac = pow(10, decimals);
-    double d = long4;
-    d = (d * fac).round() / fac;
-    print("d: $d");
-
-    getDistanceRun(_numerox);
-
-    setState(() {
-      _convert = d;
-      print(_convert);
-    });
-  }
-
-  void reset() {
-    setState(() {
-      int stepCountValue = 0;
-      stepCountValue = 0;
-      _stepCountValue = "$stepCountValue";
-    });
-  }
-
-  void _onDone() {}
-
-  void _onError(error) {
-    print("Flutter Pedometer Error: $error");
-  }
-
-  //function to determine the distance run in kilometers using number of steps
-  void getDistanceRun(double _numerox) {
-    var distance = ((_numerox * 78) / 100000);
-    distance = num.parse(distance.toStringAsFixed(2)); //dos decimales
-    var distancekmx = distance * 34;
-    distancekmx = num.parse(distancekmx.toStringAsFixed(2));
-    //print(distance.runtimeType);
-    setState(() {
-      _km = "$distance";
-      //print(_km);
-    });
-    setState(() {
-      _kmx = num.parse(distancekmx.toStringAsFixed(2));
-    });
-  }
-
-  //function to determine the calories burned in kilometers using number of steps
-  void getBurnedRun() {
-    setState(() {
-      var calories = _kmx; //dos decimales
-      _calories = "$calories";
-      //print(_calories);
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
-    //print(_stepCountValue);
-    getBurnedRun();
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: const Text('Step Counter app'),
-          backgroundColor: Colors.black54,
-        ),
-        body: new ListView(
-          padding: EdgeInsets.all(5.0),
+
+    final List<String> accelerometer = accelerometerValues?.map((double v) => v.toStringAsFixed(1))?.toList();
+
+    return Scaffold(
+      body: Container(
+        child: Column(
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(top: 10.0),
-              width: 250, //ancho
-              height: 250, //largo tambien por numero height: 300
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment
-                        .bottomCenter, //cambia la iluminacion del degradado
-                    end: Alignment.topCenter,
-                    colors: [Color(0xFFA9F5F2), Color(0xFF01DFD7)],
-                  ),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(27.0),
-                    bottomRight: Radius.circular(27.0),
-                    topLeft: Radius.circular(27.0),
-                    topRight: Radius.circular(27.0),
-                  )),
-              child: new CircularPercentIndicator(
-                radius: 200.0,
-                lineWidth: 13.0,
-                animation: true,
-                center: Container(
-                  child: new Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        height: 50,
-                        width: 50,
-                        padding: EdgeInsets.only(left: 20.0),
-                        child: Icon(
-                          FontAwesomeIcons.walking,
-                          size: 30.0,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Container(
-                        //color: Colors.orange,
-                        child: Text(
-                          '${(double.parse(_stepCountValue) * 0.0043156140025931).floor()}',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.0,
-                              color: Colors.purpleAccent),
-                        ),
-                        // height: 50.0,
-                        // width: 50.0,
-                      ),
-                    ],
-                  ),
-                ),
-                percent: 0.217,
-                //percent: _convert,
-                footer: new Text(
-                  "Pasos:  $_stepCountValue",
-                  style: new TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12.0,
-                      color: Colors.purple),
-                ),
-                circularStrokeCap: CircularStrokeCap.round,
-                progressColor: Colors.purpleAccent,
-              ),
-            ),
-            Divider(
-              height: 5.0,
-            ),
-            Container(
-              width: 80,
-              height: 100,
-              padding: EdgeInsets.only(left: 25.0, top: 10.0, bottom: 10.0),
-              color: Colors.transparent,
-              child: Row(
-                children: <Widget>[
-                  new Container(
-                    child: new Card(
-                      child: Container(
-                        height: 80.0,
-                        width: 80.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/distance.png"),
-                            fit: BoxFit.fitWidth,
-                            alignment: Alignment.topCenter,
-                          ),
-                        ),
-                        child: Text(
-                          "$_km Km",
-                          textAlign: TextAlign.right,
-                          style: new TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 14.0),
-                        ),
-                      ),
-                      color: Colors.white54,
-                    ),
-                  ),
-                  VerticalDivider(
-                    width: 20.0,
-                  ),
-                  new Container(
-                    child: new Card(
-                      child: Container(
-                        height: 80.0,
-                        width: 80.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/burned.png"),
-                            fit: BoxFit.fitWidth,
-                            alignment: Alignment.topCenter,
-                          ),
-                        ),
-                      ),
-                      color: Colors.transparent,
-                    ),
-                  ),
-                  VerticalDivider(
-                    width: 20.0,
-                  ),
-                  new Container(
-                    child: new Card(
-                      child: Container(
-                        height: 80.0,
-                        width: 80.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/step.png"),
-                            fit: BoxFit.fitWidth,
-                            alignment: Alignment.topCenter,
-                          ),
-                        ),
-                      ),
-                      color: Colors.transparent,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Divider(
-              height: 2,
-            ),
-            Container(
-              padding: EdgeInsets.only(top: 2.0),
-              width: 150, //ancho
-              height: 30, //largo tambien por numero height: 300
-              color: Colors.transparent,
-              child: Row(
-                children: <Widget>[
-                  new Container(
-                    padding: EdgeInsets.only(left: 40.0),
-                    child: new Card(
-                      child: Container(
-                        child: Text(
-                          "$_km Km",
-                          textAlign: TextAlign.right,
-                          style: new TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.0,
-                              color: Colors.white),
-                        ),
-                      ),
-                      color: Colors.purple,
-                    ),
-                  ),
-                  VerticalDivider(
-                    width: 20.0,
-                  ),
-                  new Container(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: new Card(
-                      child: Container(
-                        child: Text(
-                          "$_calories kCal",
-                          textAlign: TextAlign.right,
-                          style: new TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.0,
-                              color: Colors.white),
-                        ),
-                      ),
-                      color: Colors.red,
-                    ),
-                  ),
-                  VerticalDivider(
-                    width: 5.0,
-                  ),
-                  new Container(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: new Card(
-                      child: Container(
-                        child: Text(
-                          "$_stepCountValue Steps",
-                          textAlign: TextAlign.right,
-                          style: new TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.0,
-                              color: Colors.white),
-                        ),
-                      ),
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            Text('Acceleromeerer: $accelerometer')
           ],
         ),
       ),

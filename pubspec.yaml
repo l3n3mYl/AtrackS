@@ -17,6 +17,7 @@ dependencies:
   font_awesome_flutter:
 
   pedometer: ^1.2.0
+  sensors:
   percent_indicator:
   flutter_launcher_icons:
 
