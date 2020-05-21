@@ -80,7 +80,7 @@ final Screen settingsScreen = new Screen(
           color: Colors.cyanAccent,
           width: double.infinity,
           height: double.infinity,
-          child: StepCounter(),
+//          child: StepCounter(),
         ),
       );
     }
@@ -137,7 +137,7 @@ class _MainScreenState extends State<MainScreen> {
             });
           } else if(itemId == '7'){
             setState(() {
-              activeScreen = settingsScreen;
+              activeScreen = pedomedo;
             });
           }
         },
