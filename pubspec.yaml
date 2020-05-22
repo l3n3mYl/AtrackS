@@ -18,6 +18,7 @@ dependencies:
 
   pedometer: ^1.2.0
   sensors:
+  syncfusion_flutter_charts: ^18.1.53
   percent_indicator:
   flutter_launcher_icons:
 

@@ -1,20 +1,20 @@
 import 'dart:async';
-
-import 'package:com/SecretMenu/zoom_scaffold.dart';
+import 'package:com/Services/db_management.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pedometer/pedometer.dart';
 
-final Screen pedomedo = new Screen(
-  title: 'Pedomedo',
-  contentBuilder: (ctx) => PedometerScreen()
-);
+class WalkingScreen extends StatefulWidget {
 
-class PedometerScreen extends StatefulWidget {
+  final FirebaseUser user;
+
+  WalkingScreen(this.user);
+
   @override
-  _PedometerScreenState createState() => _PedometerScreenState();
+  _WalkingScreenState createState() => _WalkingScreenState();
 }
 
-class _PedometerScreenState extends State<PedometerScreen>{
+class _WalkingScreenState extends State<WalkingScreen>{
 
   Pedometer _pedometer;
   StreamSubscription<int> _subscription;
@@ -32,11 +32,8 @@ class _PedometerScreenState extends State<PedometerScreen>{
     startListening();
   }
 
-  void onData(int stepCountValue){
-    print(stepCountValue);
-  }
-
   void startListening() {
+    _pedometer = new Pedometer();
     _subscription = _pedometer.pedometerStream.listen(_onData, onError: _onError,
         onDone: _onDone, cancelOnError: true);
   }
@@ -48,6 +45,8 @@ class _PedometerScreenState extends State<PedometerScreen>{
     }
     setState(() {
       stepCountVal = "${newValue - resetValue}";
+      DatabaseManagement(widget.user).getSingleFieldInfo('exercises', 'Steps');
+//      DatabaseManagement(widget.user).postStepCount(stepCountVal);
     });
   }
 
@@ -65,11 +64,14 @@ class _PedometerScreenState extends State<PedometerScreen>{
 
     return Scaffold(
       body: Container(
-        child: Column(
-          children: <Widget>[
-            Text('Steps: ${stepCountVal}'),
-          ],
-        ),
+        width: double.infinity,
+        height: double.infinity,
+        color: Colors.deepOrange,
+        child: Center(
+          child: Text('Steps: $stepCountVal', style: TextStyle(
+            color: Colors.black
+          ),),
+        )
       ),
     );
   }

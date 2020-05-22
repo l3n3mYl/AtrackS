@@ -1,4 +1,5 @@
 import 'package:com/Design/colours.dart';
+import 'package:com/ProgressScreen/walking_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/Services/db_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,14 +30,16 @@ class MainProgressScreen extends StatefulWidget {
 
 class _MainProgressScreenState extends State<MainProgressScreen> {
 
-  final DatabaseManagement _db = new DatabaseManagement();
+
 
 
   @override
   Widget build(BuildContext context) {
 
-  Future<Map<String, dynamic>> _future = _db.retrieveExerciseInfoByUid(widget._user);
-  List<Widget> children = new List();
+    final DatabaseManagement _db = new DatabaseManagement(widget._user);
+
+    Future<Map<String, dynamic>> _future = _db.retrieveExerciseInfoByUid();
+    List<Widget> children = new List();
 
   //TODO: make everything tidy
     return Scaffold(
@@ -49,6 +52,14 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
               children.clear();
               final Map<String, dynamic> exerciseInfoList = snapshot.data;
               final int exerciseLen = exerciseInfoList.length;
+              children.add(
+                Container(
+                  child: RaisedButton(
+                    child: Text('Navigate To Step Screen'),
+                    onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => WalkingScreen(widget._user))),
+                  ),
+                )
+              );
               for(var i = 0; i <exerciseLen; ++i){
                 children.add(
                   Container(

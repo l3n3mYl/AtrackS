@@ -137,7 +137,7 @@ class _MainScreenState extends State<MainScreen> {
             });
           } else if(itemId == '7'){
             setState(() {
-              activeScreen = pedomedo;
+              activeScreen = settingsScreen;
             });
           }
         },
