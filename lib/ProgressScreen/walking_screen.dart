@@ -17,6 +17,7 @@ class WalkingScreen extends StatefulWidget {
 class _WalkingScreenState extends State<WalkingScreen>{
 
   Pedometer _pedometer;
+  DatabaseManagement _management;
   StreamSubscription<int> _subscription;
   String stepCountVal = '?';
   int resetValue = 0;
@@ -45,18 +46,24 @@ class _WalkingScreenState extends State<WalkingScreen>{
     }
     setState(() {
       stepCountVal = "${newValue - resetValue}";
-      DatabaseManagement(widget.user).getSingleFieldInfo('exercises', 'Steps');
-//      DatabaseManagement(widget.user).postStepCount(stepCountVal);
     });
   }
 
-  void _onDone() => reset = true;
+  void _onDone() async {
+    reset = true;
+    _management = new DatabaseManagement(widget.user);
+    String oldDbValue = await _management.getSingleFieldInfo('exercises', 'Steps');
+    String sumOfValues = (int.parse(oldDbValue) + int.parse(stepCountVal)).toString();
+    await _management.updateSingleField('exercises', 'Steps', sumOfValues);
+  }
+
   void _onError(error) => print('Error: $error');
 
   @override
   void dispose() {
     super.dispose();
     _subscription.cancel();
+    _onDone();
   }
 
   @override
