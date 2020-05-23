@@ -74,10 +74,22 @@ class _WalkingScreenState extends State<WalkingScreen>{
         width: double.infinity,
         height: double.infinity,
         color: Colors.deepOrange,
-        child: Center(
-          child: Text('Steps: $stepCountVal', style: TextStyle(
-            color: Colors.black
-          ),),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              child: Text('Steps: $stepCountVal', style: TextStyle(
+                color: Colors.black
+              ),),
+            ),
+            Container(
+              child: RaisedButton(
+                child: Text('Stop'),
+                onPressed: () => _onDone(),
+              ),
+            )
+          ],
         )
       ),
     );
