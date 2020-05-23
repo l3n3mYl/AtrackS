@@ -35,10 +35,10 @@ class DatabaseManagement {
     }
   }
 
-  Future postStepCount(String stepCount) async {
-    Map<String, String> steps = {'Steps': stepCount};
+  Future updateSingleField(String collection, String field, String count) async {
+    Map<String, String> data = {field : count};
     try{
-      await _reference.collection('exercises').document(_user.uid).updateData(steps);
+      await _reference.collection(collection).document(_user.uid).updateData(data);
     } catch (e) {
       print(e.toString());
     }
