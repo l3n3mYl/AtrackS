@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 
@@ -154,8 +156,9 @@ class SwipeButtonState extends State<SwipeButton>
       acceleration = 0.5;
       velocity = fractionalVelocity;
       result = SwipePosition.SwipeRight;
-    } else {
-      acceleration = -0.5;
+    }
+    else {
+      acceleration = -0.2;
       velocity = -fractionalVelocity;
       result = SwipePosition.SwipeLeft;
     }
@@ -164,6 +167,8 @@ class SwipeButtonState extends State<SwipeButton>
     _controller.animateWith(simulation).then((_) {
       if (widget.onChanged != null) widget.onChanged(result);
     });
+    final backSimulation = _SwipeSimulation(-acceleration, -_controller.value, 1.0, -velocity);
+    _controller.animateWith(backSimulation).then((_) => widget.onChanged(SwipePosition.SwipeLeft));
   }
 }
 
