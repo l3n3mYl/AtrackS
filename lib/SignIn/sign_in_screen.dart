@@ -2,7 +2,6 @@ import 'package:com/Registration/first_registration_screen.dart';
 import 'package:com/SecretMenu/menu_management.dart';
 import 'package:com/Services/auth.dart';
 import 'package:com/UiComponents/swipe_button.dart';
-import 'package:com/main.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -10,8 +9,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 final double btnSize = 40.0;
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
+  @override
+  _SignInScreenState createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
   final AuthService _authService = AuthService();
+
+  String error = '';
 
   Widget awaitResult() {
     return Container(
@@ -30,7 +36,6 @@ class SignInScreen extends StatelessWidget {
 
     String email = '';
     String password = '';
-    String error = '';
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -70,17 +75,13 @@ class SignInScreen extends StatelessWidget {
                             height: 190,
                             child: Image.asset('images/logo.png'))),
                   ),
-                  Text(
-                    error,
-                    style: TextStyle(color: Colors.red.shade700),
-                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(
                         width: btnSize,
                         height: btnSize,
-                        padding: EdgeInsets.all(2.0),
+                        padding: const EdgeInsets.all(2.0),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle, color: textColor),
                         child: RawMaterialButton(
@@ -90,13 +91,15 @@ class SignInScreen extends StatelessWidget {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (_) => MainScreen(auth)));
                             } else {
-                              error = 'There was an error with Facebook';
+                              setState(() {
+                                error = 'There was an error with Facebook';
+                              });
                             }
                           },
                           child: Icon(
                             FontAwesomeIcons.facebookF,
                             color: textColor,
-                            size: 23,
+                            size: 22,
                           ),
                           shape: CircleBorder(),
                           fillColor: Colors.black,
@@ -108,24 +111,27 @@ class SignInScreen extends StatelessWidget {
                       Container(
                         width: btnSize,
                         height: btnSize,
-                        padding: EdgeInsets.all(2.0),
+                        padding: const EdgeInsets.all(2.0),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle, color: textColor),
                         child: RawMaterialButton(
                           onPressed: () async {
-                            dynamic auth = await _authService.signInGooglePlus();
+                            dynamic auth =
+                                await _authService.signInGooglePlus();
                             if (auth != null) {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (_) => MainScreen(auth)));
                             } else {
-                              error = 'There was an error with Google+';
+                              setState(() {
+                                error = 'There was an error with Google+';
+                              });
                             }
                           },
                           child: Center(
                               child: Icon(
                             FontAwesomeIcons.googlePlusG,
                             color: textColor,
-                            size: 25,
+                            size: 23,
                           )),
                           shape: CircleBorder(),
                           fillColor: Colors.black,
@@ -134,10 +140,10 @@ class SignInScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(
-                    height: 20.0,
+                    height: 40.0,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 55.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 55.0),
                     child: TextField(
                       textAlign: TextAlign.left,
                       maxLines: 1,
@@ -149,7 +155,11 @@ class SignInScreen extends StatelessWidget {
                       cursorColor: accentColor,
                       decoration: InputDecoration(
                           hintText: 'Email',
-                          hintStyle: TextStyle(color: textColor, fontSize: 18.0),
+                          hintStyle:
+                              TextStyle(color: textColor,
+                                  fontFamily: 'PTSerif',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w200),
                           enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: accentColor)),
                           focusedBorder: UnderlineInputBorder(
@@ -165,20 +175,26 @@ class SignInScreen extends StatelessWidget {
                     height: 20.0,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 55.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 55.0),
                     child: TextField(
                       obscureText: true,
                       textAlign: TextAlign.left,
                       keyboardType: TextInputType.visiblePassword,
                       maxLines: 1,
                       style: TextStyle(
-                        fontSize: 18.0,
                         color: textColor,
+                          fontFamily: 'PTSerif',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w200
                       ),
                       cursorColor: accentColor,
                       decoration: InputDecoration(
                           hintText: 'Password',
-                          hintStyle: TextStyle(color: textColor, fontSize: 18.0),
+                          hintStyle:
+                              TextStyle(color: textColor,
+                                  fontFamily: 'PTSerif',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w200),
                           enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: accentColor)),
                           focusedBorder: UnderlineInputBorder(
@@ -191,10 +207,21 @@ class SignInScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
+                    height: 20.0,
+                  ),
+                  Text(
+                    error,
+                    style: TextStyle(color: Colors.red.shade700,
+                        fontFamily: 'PTSerif',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w200),
+                  ),
+                  SizedBox(
                     height: 100.0,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 0.0),
                     child: SwipeButton(
                       onChanged: (_) async {
                         Navigator.of(context).push(
@@ -207,40 +234,67 @@ class SignInScreen extends StatelessWidget {
                               builder: (_) => MainScreen(auth)));
                         } else {
                           Navigator.of(context).pop();
-                          error = 'Please check your credentials and try again';
+                          setState(() {
+                            error = 'Please check your credentials and try again';
+                          });
                         }
                       },
-                      sliderButtonColor: Colors.grey.shade400,
+                      sliderButtonColor: Colors.grey.shade300,
                       sliderBaseColor: Colors.black,
                       borderColor: textColor,
-                      width: 256,
-                      height: 56.0,
+                      width: 219.0,
+                      height: 42.0,
                       thumb: Container(
                         child: Center(
                           child: Image.asset(
                             'images/basic-logo.png',
-                            color: accentColor,
+                            color: mainColor,
                           ),
                         ),
                       ),
                       content: Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.only(right: 15.0),
+                        padding: const EdgeInsets.only(right: 15.0),
                         child: Text(
                           'Swipe To Log In',
-                          style: TextStyle(color: textColor),
+                          style: TextStyle(color: textColor,
+                              fontFamily: 'PTSerif',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w300),
                         ),
                       ),
                       borderRadius: BorderRadius.circular(56.0),
                     ),
                   ),
-                  RaisedButton(
-                    child: Text('Register'),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => FirstRegistrationScreen()));
-                    },
-                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => FirstRegistrationScreen())),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 25.0),
+                      child: Container(
+                        width: 219,
+                        height: 42,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(56.0),
+                            color: textColor),
+                        child: Container(
+                          margin: const EdgeInsets.all(2.0),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(56.0),
+                              color: Colors.black),
+                          child: Center(
+                              child: Text(
+                            'Register',
+                            style: TextStyle(
+                                color: textColor,
+                              fontFamily: 'PTSerif',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w200
+                            ),
+                          )),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
