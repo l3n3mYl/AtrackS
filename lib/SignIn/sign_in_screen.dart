@@ -1,3 +1,4 @@
+import 'package:com/PopUps/progress_indicator.dart';
 import 'package:com/Registration/first_registration_screen.dart';
 import 'package:com/SecretMenu/menu_management.dart';
 import 'package:com/Services/auth.dart';
@@ -20,16 +21,6 @@ class _SignInScreenState extends State<SignInScreen> {
   String error = '';
   String _email = '';
   String _password = '';
-
-  Widget awaitResult() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,11 +76,14 @@ class _SignInScreenState extends State<SignInScreen> {
                             shape: BoxShape.circle, color: textColor),
                         child: RawMaterialButton(
                           onPressed: () async {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult()));
                             dynamic auth = await _authService.signInFacebook();
                             if (auth != null) {
+                              Navigator.of(context).pop();
                               Navigator.of(context).pushReplacement(MaterialPageRoute(
                                   builder: (_) => MainScreen(auth)));
                             } else {
+                              Navigator.of(context).pop();
                               setState(() {
                                 error = 'There was an error with Facebook';
                               });
@@ -115,12 +109,15 @@ class _SignInScreenState extends State<SignInScreen> {
                             shape: BoxShape.circle, color: textColor),
                         child: RawMaterialButton(
                           onPressed: () async {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult()));
                             dynamic auth =
                                 await _authService.signInGooglePlus();
                             if (auth != null) {
+                              Navigator.of(context).pop();
                               Navigator.of(context).pushReplacement(MaterialPageRoute(
                                   builder: (_) => MainScreen(auth)));
                             } else {
+                              Navigator.of(context).pop();
                               setState(() {
                                 error = 'There was an error with Google+';
                               });
@@ -167,7 +164,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               borderSide: BorderSide(color: accentColor))),
                       onChanged: (input) {
                         _email = input.toString();
-                        print(_email);
                       },
                     ),
                   ),
@@ -203,7 +199,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               borderSide: BorderSide(color: accentColor))),
                       onChanged: (input) {
                         _password = input.toString();
-                        print(_password);
                       },
                     ),
                   ),
@@ -225,13 +220,15 @@ class _SignInScreenState extends State<SignInScreen> {
                         vertical: 8.0, horizontal: 0.0),
                     child: SwipeButton(
                       onChanged: (_) async {
-                        print(_email);
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult()));
                         dynamic auth = await _authService.signInEmailAndPass(
                             _email, _password);
                         if (auth != null) {
+                          Navigator.of(context).pop();
                           Navigator.of(context).pushReplacement(MaterialPageRoute(
                               builder: (_) => MainScreen(auth)));
                         } else {
+                          Navigator.of(context).pop();
                           setState(() {
                             error = 'Please check your credentials and try again';
                           });

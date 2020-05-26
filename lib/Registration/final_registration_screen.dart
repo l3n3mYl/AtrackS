@@ -1,4 +1,5 @@
 import 'package:com/Models/user.dart';
+import 'package:com/PopUps/progress_indicator.dart';
 import 'package:com/SecretMenu/menu_management.dart';
 import 'package:com/Services/auth.dart';
 import 'package:flutter/material.dart';
@@ -332,18 +333,29 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                             ),
                           ),
                           SizedBox(height: 20.0,),
+                          Text(
+                            error,
+                            style: TextStyle(color: Colors.red.shade700,
+                                fontFamily: 'PTSerif',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w200),
+                          ),
+                          SizedBox(height: 20.0,),
                           GestureDetector(
                             onTap: () async {
                               if(_formKey.currentState.validate()){
+                                Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult()));
                                 dynamic result = await _authService.registerWithEmailAndPass(widget.user);
                                 if(result != null) {
+                                  Navigator.of(context).pop();
                                   Navigator.of(context).pop();
                                   Navigator.of(context).pop();
                                   Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainScreen(result)));
                                 }
                                 else {
+                                  Navigator.of(context).pop();
                                   setState(() {
-                                    error = 'This email address is already taken or wrongly formated';
+                                    error = 'This email address is already taken or in bad format';
                                   });
                                 }
                               }
@@ -374,14 +386,6 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 20.0,),
-                          Text(
-                            error,
-                            style: TextStyle(color: Colors.red.shade700,
-                                fontFamily: 'PTSerif',
-                                fontSize: 13,
-                                fontWeight: FontWeight.w200),
                           ),
                         ],
                       ),
