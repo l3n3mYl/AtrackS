@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-final double btnSize = 40.0;
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -16,6 +15,7 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final AuthService _authService = AuthService();
+  final double btnSize = 40.0;
 
   String error = '';
 
