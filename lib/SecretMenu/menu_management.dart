@@ -117,7 +117,8 @@ class _MainScreenState extends State<MainScreen> {
 
           if (itemId == '1') {
             setState(() {
-              activeScreen = new MainProgressScreenRootClass(widget._user).screen();
+//              activeScreen = new MainProgressScreenRootClass(widget._user).screen();
+            activeScreen = secondScreen;
             });
           } else if (itemId == '2') {
             setState(() {

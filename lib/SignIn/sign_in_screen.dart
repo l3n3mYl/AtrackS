@@ -18,6 +18,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final double btnSize = 40.0;
 
   String error = '';
+  String _email = '';
+  String _password = '';
 
   Widget awaitResult() {
     return Container(
@@ -33,9 +35,6 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
-
-    String email = '';
-    String password = '';
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -88,7 +87,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           onPressed: () async {
                             dynamic auth = await _authService.signInFacebook();
                             if (auth != null) {
-                              Navigator.of(context).push(MaterialPageRoute(
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(
                                   builder: (_) => MainScreen(auth)));
                             } else {
                               setState(() {
@@ -119,7 +118,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             dynamic auth =
                                 await _authService.signInGooglePlus();
                             if (auth != null) {
-                              Navigator.of(context).push(MaterialPageRoute(
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(
                                   builder: (_) => MainScreen(auth)));
                             } else {
                               setState(() {
@@ -167,7 +166,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           border: UnderlineInputBorder(
                               borderSide: BorderSide(color: accentColor))),
                       onChanged: (input) {
-                        email = input.toString();
+                        _email = input.toString();
+                        print(_email);
                       },
                     ),
                   ),
@@ -202,7 +202,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           border: UnderlineInputBorder(
                               borderSide: BorderSide(color: accentColor))),
                       onChanged: (input) {
-                        password = input.toString();
+                        _password = input.toString();
+                        print(_password);
                       },
                     ),
                   ),
@@ -224,16 +225,13 @@ class _SignInScreenState extends State<SignInScreen> {
                         vertical: 8.0, horizontal: 0.0),
                     child: SwipeButton(
                       onChanged: (_) async {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => awaitResult()));
+                        print(_email);
                         dynamic auth = await _authService.signInEmailAndPass(
-                            email, password);
+                            _email, _password);
                         if (auth != null) {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).push(MaterialPageRoute(
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(
                               builder: (_) => MainScreen(auth)));
                         } else {
-                          Navigator.of(context).pop();
                           setState(() {
                             error = 'Please check your credentials and try again';
                           });
