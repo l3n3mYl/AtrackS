@@ -5,6 +5,7 @@ import 'package:com/Database/Services/db_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class MainProgressScreenRootClass {
 
@@ -87,12 +88,16 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Text(snapshot.data.keys.elementAt(i), style: TextStyle(color: colorPal[i].withOpacity(0.7)),),
-                              Text(snapshot.data.values.elementAt(i), style: TextStyle(color: colorPal[i].withOpacity(0.7)),)
-                            ],
+                          Container(
+                            width: 256 / 3,
+                            height: 100,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Text(snapshot.data.keys.elementAt(i), style: TextStyle(color: colorPal[i].withOpacity(0.7)),),
+                                Text(snapshot.data.values.elementAt(i), style: TextStyle(color: colorPal[i].withOpacity(0.7)),)
+                              ],
+                            ),
                           ),
                           Container(
                             width: 2.0,
@@ -114,8 +119,15 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
-                              child: Icon(
-                                FontAwesomeIcons.stepForward
+                              child: CircularPercentIndicator(
+                                radius: 50.0,
+                                backgroundColor: Colors.white,
+                                animation: true,
+                                center: Image(image: AssetImage('images/icons/steps.png'),),
+                                percent: 0.69,
+                                animationDuration: 2,
+                                lineWidth: 2.0,
+                                progressColor: colorPal[i].withOpacity(0.7),
                               ),
                             ),
                           )
