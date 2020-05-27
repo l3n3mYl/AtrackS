@@ -1,7 +1,6 @@
-import 'package:com/ProgressScreen/main_progress_screen.dart';
+import 'package:com/Screens/ProgressScreen/main_progress_screen.dart';
 import 'package:com/SecretMenu/menu_background.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
-import 'package:com/Services/pedometer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -105,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
 
-//    final progressScreen = new MainProgressScreenRootClass(widget._user).screen();
+//    var activeScreen = new MainProgressScreenRootClass(widget._user).screen();
 
 //    var activeScreen = progressScreen;
 
@@ -117,8 +116,8 @@ class _MainScreenState extends State<MainScreen> {
 
           if (itemId == '1') {
             setState(() {
-//              activeScreen = new MainProgressScreenRootClass(widget._user).screen();
-            activeScreen = secondScreen;
+              activeScreen = new MainProgressScreenRootClass(widget._user).screen();
+//            activeScreen = secondScreen;
             });
           } else if (itemId == '2') {
             setState(() {

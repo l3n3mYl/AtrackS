@@ -1,7 +1,7 @@
 import 'package:com/PopUps/progress_indicator.dart';
-import 'package:com/Registration/first_registration_screen.dart';
+import 'package:com/Screens/Registration/first_registration_screen.dart';
 import 'package:com/SecretMenu/menu_management.dart';
-import 'package:com/Services/auth.dart';
+import 'package:com/Database/Services/auth.dart';
 import 'package:com/UiComponents/swipe_button.dart';
 import 'package:flutter/cupertino.dart';
 
