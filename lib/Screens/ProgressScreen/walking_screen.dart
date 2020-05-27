@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:com/Services/db_management.dart';
+import 'package:com/Database/Services/db_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pedometer/pedometer.dart';
