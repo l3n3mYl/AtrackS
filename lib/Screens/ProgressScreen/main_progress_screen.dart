@@ -1,4 +1,9 @@
 import 'package:com/Design/colours.dart';
+import 'package:com/Screens/ProgressScreen/cycling_screen.dart';
+import 'package:com/Screens/ProgressScreen/jogging_screen.dart';
+import 'package:com/Screens/ProgressScreen/pull_ups_screen.dart';
+import 'package:com/Screens/ProgressScreen/push_ups_screen.dart';
+import 'package:com/Screens/ProgressScreen/sit_ups_screen.dart';
 import 'package:com/Screens/ProgressScreen/walking_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/Database/Services/db_management.dart';
@@ -29,17 +34,16 @@ class MainProgressScreen extends StatefulWidget {
 }
 
 class _MainProgressScreenState extends State<MainProgressScreen> {
-  final List<Color> colorPal = [
+  final List<Color> _colorPal = [
     Color.fromRGBO(222, 222, 222, 1), //whiteish
     Color.fromRGBO(255, 243, 96, 1), //yellow
     Color.fromRGBO(71, 212, 203, 1),
     Color.fromRGBO(129, 255, 107, 1), //green
     Color.fromRGBO(38, 200, 0, 1), //dark green
     Color.fromRGBO(255, 139, 103, 1), //skin
-//    Color.fromRGBO(51, 192, 183, 1), //blue
   ];
 
-  final List<String> icons = [
+  final List<String> _icons = [
     'images/Icons/steps.png',
     'images/Icons/push-ups.png',
     'images/Icons/Cycling.png',
@@ -53,6 +57,15 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
     final DatabaseManagement _db = new DatabaseManagement(widget._user);
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
+
+    final List<Widget> _screens = [
+      WalkingScreen(widget._user),
+      PushUpsScreen(widget._user),
+      CyclingScreen(widget._user),
+      SitUpsScreen(widget._user),
+      PullUpsScreen(widget._user),
+      JoggingScreen(widget._user)
+    ];
 
     Future<Map<String, dynamic>> _future = _db.retrieveExerciseInfoByUid();
     List<Widget> children = new List();
@@ -110,98 +123,93 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
                   ],
                 )
               );
-              children.add(
-                  Container(
-                    child: RaisedButton(
-                      child: Text('Navigate To Step Screen'),
-                      onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => WalkingScreen(widget._user))),
-                      ),
-                    ));
               for (var i = 0; i < exerciseLen; ++i) {
                 children.add(Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Container(
-                    width: 256,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.0),
-                      border: Border.all(
-                          width: 2.0, color: colorPal[i].withOpacity(0.7)),
-                      color: colorPal[i].withOpacity(0.2),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 256 / 3,
-                          height: 100,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Text(
-                                  snapshot.data.keys.elementAt(i),
-                                  style: TextStyle(
-                                      color: colorPal[i].withOpacity(0.7),
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w200),
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => _screens[i])),
+                    child: Container(
+                      width: 256,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.0),
+                        border: Border.all(
+                            width: 2.0, color: _colorPal[i].withOpacity(0.7)),
+                        color: _colorPal[i].withOpacity(0.2),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            width: 256 / 3,
+                            height: 100,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    snapshot.data.keys.elementAt(i),
+                                    style: TextStyle(
+                                        color: _colorPal[i].withOpacity(0.7),
+                                        fontFamily: 'PTSerif',
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w200),
+                                  ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Text(
-                                  snapshot.data.values.elementAt(i),
-                                  style: TextStyle(
-                                      color: colorPal[i].withOpacity(0.7),
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w200),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Text(
+                                    snapshot.data.values.elementAt(i),
+                                    style: TextStyle(
+                                        color: _colorPal[i].withOpacity(0.7),
+                                        fontFamily: 'PTSerif',
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w200),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 2.0,
-                          height: double.infinity,
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                colorPal[i].withOpacity(0.7),
-                                colorPal[i].withOpacity(0.1),
-                                Colors.transparent,
-                                colorPal[i].withOpacity(0.1),
-                                colorPal[i].withOpacity(0.7),
-                              ])),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            child: CircularPercentIndicator(
-                              radius: 69.0,
-                              backgroundColor: mainColor.withOpacity(0.3),
-                              animation: true,
-                              center: Image(
-                                alignment: Alignment.center,
-                                width: 50,
-                                height: 50,
-                                color: Colors.black,
-                                image: AssetImage(icons[i]),
-                              ),
-                              percent: 0.69,
-                              animationDuration: 2,
-                              lineWidth: 2.0,
-                              progressColor: colorPal[i].withOpacity(0.7),
+                              ],
                             ),
                           ),
-                        )
-                      ],
+                          Container(
+                            width: 2.0,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                  _colorPal[i].withOpacity(0.7),
+                                  _colorPal[i].withOpacity(0.1),
+                                  Colors.transparent,
+                                  _colorPal[i].withOpacity(0.1),
+                                  _colorPal[i].withOpacity(0.7),
+                                ])),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              child: CircularPercentIndicator(
+                                radius: 69.0,
+                                backgroundColor: mainColor.withOpacity(0.3),
+                                animation: true,
+                                center: Image(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  height: 50,
+                                  color: Colors.black,
+                                  image: AssetImage(_icons[i]),
+                                ),
+                                percent: 0.69,
+                                animationDuration: 2,
+                                lineWidth: 2.0,
+                                progressColor: _colorPal[i].withOpacity(0.7),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ));
