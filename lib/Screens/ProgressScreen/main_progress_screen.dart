@@ -214,6 +214,37 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
                   ),
                 ));
               }
+              children.add(
+                  GestureDetector(
+                    onTap: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      child: Container(
+                        width: 185,
+                        height: 56,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(56.0),
+                            color: Color.fromRGBO(155, 144, 130, 1)),
+                        child: Container(
+                          margin: const EdgeInsets.all(2.0),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(56.0),
+                              color: Colors.black),
+                          child: Center(
+                              child: Text(
+                                'Manage',
+                                style: TextStyle(
+                                    color: Color.fromRGBO(155, 144, 130, 1),
+                                    fontFamily: 'PTSerif',
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w200
+                                ),
+                              )),
+                        ),
+                      ),
+                    ),
+                  )
+              );
             } else if (snapshot.hasError) {
               children = <Widget>[Text('There was a problem with connection, '
                   'please try again')];
