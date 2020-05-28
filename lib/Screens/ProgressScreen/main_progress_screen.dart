@@ -30,13 +30,13 @@ class MainProgressScreen extends StatefulWidget {
 
 class _MainProgressScreenState extends State<MainProgressScreen> {
   final List<Color> colorPal = [
-    Color.fromRGBO(255, 139, 103, 1),
-    Color.fromRGBO(51, 192, 183, 1),
-    Color.fromRGBO(78, 166, 88, 1),
-    Color.fromRGBO(209, 29, 30, 1),
-    Color.fromRGBO(255, 139, 103, 1),
-    Color.fromRGBO(255, 139, 103, 1),
-    Color.fromRGBO(255, 139, 103, 1),
+    Color.fromRGBO(222, 222, 222, 1), //whiteish
+    Color.fromRGBO(255, 243, 96, 1), //yellow
+    Color.fromRGBO(71, 212, 203, 1),
+    Color.fromRGBO(129, 255, 107, 1), //green
+    Color.fromRGBO(38, 200, 0, 1), //dark green
+    Color.fromRGBO(255, 139, 103, 1), //skin
+//    Color.fromRGBO(51, 192, 183, 1), //blue
   ];
 
   final List<String> icons = [
@@ -185,7 +185,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
                           child: Container(
                             child: CircularPercentIndicator(
                               radius: 69.0,
-                              backgroundColor: Colors.white,
+                              backgroundColor: mainColor.withOpacity(0.3),
                               animation: true,
                               center: Image(
                                 alignment: Alignment.center,

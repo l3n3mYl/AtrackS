@@ -85,7 +85,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             } else {
                               Navigator.of(context).pop();
                               setState(() {
-                                error = 'There was an error with Facebook';
+                                error = 'No connection or the email is \n'
+                                    'already registered to another account';
                               });
                             }
                           },
@@ -119,7 +120,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             } else {
                               Navigator.of(context).pop();
                               setState(() {
-                                error = 'There was an error with Google+';
+                                error = 'No connection or the email is \n'
+                                    'already registered to another account';
                               });
                             }
                           },
