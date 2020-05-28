@@ -39,7 +39,7 @@ flutter:
 
   assets:
     - images/
-    - images/icons/
+    - images/Icons/
   fonts:
     - family: Pacifico
       fonts:
