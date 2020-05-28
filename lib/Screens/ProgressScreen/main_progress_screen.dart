@@ -7,6 +7,7 @@ import 'package:com/Screens/ProgressScreen/sit_ups_screen.dart';
 import 'package:com/Screens/ProgressScreen/walking_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/Database/Services/db_management.dart';
+import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -269,6 +270,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
                     height: _height,
                     color: mainColor,
                   ),
+                  BackgroundTriangle(),
                   Container(
                     width: _width,
                     height: _height,
