@@ -39,7 +39,19 @@ flutter:
 
   assets:
     - images/
+    - images/basic-logo.png
+    - images/logo.png
+    - images/main_pattern.jpg
+    - images/npat.jpg
+    - images/OP-screen_background.jpg
+    - images/stairs.jpg
     - images/Icons/
+    - images/Icons/Cycling.png
+    - images/Icons/Jogging.png
+    - images/Icons/pull-ups.png
+    - images/Icons/push-ups.png
+    - images/Icons/Sit-Ups.png
+    - images/Icons/steps.png
   fonts:
     - family: Pacifico
       fonts:
