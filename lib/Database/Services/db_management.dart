@@ -27,7 +27,6 @@ class DatabaseManagement {
   Future<String> getSingleFieldInfo(String collection, String field) async {
     try{
       DocumentSnapshot snapshot = await _reference.collection(collection).document(_user.uid).get();
-      print(snapshot[field]);
       return snapshot[field];
     } catch (e) {
       print(e.toString());
