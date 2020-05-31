@@ -4,6 +4,8 @@ import 'package:com/Database/Models/exercise_goals.dart';
 import 'package:com/Database/Models/nutrition.dart';
 import 'package:com/Database/Models/nutrition_goals.dart';
 import 'package:com/Database/Models/user.dart';
+import 'package:com/Database/Models/week_progress_exercise.dart';
+import 'package:com/Database/Models/week_progress_nutrition.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -13,6 +15,23 @@ class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final Firestore _reference = Firestore.instance;
   final User newUser = User();
+
+  final WeeklyExerciseProgress _exerciseProgress = WeeklyExerciseProgress(
+    cycling: '0, 0, 0, 0, 0, 0, 0',
+    jogging: '0, 0, 0, 0, 0, 0, 0',
+    pullUps: '0, 0, 0, 0, 0, 0, 0',
+    pushUps: '0, 0, 0, 0, 0, 0, 0',
+    sitUps: '0, 0, 0, 0, 0, 0, 0',
+    steps: '0, 0, 0, 0, 0, 0, 0',
+  );
+
+  final WeeklyNutritionProgress _nutritionProgress = WeeklyNutritionProgress(
+    calories: '0, 0, 0, 0, 0, 0',
+    carbs: '0, 0, 0, 0, 0, 0',
+    fats: '0, 0, 0, 0, 0, 0',
+    water: '0, 0, 0, 0, 0, 0',
+    protein: '0, 0, 0, 0, 0, 0',
+  );
 
   final NutritionGoals _newNutritionGoals = NutritionGoals(
     calorie_goals: '0',
@@ -59,6 +78,8 @@ class AuthService {
       await _reference.collection('nutrition_goals').document(fUser.uid).setData(_newNutritionGoals.nutritionGoalsInfoToMap());
       await _reference.collection('exercises').document(fUser.uid).setData(_newExercises.exerciseInfoToMap());
       await _reference.collection('exercise_goals').document(fUser.uid).setData(_newExerciseGoals.exerciseGoalInfoToMap());
+      await _reference.collection('nutrition_weekly_progress').document(fUser.uid).setData(_nutritionProgress.nutritionGoalInfoToMap());
+      await _reference.collection('exercise_weekly_progress').document(fUser.uid).setData(_exerciseProgress.exerciseGoalInfoToMap());
 
       return fUser;
     } catch (e) {
@@ -125,6 +146,8 @@ class AuthService {
         await _reference.collection('nutrition_goals').document(user.uid).setData(_newNutritionGoals.nutritionGoalsInfoToMap());
         await _reference.collection('exercises').document(user.uid).setData(_newExercises.exerciseInfoToMap());
         await _reference.collection('exercise_goals').document(user.uid).setData(_newExerciseGoals.exerciseGoalInfoToMap());
+        await _reference.collection('nutrition_weekly_progress').document(user.uid).setData(_nutritionProgress.nutritionGoalInfoToMap());
+        await _reference.collection('exercise_weekly_progress').document(user.uid).setData(_exerciseProgress.exerciseGoalInfoToMap());
       }
 
       return user;
@@ -169,6 +192,8 @@ class AuthService {
           await _reference.collection('nutrition_goals').document(user.uid).setData(_newNutritionGoals.nutritionGoalsInfoToMap());
           await _reference.collection('exercises').document(user.uid).setData(_newExercises.exerciseInfoToMap());
           await _reference.collection('exercise_goals').document(user.uid).setData(_newExerciseGoals.exerciseGoalInfoToMap());
+          await _reference.collection('nutrition_weekly_progress').document(user.uid).setData(_nutritionProgress.nutritionGoalInfoToMap());
+          await _reference.collection('exercise_weekly_progress').document(user.uid).setData(_exerciseProgress.exerciseGoalInfoToMap());
         }
 
         return user;

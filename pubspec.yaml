@@ -18,40 +18,39 @@ dependencies:
 
   pedometer: ^1.2.0
   sensors:
-  syncfusion_flutter_charts: ^18.1.53
+  fl_chart:
   percent_indicator:
-  flutter_launcher_icons:
 
   cupertino_icons: ^0.1.2
 
 dev_dependencies:
+  flutter_launcher_icons:
   flutter_test:
     sdk: flutter
 
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icon/step.png"
+  image_path: "images/logo.png"
 
 flutter:
 
   uses-material-design: true
-
   assets:
     - images/
-    - images/basic-logo.png
-    - images/logo.png
-    - images/main_pattern.jpg
-    - images/npat.jpg
-    - images/OP-screen_background.jpg
-    - images/stairs.jpg
+#    - images/basic-logo.png
+#    - images/logo.png
+#    - images/main_pattern.jpg
+#    - images/npat.jpg
+#    - images/OP-screen_background.jpg
+#    - images/stairs.jpg
     - images/Icons/
-    - images/Icons/Cycling.png
-    - images/Icons/Jogging.png
-    - images/Icons/pull-ups.png
-    - images/Icons/push-ups.png
-    - images/Icons/Sit-Ups.png
-    - images/Icons/steps.png
+#    - images/Icons/Cycling.png
+#    - images/Icons/Jogging.png
+#    - images/Icons/pull-ups.png
+#    - images/Icons/push-ups.png
+#    - images/Icons/Sit-Ups.png
+#    - images/Icons/steps.png
   fonts:
     - family: Pacifico
       fonts:
