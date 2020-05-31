@@ -23,8 +23,8 @@ class _WalkingScreenState extends State<WalkingScreen>{
   Pedometer _pedometer;
   StreamSubscription<int> _subscription;
   DatabaseManagement _management;
-//  List<String> weeklyProgress = new List<String>();
   List<FlSpot> weeklyStepList = new List<FlSpot>();
+  List<FlSpot> monthlyStepList = new List<FlSpot>();
   String stepCountVal = '?';
   String stepGoal = '0';
   String totalSteps = '0';
@@ -35,6 +35,7 @@ class _WalkingScreenState extends State<WalkingScreen>{
   void initState() {
     super.initState();
     getWeeklyStepProgress();
+    getMonthlyStepProgress();
     initPlatformState();
     getTotalSteps();
     getStepGoal();
@@ -42,13 +43,27 @@ class _WalkingScreenState extends State<WalkingScreen>{
   
   void getWeeklyStepProgress() async {
     _management = DatabaseManagement(widget.user);
-    await _management.getSingleFieldInfo('exercise_weekly_progress', 'Cycling')
+    await _management.getSingleFieldInfo('exercise_weekly_progress', 'Steps')
         .then((result) {
           List<String> resList = result.split(", ");
           setState(() {
             for(var i = 0; i < resList.length; ++i){
               weeklyStepList.add(FlSpot(i.toDouble(), double.parse(resList[i])));
               if(i == resList.length - 1) weeklyStepList.add(FlSpot(6.9, double.parse(resList[i])));
+            }
+          });
+    });
+  }
+
+  void getMonthlyStepProgress() async {
+    _management = DatabaseManagement(widget.user);
+    await _management.getSingleFieldInfo('exercise_monthly_progress', 'Steps')
+        .then((result) {
+          List<String> resList = result.split(", ");
+          setState(() {
+            for(var i = 0; i < resList.length; ++i){
+              monthlyStepList.add(FlSpot(i.toDouble(), double.parse(resList[i])));
+              if(i == resList.length - 1) monthlyStepList.add(FlSpot(9.9, double.parse(resList[i])));
             }
           });
     });
@@ -165,7 +180,9 @@ class _WalkingScreenState extends State<WalkingScreen>{
                 weeklyStepList.isEmpty
                     ? [FlSpot(0.0, 0.0), FlSpot(2.0, 0.0), FlSpot(5.0, 0.0)]
                     : weeklyStepList,
-                [FlSpot(0,0)]
+                monthlyStepList.isEmpty
+                    ? [FlSpot(0.0, 0.0), FlSpot(5.0, 0.0), FlSpot(6.9, 0.0)]
+                    : monthlyStepList,
               ),
             )
           ],
@@ -177,10 +194,10 @@ class _WalkingScreenState extends State<WalkingScreen>{
 
 class LineChartSample2 extends StatefulWidget {
 
-  LineChartSample2(this._firstChart, this._secondChart);
+  LineChartSample2(this._weeklyChart, this._monthlyChart);
 
-  final List<FlSpot> _firstChart;
-  final List<FlSpot> _secondChart;
+  final List<FlSpot> _weeklyChart;
+  final List<FlSpot> _monthlyChart;
 
   @override
   _LineChartSample2State createState() => _LineChartSample2State();
@@ -188,19 +205,14 @@ class LineChartSample2 extends StatefulWidget {
 
 class _LineChartSample2State extends State<LineChartSample2> {
 
-//  final List<Color> gradientColors = [
-//    const Color(0xff23b6e6),
-//    const Color(0xff02d39a),
-//  ];
-
   bool showAvg = false;
 
 
   @override
   Widget build(BuildContext context) {
 
-    final List<FlSpot> firstDiag = widget._firstChart;
-    final List<FlSpot> secondDiag = widget._secondChart;
+    final List<FlSpot> weeklyDiag = widget._weeklyChart;
+    final List<FlSpot> monthlyDiag = widget._monthlyChart;
 
     return Stack(
       children: <Widget>[
@@ -215,7 +227,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
             child: Padding(
               padding: const EdgeInsets.only(right: 18.0, left: 12.0, top: 24, bottom: 12),
               child: LineChart(
-                showAvg ? avgData() : mainData(firstDiag),
+                showAvg ? avgData(monthlyDiag) : mainData(weeklyDiag),
               ),
             ),
           ),
@@ -256,12 +268,6 @@ class _LineChartSample2State extends State<LineChartSample2> {
             strokeWidth: 1,
           );
         },
-//        getDrawingVerticalLine: (value) {
-//          return FlLine(
-//            color: Colors.black, //vertical lines
-//            strokeWidth: 1,
-//          );
-//        },
       ),
       titlesData: FlTitlesData(
         show: true,
@@ -342,7 +348,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
-  LineChartData avgData() {
+  LineChartData avgData(List<FlSpot> monthlyDiag) {
     final List<Color> gradientColors = [
       const Color(0xff23b6e6),
       const Color(0xff02d39a),
@@ -352,13 +358,6 @@ class _LineChartSample2State extends State<LineChartSample2> {
       gridData: FlGridData(
         show: true,
         drawHorizontalLine: true,
-//        drawVerticalLine: true,
-//        getDrawingVerticalLine: (value) {
-//          return FlLine(
-//            color: Colors.black,
-//            strokeWidth: 1,
-//          );
-//        },
         getDrawingHorizontalLine: (value) {
           return FlLine(
             color: Colors.black,
@@ -444,15 +443,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
       maxY: 11,
       lineBarsData: [
         LineChartBarData(
-          spots: [
-            FlSpot(0, 0.2),
-            FlSpot(1, 6),
-            FlSpot(3, 3),
-            FlSpot(5, 10),
-            FlSpot(7, 10),
-            FlSpot(9, 4),
-            FlSpot(10, 4)
-          ],
+          spots: monthlyDiag,
           isCurved: true,
           colors: [
             ColorTween(begin: gradientColors[0], end: gradientColors[1]).lerp(0.5),

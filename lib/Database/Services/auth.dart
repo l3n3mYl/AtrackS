@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com/Database/Models/exercises.dart';
 import 'package:com/Database/Models/exercise_goals.dart';
+import 'package:com/Database/Models/month_progress_exercise.dart';
+import 'package:com/Database/Models/month_progress_nutrition.dart';
 import 'package:com/Database/Models/nutrition.dart';
 import 'package:com/Database/Models/nutrition_goals.dart';
 import 'package:com/Database/Models/user.dart';
@@ -16,6 +18,23 @@ class AuthService {
   final Firestore _reference = Firestore.instance;
   final User newUser = User();
 
+  final MonthExerciseProgress _monthExerciseProgress = MonthExerciseProgress(
+    cycling: '0, 0, 0, 0',
+    jogging: '0, 0, 0, 0',
+    pullUps: '0, 0, 0, 0',
+    pushUps: '0, 0, 0, 0',
+    sitUps: '0, 0, 0, 0,',
+    steps: '0, 0, 0, 0',
+  );
+
+  final MonthNutritionProgress _monthNutritionProgress = MonthNutritionProgress(
+    carbs: '0, 0, 0, 0',
+    protein: '0, 0, 0, 0',
+    fats: '0, 0, 0, 0',
+    calories: '0, 0, 0, 0',
+    water: '0, 0, 0, 0',
+  );
+
   final WeeklyExerciseProgress _exerciseProgress = WeeklyExerciseProgress(
     cycling: '0, 0, 0, 0, 0, 0, 0',
     jogging: '0, 0, 0, 0, 0, 0, 0',
@@ -26,18 +45,18 @@ class AuthService {
   );
 
   final WeeklyNutritionProgress _nutritionProgress = WeeklyNutritionProgress(
-    calories: '0, 0, 0, 0, 0, 0',
     carbs: '0, 0, 0, 0, 0, 0',
-    fats: '0, 0, 0, 0, 0, 0',
-    water: '0, 0, 0, 0, 0, 0',
     protein: '0, 0, 0, 0, 0, 0',
+    fats: '0, 0, 0, 0, 0, 0',
+    calories: '0, 0, 0, 0, 0, 0',
+    water: '0, 0, 0, 0, 0, 0',
   );
 
   final NutritionGoals _newNutritionGoals = NutritionGoals(
-    calorie_goals: '0',
     carbs_goals: '0',
-    fats_goals: '0',
     protein_goals: '0',
+    fats_goals: '0',
+    calorie_goals: '0',
     water_goals: '0',
 
   );
@@ -52,10 +71,10 @@ class AuthService {
   );
 
   final Nutrition _newNutrition = Nutrition(
-    calories: "0",
     carbs: "0",
-    fats: "0",
     protein: "0",
+    fats: "0",
+    calories: "0",
     water: "0",
   );
 
@@ -80,6 +99,8 @@ class AuthService {
       await _reference.collection('exercise_goals').document(fUser.uid).setData(_newExerciseGoals.exerciseGoalInfoToMap());
       await _reference.collection('nutrition_weekly_progress').document(fUser.uid).setData(_nutritionProgress.nutritionGoalInfoToMap());
       await _reference.collection('exercise_weekly_progress').document(fUser.uid).setData(_exerciseProgress.exerciseGoalInfoToMap());
+      await _reference.collection('nutrition_monthly_progress').document(fUser.uid).setData(_monthNutritionProgress.nutritionMonthProgressInfoToMap());
+      await _reference.collection('exercise_monthly_progress').document(fUser.uid).setData(_monthExerciseProgress.exerciseMonthProgressInfoToMap());
 
       return fUser;
     } catch (e) {
@@ -148,6 +169,8 @@ class AuthService {
         await _reference.collection('exercise_goals').document(user.uid).setData(_newExerciseGoals.exerciseGoalInfoToMap());
         await _reference.collection('nutrition_weekly_progress').document(user.uid).setData(_nutritionProgress.nutritionGoalInfoToMap());
         await _reference.collection('exercise_weekly_progress').document(user.uid).setData(_exerciseProgress.exerciseGoalInfoToMap());
+        await _reference.collection('nutrition_monthly_progress').document(user.uid).setData(_monthNutritionProgress.nutritionMonthProgressInfoToMap());
+        await _reference.collection('exercise_monthly_progress').document(user.uid).setData(_monthExerciseProgress.exerciseMonthProgressInfoToMap());
       }
 
       return user;
@@ -194,6 +217,8 @@ class AuthService {
           await _reference.collection('exercise_goals').document(user.uid).setData(_newExerciseGoals.exerciseGoalInfoToMap());
           await _reference.collection('nutrition_weekly_progress').document(user.uid).setData(_nutritionProgress.nutritionGoalInfoToMap());
           await _reference.collection('exercise_weekly_progress').document(user.uid).setData(_exerciseProgress.exerciseGoalInfoToMap());
+          await _reference.collection('nutrition_monthly_progress').document(user.uid).setData(_monthNutritionProgress.nutritionMonthProgressInfoToMap());
+          await _reference.collection('exercise_monthly_progress').document(user.uid).setData(_monthExerciseProgress.exerciseMonthProgressInfoToMap());
         }
 
         return user;
