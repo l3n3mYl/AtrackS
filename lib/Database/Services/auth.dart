@@ -53,21 +53,21 @@ class AuthService {
   );
 
   final NutritionGoals _newNutritionGoals = NutritionGoals(
-    carbs_goals: '0',
-    protein_goals: '0',
-    fats_goals: '0',
-    calorie_goals: '0',
-    water_goals: '0',
+    carbs_goals: '225', //average
+    protein_goals: '50', //46w and 56m
+    fats_goals: '50', //44 - 70
+    calorie_goals: '2000',//2k w and 2.5k m
+    water_goals: '3000', //2.7w and 3.7m
 
   );
 
   final ExerciseGoals _newExerciseGoals = ExerciseGoals(
-    cycling_goal: '0',
-    jogging_goal: '0',
-    pullUps_gaol: '0',
-    pushUps_goal: '0',
-    sitUps_goal: '0',
-    steps_goal: '0',
+    cycling_goal: '10',
+    jogging_goal: '10',
+    pullUps_gaol: '10',
+    pushUps_goal: '10',
+    sitUps_goal: '10',
+    steps_goal: '10000',
   );
 
   final Nutrition _newNutrition = Nutrition(

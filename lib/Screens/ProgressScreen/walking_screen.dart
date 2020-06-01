@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
+import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -25,7 +25,7 @@ class _WalkingScreenState extends State<WalkingScreen>{
   DatabaseManagement _management;
   List<FlSpot> weeklyStepList = new List<FlSpot>();
   List<FlSpot> monthlyStepList = new List<FlSpot>();
-  String stepCountVal = '?';
+  String stepCountVal = '0';
   String stepGoal = '0';
   String totalSteps = '0';
   int resetValue = 0;
@@ -48,8 +48,8 @@ class _WalkingScreenState extends State<WalkingScreen>{
           List<String> resList = result.split(", ");
           setState(() {
             for(var i = 0; i < resList.length; ++i){
-              weeklyStepList.add(FlSpot(i.toDouble(), double.parse(resList[i])));
-              if(i == resList.length - 1) weeklyStepList.add(FlSpot(6.9, double.parse(resList[i])));
+              weeklyStepList.add(FlSpot(i.toDouble() + 0.1, double.parse(resList[i]) / 1000));
+              if(i == resList.length - 1) weeklyStepList.add(FlSpot(6.9, double.parse(resList[i]) / 1000));
             }
           });
     });
@@ -62,8 +62,8 @@ class _WalkingScreenState extends State<WalkingScreen>{
           List<String> resList = result.split(", ");
           setState(() {
             for(var i = 0; i < resList.length; ++i){
-              monthlyStepList.add(FlSpot(i.toDouble(), double.parse(resList[i])));
-              if(i == resList.length - 1) monthlyStepList.add(FlSpot(9.9, double.parse(resList[i])));
+              monthlyStepList.add(FlSpot(i.toDouble() + 0.1, double.parse(resList[i]) / 1000));
+              if(i == resList.length - 1) monthlyStepList.add(FlSpot(9.9, double.parse(resList[i]) / 1000));
             }
           });
     });
@@ -86,15 +86,22 @@ class _WalkingScreenState extends State<WalkingScreen>{
     }
     setState(() {
       stepCountVal = "${newValue - resetValue}";
+      _updateDB();
     });
   }
 
   void _onDone() async {
     reset = true;
-    _management = new DatabaseManagement(widget.user);
-    String sumOfValues = (int.parse(totalSteps) + int.parse(stepCountVal)).toString();
-    await _management.updateSingleField('exercises', 'Steps', sumOfValues);
+  }
 
+  void _updateDB() async {
+    _management = new DatabaseManagement(widget.user);
+    String oldSteps = await _management.getSingleFieldInfo('exercises', 'Steps');
+    String sumOfValues = (int.parse(oldSteps) + int.parse(stepCountVal)).toString();
+    await _management.updateSingleField('exercises', 'Steps', sumOfValues);
+    setState(() {
+      this.totalSteps = sumOfValues;
+    });
   }
 
   void getTotalSteps() async {
@@ -103,7 +110,7 @@ class _WalkingScreenState extends State<WalkingScreen>{
       await _management.getSingleFieldInfo(
         'exercises', 'Steps').then((result) {
           setState(() {
-            totalSteps = result;
+            this.totalSteps = result;
           });
       });
     }catch(e){
@@ -117,7 +124,7 @@ class _WalkingScreenState extends State<WalkingScreen>{
       await _management.getSingleFieldInfo(
         'exercise_goals', 'Steps_Goal').then((result){
           setState(() {
-            stepGoal = result;
+            this.stepGoal = result;
           });
       });
     }catch(e){
@@ -136,57 +143,75 @@ class _WalkingScreenState extends State<WalkingScreen>{
 
   @override
   Widget build(BuildContext context) {
-
+//    _updateDB();
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: mainColor,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              child: Text('Steps: $stepCountVal', style: TextStyle(
-                color: Colors.black
-              ),),
-            ),
-            Container(
-              width: 256,
-              height: 256,
-              child: CircularPercentIndicator(
-                backgroundColor: Colors.black,
-                radius: 100.0,
-                progressColor: Colors.white,
-                lineWidth: 2.0,
-                animationDuration: 20,
-                percent: stepGoal == null && totalSteps == null ? 0.01 : (double.parse(totalSteps) * 100 / double.parse(stepGoal)) / 100,
-                animation: true,
-                center: Icon(
-                  FontAwesomeIcons.infinity,
-                  color: Colors.white,
-                  size: 50.0,
+      body: Stack(
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            color: mainColor,
+          ),
+          BackgroundTriangle(),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: AspectRatio(
+              aspectRatio: 18 / 9,
+              child: Opacity(
+                opacity: 0.2,
+                child: Image(
+                  image: AssetImage('images/main_pattern.jpg'),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-            Container(
-              child: RaisedButton(
-                child: Text('Stop'),
-                onPressed: () => print(DateTime.now().weekday),
-              ),
-            ),
-            Container(
-              child: LineChartSample2(
-                weeklyStepList.isEmpty
-                    ? [FlSpot(0.0, 0.0), FlSpot(2.0, 0.0), FlSpot(5.0, 0.0)]
-                    : weeklyStepList,
-                monthlyStepList.isEmpty
-                    ? [FlSpot(0.0, 0.0), FlSpot(5.0, 0.0), FlSpot(6.9, 0.0)]
-                    : monthlyStepList,
-              ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            color: Colors.transparent,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 13.0),
+                  width: 256,
+                  height: 256,
+                  child: CircularPercentIndicator(
+                    backgroundColor: mainColor,
+                    radius: 250.0,
+                    progressColor: Color.fromRGBO(222, 222, 222, 1),
+                    lineWidth: 3.0,
+                    animationDuration: 20,
+                    percent: stepGoal == null && totalSteps == null
+                        ? 0.01
+                        : double.parse(totalSteps) >= double.parse(stepGoal) ? 1.0 : (double.parse(totalSteps) * 100 / double.parse(stepGoal)) / 100,
+                    animation: true,
+                    center: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image.asset('images/Icons/steps.png', width: 150, height: 150, color: Colors.black,),
+                        Text(stepGoal == null && totalSteps == null ? '0 - 0%' : '$totalSteps - ${((int.parse(totalSteps) * 100 / int.parse(stepGoal))).toStringAsFixed(0)}%')
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  child: LineChartSample2(
+                    weeklyStepList.isEmpty
+                        ? [FlSpot(0.0, 0.0), FlSpot(2.0, 0.0), FlSpot(5.0, 0.0)]
+                        : weeklyStepList,
+                    monthlyStepList.isEmpty
+                        ? [FlSpot(0.0, 0.0), FlSpot(5.0, 0.0), FlSpot(6.9, 0.0)]
+                        : monthlyStepList,
+                  ),
+                )
+              ],
             )
-          ],
-        )
+          ),
+        ],
       ),
     );
   }
@@ -254,8 +279,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
 
   LineChartData mainData(List<FlSpot> firstList) {
     final List<Color> gradientColors = [
-      const Color(0xff23b6e6),
-      const Color(0xff02d39a),
+      Color.fromRGBO(222, 222, 222, 1),
+      Colors.black,
     ];
     return LineChartData(
       gridData: FlGridData(
@@ -316,6 +341,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
                 return '7k';
               case 9:
                 return '9k';
+              case 11:
+                return '11k';
             }
             return '';
           },
@@ -328,7 +355,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
       minX: 0,
       maxX: 7,
       minY: 0,
-      maxY: 10,
+      maxY: 12,
       lineBarsData: [
         LineChartBarData(
           spots: firstList,
