@@ -15,13 +15,13 @@ dependencies:
   google_sign_in:
   flutter_facebook_login:
   font_awesome_flutter:
-
   pedometer: ^1.2.0
-  sensors:
   fl_chart:
   percent_indicator:
 
-  cupertino_icons: ^0.1.2
+#  sensors:
+
+#  cupertino_icons: ^0.1.2
 
 dev_dependencies:
   flutter_launcher_icons:
@@ -38,19 +38,8 @@ flutter:
   uses-material-design: true
   assets:
     - images/
-#    - images/basic-logo.png
-#    - images/logo.png
-#    - images/main_pattern.jpg
-#    - images/npat.jpg
-#    - images/OP-screen_background.jpg
-#    - images/stairs.jpg
     - images/Icons/
-#    - images/Icons/Cycling.png
-#    - images/Icons/Jogging.png
-#    - images/Icons/pull-ups.png
-#    - images/Icons/push-ups.png
-#    - images/Icons/Sit-Ups.png
-#    - images/Icons/steps.png
+
   fonts:
     - family: Pacifico
       fonts:
