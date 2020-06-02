@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
+import 'package:com/PopUps/information_popup.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class WalkingScreen extends StatefulWidget {
-
   final FirebaseUser user;
 
   WalkingScreen(this.user);
@@ -18,8 +19,7 @@ class WalkingScreen extends StatefulWidget {
   _WalkingScreenState createState() => _WalkingScreenState();
 }
 
-class _WalkingScreenState extends State<WalkingScreen>{
-
+class _WalkingScreenState extends State<WalkingScreen> {
   Pedometer _pedometer;
   StreamSubscription<int> _subscription;
   DatabaseManagement _management;
@@ -40,32 +40,46 @@ class _WalkingScreenState extends State<WalkingScreen>{
     getTotalSteps();
     getStepGoal();
   }
-  
+
   void getWeeklyStepProgress() async {
     _management = DatabaseManagement(widget.user);
-    await _management.getSingleFieldInfo('exercise_weekly_progress', 'Steps')
+    await _management
+        .getSingleFieldInfo('exercise_weekly_progress', 'Steps')
         .then((result) {
-          List<String> resList = result.split(", ");
-          setState(() {
-            for(var i = 0; i < resList.length; ++i){
-              weeklyStepList.add(FlSpot(i.toDouble() + 0.1, double.parse(resList[i]) / 1000));
-              if(i == resList.length - 1) weeklyStepList.add(FlSpot(6.9, double.parse(resList[i]) / 1000));
-            }
-          });
+      List<String> resList = result.split(", ");
+      setState(() {
+        for (var i = 0; i < resList.length; ++i) {
+          if (double.parse(resList[i]) / 1000 > 11)
+            weeklyStepList.add(FlSpot(i.toDouble() + 0.05, 11));
+          else
+            weeklyStepList.add(
+                FlSpot(i.toDouble() + 0.05, double.parse(resList[i]) / 1000));
+          if (i == resList.length - 1)
+            weeklyStepList.add(FlSpot(6.95, double.parse(resList[i]) / 1000));
+        }
+      });
     });
   }
 
   void getMonthlyStepProgress() async {
     _management = DatabaseManagement(widget.user);
-    await _management.getSingleFieldInfo('exercise_monthly_progress', 'Steps')
+    await _management
+        .getSingleFieldInfo('exercise_monthly_progress', 'Steps')
         .then((result) {
-          List<String> resList = result.split(", ");
-          setState(() {
-            for(var i = 0; i < resList.length; ++i){
-              monthlyStepList.add(FlSpot(i.toDouble() + 0.1, double.parse(resList[i]) / 1000));
-              if(i == resList.length - 1) monthlyStepList.add(FlSpot(9.9, double.parse(resList[i]) / 1000));
-            }
-          });
+      List<String> resList = result.split(", ");
+      setState(() {
+        for (var i = 0; i < resList.length; ++i) {
+          if (double.parse(resList[i]) / 1000 > 10)
+            monthlyStepList.add(FlSpot(i.toDouble() + 0.05, 10));
+          else
+            monthlyStepList.add(
+                FlSpot(i.toDouble() + 0.05, double.parse(resList[i]) / 1000));
+          if (i == resList.length - 1) if (double.parse(resList[i]) / 1000 > 10)
+            monthlyStepList.add(FlSpot(9.95, 10));
+          else
+            monthlyStepList.add(FlSpot(9.95, double.parse(resList[i]) / 1000));
+        }
+      });
     });
   }
 
@@ -75,12 +89,12 @@ class _WalkingScreenState extends State<WalkingScreen>{
 
   void startListening() {
     _pedometer = new Pedometer();
-    _subscription = _pedometer.pedometerStream.listen(_onData, onError: _onError,
-        onDone: _onDone, cancelOnError: true);
+    _subscription = _pedometer.pedometerStream.listen(_onData,
+        onError: _onError, onDone: _onDone, cancelOnError: true);
   }
 
   void _onData(int newValue) async {
-    if(reset) {
+    if (reset) {
       resetValue += newValue;
       reset = false;
     }
@@ -96,8 +110,10 @@ class _WalkingScreenState extends State<WalkingScreen>{
 
   void _updateDB() async {
     _management = new DatabaseManagement(widget.user);
-    String oldSteps = await _management.getSingleFieldInfo('exercises', 'Steps');
-    String sumOfValues = (int.parse(oldSteps) + int.parse(stepCountVal)).toString();
+    String oldSteps =
+        await _management.getSingleFieldInfo('exercises', 'Steps');
+    String sumOfValues =
+        (int.parse(oldSteps) + int.parse(stepCountVal)).toString();
     await _management.updateSingleField('exercises', 'Steps', sumOfValues);
     setState(() {
       this.totalSteps = sumOfValues;
@@ -105,29 +121,29 @@ class _WalkingScreenState extends State<WalkingScreen>{
   }
 
   void getTotalSteps() async {
-    try{
+    try {
       _management = new DatabaseManagement(widget.user);
-      await _management.getSingleFieldInfo(
-        'exercises', 'Steps').then((result) {
-          setState(() {
-            this.totalSteps = result;
-          });
+      await _management.getSingleFieldInfo('exercises', 'Steps').then((result) {
+        setState(() {
+          this.totalSteps = result;
+        });
       });
-    }catch(e){
+    } catch (e) {
       print('Error ${e.toString()}');
     }
   }
 
-   void getStepGoal() async {
-    try{
+  void getStepGoal() async {
+    try {
       _management = new DatabaseManagement(widget.user);
-      await _management.getSingleFieldInfo(
-        'exercise_goals', 'Steps_Goal').then((result){
-          setState(() {
-            this.stepGoal = result;
-          });
+      await _management
+          .getSingleFieldInfo('exercise_goals', 'Steps_Goal')
+          .then((result) {
+        setState(() {
+          this.stepGoal = result;
+        });
       });
-    }catch(e){
+    } catch (e) {
       print(e.toString());
     }
   }
@@ -143,8 +159,21 @@ class _WalkingScreenState extends State<WalkingScreen>{
 
   @override
   Widget build(BuildContext context) {
-//    _updateDB();
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: mainColor,
+        title: Text(
+          'Steps Progress',
+          style: TextStyle(fontFamily: 'PTSerif'),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            FontAwesomeIcons.arrowLeft,
+          ),
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -168,48 +197,97 @@ class _WalkingScreenState extends State<WalkingScreen>{
             ),
           ),
           Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            color: Colors.transparent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 13.0),
-                  width: 256,
-                  height: 256,
-                  child: CircularPercentIndicator(
-                    backgroundColor: mainColor,
-                    radius: 250.0,
-                    progressColor: Color.fromRGBO(222, 222, 222, 1),
-                    lineWidth: 3.0,
-                    animationDuration: 20,
-                    percent: stepGoal == null && totalSteps == null
-                        ? 0.01
-                        : double.parse(totalSteps) >= double.parse(stepGoal) ? 1.0 : (double.parse(totalSteps) * 100 / double.parse(stepGoal)) / 100,
-                    animation: true,
-                    center: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Image.asset('images/Icons/steps.png', width: 150, height: 150, color: Colors.black,),
-                        Text(stepGoal == null && totalSteps == null ? '0 - 0%' : '$totalSteps - ${((int.parse(totalSteps) * 100 / int.parse(stepGoal))).toStringAsFixed(0)}%')
-                      ],
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.transparent,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 13.0),
+                    width: 256,
+                    height: 256,
+                    child: CircularPercentIndicator(
+                      backgroundColor: mainColor,
+                      radius: 250.0,
+                      progressColor: Color.fromRGBO(222, 222, 222, 1),
+                      lineWidth: 3.0,
+                      animationDuration: 20,
+                      percent: stepGoal == null && totalSteps == null
+                          ? 0.01
+                          : double.parse(totalSteps) >= double.parse(stepGoal)
+                              ? 1.0
+                              : (double.parse(totalSteps) *
+                                      100 /
+                                      double.parse(stepGoal)) /
+                                  100,
+                      animation: true,
+                      center: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Image.asset(
+                            'images/Icons/steps.png',
+                            width: 150,
+                            height: 150,
+                            color: Colors.white54,
+                          ),
+                          Text(stepGoal == null && totalSteps == null
+                              ? '0 - 0%'
+                              : '$totalSteps - ${((int.parse(totalSteps) * 100 / int.parse(stepGoal))).toStringAsFixed(0)}%',
+                              style: TextStyle(
+                                color: Colors.white54
+                              ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  child: LineChartSample2(
-                    weeklyStepList.isEmpty
-                        ? [FlSpot(0.0, 0.0), FlSpot(2.0, 0.0), FlSpot(5.0, 0.0)]
-                        : weeklyStepList,
-                    monthlyStepList.isEmpty
-                        ? [FlSpot(0.0, 0.0), FlSpot(5.0, 0.0), FlSpot(6.9, 0.0)]
-                        : monthlyStepList,
+                  SizedBox(
+                    height: 1.0,
+                    child: Container(
+                      color: Colors.white,
+                    ),
                   ),
-                )
-              ],
-            )
+                  Center(
+                    child: Text('Keep Up The Good Work!', style: TextStyle(color: Colors.white54),),
+                  ),
+                  SizedBox(
+                    height: 1.0,
+                    child: Container(
+                      color: Colors.white,
+                    ),
+                  ),
+                  Container(
+                    child: LineChartSample2(
+                      weeklyStepList.isEmpty
+                          ? [
+                              FlSpot(0.0, 0.0),
+                              FlSpot(2.0, 0.0),
+                              FlSpot(5.0, 0.0)
+                            ]
+                          : weeklyStepList,
+                      monthlyStepList.isEmpty
+                          ? [
+                              FlSpot(0.0, 0.0),
+                              FlSpot(5.0, 0.0),
+                              FlSpot(6.9, 0.0)
+                            ]
+                          : monthlyStepList,
+                    ),
+                  )
+                ],
+              )),
+          PopupScreen(
+            title: 'Steps Tracking Information',
+            text:
+                'In this screen your steps will be monitored automatically.\n\n'
+                'Circular Progress indicator at the top indicates todays steps. '
+                'It fills in with every step untill the goal is reached.\n\n'
+                'The bottom graph shows weekly/monthly average progress for steps. '
+                'Press the "avg" button, at the top right corner of the graph '
+                'to switch between modes',
+            btnText: 'Continue',
           ),
         ],
       ),
@@ -218,7 +296,6 @@ class _WalkingScreenState extends State<WalkingScreen>{
 }
 
 class LineChartSample2 extends StatefulWidget {
-
   LineChartSample2(this._weeklyChart, this._monthlyChart);
 
   final List<FlSpot> _weeklyChart;
@@ -229,13 +306,10 @@ class LineChartSample2 extends StatefulWidget {
 }
 
 class _LineChartSample2State extends State<LineChartSample2> {
-
   bool showAvg = false;
-
 
   @override
   Widget build(BuildContext context) {
-
     final List<FlSpot> weeklyDiag = widget._weeklyChart;
     final List<FlSpot> monthlyDiag = widget._monthlyChart;
 
@@ -250,7 +324,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
                 ),
                 color: Colors.transparent),
             child: Padding(
-              padding: const EdgeInsets.only(right: 18.0, left: 12.0, top: 24, bottom: 12),
+              padding: const EdgeInsets.only(
+                  right: 18.0, left: 12.0, top: 24, bottom: 12),
               child: LineChart(
                 showAvg ? avgData(monthlyDiag) : mainData(weeklyDiag),
               ),
@@ -269,7 +344,9 @@ class _LineChartSample2State extends State<LineChartSample2> {
             child: Text(
               'avg',
               style: TextStyle(
-                  fontSize: 12, color: showAvg ? Colors.white.withOpacity(0.5) : Colors.white),
+                  fontSize: 12,
+                  color:
+                      showAvg ? Colors.white.withOpacity(0.5) : Colors.white),
             ),
           ),
         ),
@@ -279,8 +356,10 @@ class _LineChartSample2State extends State<LineChartSample2> {
 
   LineChartData mainData(List<FlSpot> firstList) {
     final List<Color> gradientColors = [
-      Color.fromRGBO(222, 222, 222, 1),
-      Colors.black,
+      Colors.grey,
+      Colors.white,
+      Colors.white,
+      Colors.grey,
     ];
     return LineChartData(
       gridData: FlGridData(
@@ -299,8 +378,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
         bottomTitles: SideTitles(
           showTitles: true,
           reservedSize: 22,
-          textStyle:
-          const TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 16),
+          textStyle: const TextStyle(
+              color: Colors.red, fontWeight: FontWeight.bold, fontSize: 16),
           getTitles: (value) {
             switch (value.toInt()) {
               case 0:
@@ -325,7 +404,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
         leftTitles: SideTitles(
           showTitles: true,
           textStyle: const TextStyle(
-            color: Color(0xff67727d),
+            color: Colors.white54,
             fontWeight: FontWeight.bold,
             fontSize: 15,
           ),
@@ -350,8 +429,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
           margin: 12,
         ),
       ),
-      borderData:
-      FlBorderData(show: true, border: Border.all(color: Colors.black, width: 1)),
+      borderData: FlBorderData(
+          show: true, border: Border.all(color: Colors.black, width: 1)),
       minX: 0,
       maxX: 7,
       minY: 0,
@@ -360,7 +439,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
         LineChartBarData(
           spots: firstList,
           isCurved: true,
-          colors: gradientColors,
+          colors:
+              gradientColors.map((color) => color.withOpacity(0.9)).toList(),
           barWidth: 5,
           isStrokeCapRound: true,
           dotData: FlDotData(
@@ -368,7 +448,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
           ),
           belowBarData: BarAreaData(
             show: true,
-            colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+            colors:
+                gradientColors.map((color) => color.withOpacity(0.4)).toList(),
           ),
         ),
       ],
@@ -377,8 +458,10 @@ class _LineChartSample2State extends State<LineChartSample2> {
 
   LineChartData avgData(List<FlSpot> monthlyDiag) {
     final List<Color> gradientColors = [
-      const Color(0xff23b6e6),
-      const Color(0xff02d39a),
+      Colors.white,
+      Colors.grey,
+      Colors.grey,
+      Colors.white,
     ];
     return LineChartData(
       lineTouchData: LineTouchData(enabled: false),
@@ -397,41 +480,39 @@ class _LineChartSample2State extends State<LineChartSample2> {
         bottomTitles: SideTitles(
           showTitles: true,
           reservedSize: 22,
-          textStyle:
-          const TextStyle(color: Color(0xff68737d), fontWeight: FontWeight.bold, fontSize: 16),
+          textStyle: const TextStyle(
+              color: Colors.red,
+              fontWeight: FontWeight.bold,
+              fontSize: 16),
           getTitles: (value) {
             switch (value.toInt()) {
               case 1:
-                  if(DateTime.now().month - 4 < 1)
-                    {
-                      int temp = DateTime.now().month - 4;
-                      return '${12 + temp}';
-                    }
-                  else return '${DateTime.now().month - 4}';
-                  break;
+                if (DateTime.now().month - 4 < 1) {
+                  int temp = DateTime.now().month - 4;
+                  return '${12 + temp}';
+                } else
+                  return '${DateTime.now().month - 4}';
+                break;
               case 3:
-                  if(DateTime.now().month - 3 < 1)
-                  {
-                    int temp = DateTime.now().month - 3;
-                    return '${12 + temp}';
-                  }
-                  else return '${DateTime.now().month - 3}';
-                  break;
+                if (DateTime.now().month - 3 < 1) {
+                  int temp = DateTime.now().month - 3;
+                  return '${12 + temp}';
+                } else
+                  return '${DateTime.now().month - 3}';
+                break;
               case 5:
-                if(DateTime.now().month - 2 < 1)
-                {
+                if (DateTime.now().month - 2 < 1) {
                   int temp = DateTime.now().month - 2;
                   return '${12 + temp}';
-                }
-                else return '${DateTime.now().month - 2}';
+                } else
+                  return '${DateTime.now().month - 2}';
                 break;
               case 7:
-                if(DateTime.now().month - 1 < 1)
-                {
+                if (DateTime.now().month - 1 < 1) {
                   int temp = DateTime.now().month - 1;
                   return '${12 + temp}';
-                }
-                else return '${DateTime.now().month - 1}';
+                } else
+                  return '${DateTime.now().month - 1}';
                 break;
               case 9:
                 return '${DateTime.now().month}';
@@ -443,7 +524,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
         leftTitles: SideTitles(
           showTitles: true,
           textStyle: const TextStyle(
-            color: Color(0xff67727d),
+            color: Colors.white54,
             fontWeight: FontWeight.bold,
             fontSize: 15,
           ),
@@ -462,8 +543,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
           margin: 12,
         ),
       ),
-      borderData:
-      FlBorderData(show: true, border: Border.all(color: Colors.black, width: 1)),
+      borderData: FlBorderData(
+          show: true, border: Border.all(color: Colors.black, width: 1)),
       minX: 0,
       maxX: 10,
       minY: 0,
@@ -472,19 +553,16 @@ class _LineChartSample2State extends State<LineChartSample2> {
         LineChartBarData(
           spots: monthlyDiag,
           isCurved: true,
-          colors: [
-            ColorTween(begin: gradientColors[0], end: gradientColors[1]).lerp(0.5),
-            ColorTween(begin: gradientColors[0], end: gradientColors[1]).lerp(0.2),
-          ],
+          colors: gradientColors.map((color) => color.withOpacity(0.9)).toList(),
           barWidth: 5,
           isStrokeCapRound: true,
           dotData: FlDotData(
             show: false,
           ),
-          belowBarData: BarAreaData(show: true, colors: [
-            ColorTween(begin: gradientColors[0], end: gradientColors[1]).lerp(0.5).withOpacity(0.1),
-            ColorTween(begin: gradientColors[0], end: gradientColors[1]).lerp(0.2).withOpacity(0.1),
-          ]),
+          belowBarData: BarAreaData(
+              show: true,
+              colors: gradientColors.map((color) => color.withOpacity(0.4)).toList(),
+          ),
         ),
       ],
     );

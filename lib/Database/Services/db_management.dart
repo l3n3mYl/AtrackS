@@ -43,4 +43,12 @@ class DatabaseManagement {
     }
   }
 
+  //TODO: DON'T TOUCH
+//  Future deleteFirebaseDocs() async {
+//    _reference.collection('exercises').getDocuments().then((snapshot) {
+//      for(DocumentSnapshot ds in snapshot.documents){
+//        ds.reference.delete();
+//      }
+//    });
+//  }
 }
