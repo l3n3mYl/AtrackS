@@ -61,7 +61,12 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
 
     final List<Widget> _screens = [
       WalkingScreen(widget._user),
-      PushUpsScreen(widget._user),
+      PushUpsScreen(
+        user: widget._user,
+        icon: _icons[1],
+        accentColor: _colorPal[1],
+        appBarTitile: 'Push-Ups Progress',
+      ),
       CyclingScreen(widget._user),
       SitUpsScreen(widget._user),
       PullUpsScreen(widget._user),
