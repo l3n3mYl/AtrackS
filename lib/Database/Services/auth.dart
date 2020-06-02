@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com/Database/Models/exercises.dart';
 import 'package:com/Database/Models/exercise_goals.dart';
-import 'package:com/Database/Models/month_progress_exercise.dart';
-import 'package:com/Database/Models/month_progress_nutrition.dart';
+import 'package:com/Database/Models/single_month_progress_exercise.dart';
+import 'package:com/Database/Models/single_month_progress_nutrition.dart';
 import 'package:com/Database/Models/nutrition.dart';
 import 'package:com/Database/Models/nutrition_goals.dart';
 import 'package:com/Database/Models/user.dart';
@@ -18,13 +18,30 @@ class AuthService {
   final Firestore _reference = Firestore.instance;
   final User newUser = User();
 
-  final MonthExerciseProgress _monthExerciseProgress = MonthExerciseProgress(
+  final MonthExerciseProgress _singleMonthExerciseProgress = MonthExerciseProgress(
     cycling: '0, 0, 0, 0',
     jogging: '0, 0, 0, 0',
     pullUps: '0, 0, 0, 0',
     pushUps: '0, 0, 0, 0',
     sitUps: '0, 0, 0, 0,',
     steps: '0, 0, 0, 0',
+  );
+
+  final MonthExerciseProgress _monthExerciseProgress = MonthExerciseProgress(
+    cycling: '0, 0, 0, 0, 0',
+    jogging: '0, 0, 0, 0, 0',
+    pullUps: '0, 0, 0, 0, 0',
+    pushUps: '0, 0, 0, 0, 0',
+    sitUps: '0, 0, 0, 0, 0',
+    steps: '0, 0, 0, 0, 0',
+  );
+
+  final MonthNutritionProgress _singleMonthNutritionProgress = MonthNutritionProgress(
+    carbs: '0, 0, 0, 0',
+    protein: '0, 0, 0, 0',
+    fats: '0, 0, 0, 0',
+    calories: '0, 0, 0, 0',
+    water: '0, 0, 0, 0',
   );
 
   final MonthNutritionProgress _monthNutritionProgress = MonthNutritionProgress(
@@ -101,6 +118,8 @@ class AuthService {
       await _reference.collection('exercise_weekly_progress').document(fUser.uid).setData(_exerciseProgress.exerciseGoalInfoToMap());
       await _reference.collection('nutrition_monthly_progress').document(fUser.uid).setData(_monthNutritionProgress.nutritionMonthProgressInfoToMap());
       await _reference.collection('exercise_monthly_progress').document(fUser.uid).setData(_monthExerciseProgress.exerciseMonthProgressInfoToMap());
+      await _reference.collection('nutrition_single_month_average').document(fUser.uid).setData(_singleMonthNutritionProgress.nutritionMonthProgressInfoToMap());
+      await _reference.collection('exercises_single_month_average').document(fUser.uid).setData(_singleMonthExerciseProgress.exerciseMonthProgressInfoToMap());
 
       return fUser;
     } catch (e) {
@@ -169,8 +188,10 @@ class AuthService {
         await _reference.collection('exercise_goals').document(user.uid).setData(_newExerciseGoals.exerciseGoalInfoToMap());
         await _reference.collection('nutrition_weekly_progress').document(user.uid).setData(_nutritionProgress.nutritionGoalInfoToMap());
         await _reference.collection('exercise_weekly_progress').document(user.uid).setData(_exerciseProgress.exerciseGoalInfoToMap());
-        await _reference.collection('nutrition_monthly_progress').document(user.uid).setData(_monthNutritionProgress.nutritionMonthProgressInfoToMap());
-        await _reference.collection('exercise_monthly_progress').document(user.uid).setData(_monthExerciseProgress.exerciseMonthProgressInfoToMap());
+        await _reference.collection('nutrition_monthly_progress').document(user.uid).setData(_singleMonthNutritionProgress.nutritionMonthProgressInfoToMap());
+        await _reference.collection('exercise_monthly_progress').document(user.uid).setData(_singleMonthExerciseProgress.exerciseMonthProgressInfoToMap());
+        await _reference.collection('nutrition_single_month_average').document(user.uid).setData(_singleMonthNutritionProgress.nutritionMonthProgressInfoToMap());
+        await _reference.collection('exercises_single_month_average').document(user.uid).setData(_singleMonthExerciseProgress.exerciseMonthProgressInfoToMap());
       }
 
       return user;
@@ -217,8 +238,10 @@ class AuthService {
           await _reference.collection('exercise_goals').document(user.uid).setData(_newExerciseGoals.exerciseGoalInfoToMap());
           await _reference.collection('nutrition_weekly_progress').document(user.uid).setData(_nutritionProgress.nutritionGoalInfoToMap());
           await _reference.collection('exercise_weekly_progress').document(user.uid).setData(_exerciseProgress.exerciseGoalInfoToMap());
-          await _reference.collection('nutrition_monthly_progress').document(user.uid).setData(_monthNutritionProgress.nutritionMonthProgressInfoToMap());
-          await _reference.collection('exercise_monthly_progress').document(user.uid).setData(_monthExerciseProgress.exerciseMonthProgressInfoToMap());
+          await _reference.collection('nutrition_monthly_progress').document(user.uid).setData(_singleMonthNutritionProgress.nutritionMonthProgressInfoToMap());
+          await _reference.collection('exercise_monthly_progress').document(user.uid).setData(_singleMonthExerciseProgress.exerciseMonthProgressInfoToMap());
+          await _reference.collection('nutrition_single_month_average').document(user.uid).setData(_singleMonthNutritionProgress.nutritionMonthProgressInfoToMap());
+          await _reference.collection('exercises_single_month_average').document(user.uid).setData(_singleMonthExerciseProgress.exerciseMonthProgressInfoToMap());
         }
 
         return user;
