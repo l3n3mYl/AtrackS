@@ -1,5 +1,14 @@
 class MonthNutritionProgress{
   String carbs, protein, fats, calories, water;
+  String lastTimeUpdated;
+
+  get timeUpdated {
+    return this.lastTimeUpdated;
+  }
+
+  set timeUpdated(String newTime) {
+    this.lastTimeUpdated = newTime;
+  }
 
   get carbCountProgress {
     return this.carbs;
@@ -49,11 +58,12 @@ class MonthNutritionProgress{
       "Fats" : fatsCountProgress,
       "Calories" : calorieCountProgress,
       "Water" : waterMillsProgress,
+      "LastUpdated" : lastTimeUpdated,
     };
 
     return info;
   }
 
-  MonthNutritionProgress({this.carbs, this.protein, this.fats, this.calories, this.water});
+  MonthNutritionProgress({this.carbs, this.protein, this.fats, this.calories, this.water, this.lastTimeUpdated});
 
 }

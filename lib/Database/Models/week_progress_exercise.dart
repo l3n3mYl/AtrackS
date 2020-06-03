@@ -1,5 +1,14 @@
 class WeeklyExerciseProgress{
   String cycling, jogging, pullUps, sitUps, pushUps, steps;
+  String lastTimeUpdated;
+
+  get timeUpdated {
+    return this.lastTimeUpdated;
+  }
+
+  set timeUpdated(String newTime) {
+    this.lastTimeUpdated = newTime;
+  }
 
   get cyclingProgress {
     return this.cycling;
@@ -57,10 +66,11 @@ class WeeklyExerciseProgress{
       "Sit-Ups" : sitUpTimesProgress,
       "Push-ups" : pushUpTimesProgress,
       "Steps" : stepCountProgress,
+      "LastUpdated" : lastTimeUpdated,
     };
 
     return info;
   }
-  WeeklyExerciseProgress({this.cycling, this.jogging, this.pullUps, this.pushUps, this.sitUps, this.steps});
+  WeeklyExerciseProgress({this.cycling, this.jogging, this.pullUps, this.pushUps, this.sitUps, this.steps, this.lastTimeUpdated});
 
 }

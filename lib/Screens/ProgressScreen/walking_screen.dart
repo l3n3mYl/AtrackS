@@ -34,37 +34,11 @@ class _WalkingScreenState extends State<WalkingScreen> {
   @override
   void initState() {
     super.initState();
-    checkLastDayUpdate();
     getWeeklyStepProgress();
     getMonthlyStepProgress();
     initPlatformState();
     getTotalSteps();
     getStepGoal();
-  }
-
-  void checkLastDayUpdate() async {
-    _management = DatabaseManagement(widget.user);
-    dynamic lastUpdateDate = await _management.getSingleFieldInfo('exercises', 'LastUpdated').then((value) {
-      return DateTime.parse(value);
-    });
-    if(lastUpdateDate != null){
-      int diff  = DateTime.now().difference(lastUpdateDate).inDays;
-      if(diff > 0){
-        if(DateTime.now().day - diff < 1) {
-          diff = 7 + DateTime.now().day + diff;
-          await _management.getSingleFieldInfo('exercises', 'Steps').then((value) {
-            _management.updateWeeklyProgress(diff, value, 'exercise_weekly_progress', 'Steps');
-            _management.updateSingleField('exercises', 'Steps', '0');
-            _management.updateSingleField('exercises', 'LastUpdated', DateTime.now().toString());
-          });
-        }
-        await _management.getSingleFieldInfo('exercises', 'Steps').then((value) {
-          _management.updateWeeklyProgress(DateTime.now().day - diff, value, 'exercise_weekly_progress', 'Steps');
-          _management.updateSingleField('exercises', 'Steps', '0');
-          _management.updateSingleField('exercises', 'LastUpdated', DateTime.now().toString());
-        });
-      }
-    }
   }
 
   void getWeeklyStepProgress() async {
@@ -81,7 +55,6 @@ class _WalkingScreenState extends State<WalkingScreen> {
             weeklyStepList.add(
                 FlSpot(i.toDouble() + 0.05, double.parse(resList[i]) / 1000));
           if (i == resList.length - 1)
-//            weeklyStepList.add(FlSpot(6.95, double.parse(resList[i]) / 1000));
             if(double.parse(resList[i]) / 1000 > 11)
               weeklyStepList.add(FlSpot(6.95, 11));
             else weeklyStepList.add(FlSpot(6.95, double.parse(resList[i]) / 1000));

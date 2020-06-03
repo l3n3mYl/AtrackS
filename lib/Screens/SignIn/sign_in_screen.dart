@@ -1,3 +1,4 @@
+import 'package:com/Database/Services/update_graphs.dart';
 import 'package:com/PopUps/progress_indicator.dart';
 import 'package:com/Screens/Registration/first_registration_screen.dart';
 import 'package:com/SecretMenu/menu_management.dart';
@@ -79,6 +80,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult()));
                             dynamic auth = await _authService.signInFacebook();
                             if (auth != null) {
+                              UpdateGraphs(auth).checkLastDayExercUpdate();
+                              UpdateGraphs(auth).checkLastDayNutrUpdate();
                               Navigator.of(context).pop();
                               Navigator.of(context).pushReplacement(MaterialPageRoute(
                                   builder: (_) => MainScreen(auth)));
@@ -114,6 +117,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             dynamic auth =
                                 await _authService.signInGooglePlus();
                             if (auth != null) {
+                              UpdateGraphs(auth).checkLastDayExercUpdate();
+                              UpdateGraphs(auth).checkLastDayNutrUpdate();
                               Navigator.of(context).pop();
                               Navigator.of(context).pushReplacement(MaterialPageRoute(
                                   builder: (_) => MainScreen(auth)));
@@ -226,6 +231,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         dynamic auth = await _authService.signInEmailAndPass(
                             _email, _password);
                         if (auth != null) {
+                          UpdateGraphs(auth).checkLastDayExercUpdate();
+                          UpdateGraphs(auth).checkLastDayNutrUpdate();
                           Navigator.of(context).pop();
                           Navigator.of(context).pushReplacement(MaterialPageRoute(
                               builder: (_) => MainScreen(auth)));

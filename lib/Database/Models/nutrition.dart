@@ -1,5 +1,13 @@
 class Nutrition{
-  String carbs, protein, fats, calories, water;
+  String carbs, protein, fats, calories, water, lastTimeUpdated;
+
+  get timeUpdated {
+    return this.lastTimeUpdated;
+  }
+
+  set timeUpdated(String newTime) {
+    this.lastTimeUpdated = newTime;
+  }
 
   get carbCount {
     return this.carbs;
@@ -48,11 +56,12 @@ class Nutrition{
       "Fats" : fatsCount,
       "Calories" : calorieCount,
       "Water" : waterMills,
+      "LastUpdated" : timeUpdated,
     };
 
     return info;
   }
 
-  Nutrition({this.carbs, this.protein, this.fats, this.calories, this.water});
+  Nutrition({this.carbs, this.protein, this.fats, this.calories, this.water, this.lastTimeUpdated});
 
 }

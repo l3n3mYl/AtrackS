@@ -25,6 +25,7 @@ class AuthService {
     pushUps: '0, 0, 0, 0',
     sitUps: '0, 0, 0, 0,',
     steps: '0, 0, 0, 0',
+    lastTimeUpdated: DateTime.now().toString(),
   );
 
   final MonthExerciseProgress _monthExerciseProgress = MonthExerciseProgress(
@@ -34,6 +35,7 @@ class AuthService {
     pushUps: '0, 0, 0, 0, 0',
     sitUps: '0, 0, 0, 0, 0',
     steps: '0, 0, 0, 0, 0',
+    lastTimeUpdated: DateTime.now().toString(),
   );
 
   final MonthNutritionProgress _singleMonthNutritionProgress = MonthNutritionProgress(
@@ -42,6 +44,7 @@ class AuthService {
     fats: '0, 0, 0, 0',
     calories: '0, 0, 0, 0',
     water: '0, 0, 0, 0',
+    lastTimeUpdated: DateTime.now().toString(),
   );
 
   final MonthNutritionProgress _monthNutritionProgress = MonthNutritionProgress(
@@ -50,6 +53,7 @@ class AuthService {
     fats: '0, 0, 0, 0',
     calories: '0, 0, 0, 0',
     water: '0, 0, 0, 0',
+    lastTimeUpdated: DateTime.now().toString(),
   );
 
   final WeeklyExerciseProgress _exerciseProgress = WeeklyExerciseProgress(
@@ -59,6 +63,7 @@ class AuthService {
     pushUps: '0, 0, 0, 0, 0, 0, 0',
     sitUps: '0, 0, 0, 0, 0, 0, 0',
     steps: '0, 0, 0, 0, 0, 0, 0',
+    lastTimeUpdated: DateTime.now().toString(),
   );
 
   final WeeklyNutritionProgress _nutritionProgress = WeeklyNutritionProgress(
@@ -67,6 +72,7 @@ class AuthService {
     fats: '0, 0, 0, 0, 0, 0',
     calories: '0, 0, 0, 0, 0, 0',
     water: '0, 0, 0, 0, 0, 0',
+    lastTimeUpdated: DateTime.now().toString(),
   );
 
   final NutritionGoals _newNutritionGoals = NutritionGoals(
@@ -75,7 +81,6 @@ class AuthService {
     fats_goals: '50', //44 - 70
     calorie_goals: '2000',//2k w and 2.5k m
     water_goals: '3000', //2.7w and 3.7m
-
   );
 
   final ExerciseGoals _newExerciseGoals = ExerciseGoals(
@@ -93,6 +98,7 @@ class AuthService {
     fats: "0",
     calories: "0",
     water: "0",
+    lastTimeUpdated: DateTime.now().toString(),
   );
 
   final Exercises _newExercises = Exercises(
@@ -102,6 +108,7 @@ class AuthService {
     pushUps: "0",
     sitUps: "0",
     steps: "0",
+    lastTimeUpdated: DateTime.now().toString(),
   );
 
   Future registerWithEmailAndPass(User newUser) async {

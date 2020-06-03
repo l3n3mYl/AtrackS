@@ -55,7 +55,7 @@ class ExerciseGoals{
       "Jogging_Goal" : joggingGoal,
       "Pull-Ups_Goal" : pullUpTimesGoal,
       "Sit-Ups_Goal" : sitUpTimesGoal,
-      "Push-ups_Goal" : pushUpTimesGoal,
+      "Push-Ups_Goal" : pushUpTimesGoal,
       "Steps_Goal" : stepCountGoal,
     };
 
