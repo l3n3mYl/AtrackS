@@ -64,7 +64,7 @@ class WeeklyExerciseProgress{
       "Jogging" : joggingProgress,
       "Pull-Ups" : pullUpTimesProgress,
       "Sit-Ups" : sitUpTimesProgress,
-      "Push-ups" : pushUpTimesProgress,
+      "Push-Ups" : pushUpTimesProgress,
       "Steps" : stepCountProgress,
       "LastUpdated" : lastTimeUpdated,
     };

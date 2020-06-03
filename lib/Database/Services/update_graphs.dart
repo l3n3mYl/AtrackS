@@ -37,19 +37,16 @@ class UpdateGraphs {
       if (diff > 0) {
         if (DateTime.now().day - diff < 1) {
           if (diff > 7) _management.resetWeeklyExercGraphs();
-          diff = 7 + DateTime.now().day + diff;
-//          await _management.getSingleFieldInfo('exercises', 'Steps').then((value) {
-//            _management.updateWeeklyProgress(diff, value, 'exercise_weekly_progress', 'Steps');
-//            _management.updateSingleField('exercises', 'Steps', '0');
-//            _management.updateSingleField('exercises', 'LastUpdated', DateTime.now().toString());
-//          });
+          diff = 7 + DateTime.now().day - diff;
           for (var i = 0; i < exercList.length; ++i) {
             await _management
                 .getSingleFieldInfo('exercises', exercList[i])
                 .then((value) {
-              _management.updateWeeklyProgress(
-                  diff, value, 'exercise_weekly_progress', exercList[i]);
-              _management.updateSingleField('exercises', exercList[i], '0');
+                  if(!value.contains(" ")){
+                    _management.updateWeeklyProgress(
+                        diff, value, 'exercise_weekly_progress', exercList[i]);
+                    _management.updateSingleField('exercises', exercList[i], '0');
+                  }
             });
           }
         } else {
@@ -57,17 +54,14 @@ class UpdateGraphs {
             await _management
                 .getSingleFieldInfo('exercises', exercList[i])
                 .then((value) {
-              _management.updateWeeklyProgress(DateTime.now().day - diff, value,
-                  'exercise_weekly_progress', exercList[i]);
-              _management.updateSingleField('exercises', exercList[i], '0');
+                  if(!value.contains(" ")){
+                    _management.updateWeeklyProgress(DateTime.now().day - diff, value,
+                        'exercise_weekly_progress', exercList[i]);
+                    _management.updateSingleField('exercises', exercList[i], '0');
+                  }
             });
           }
         }
-//        await _management.getSingleFieldInfo('exercises', 'Steps').then((value) {
-//          _management.updateWeeklyProgress(DateTime.now().day - diff, value, 'exercise_weekly_progress', 'Steps');
-//          _management.updateSingleField('exercises', 'Steps', '0');
-//          _management.updateSingleField('exercises', 'LastUpdated', DateTime.now().toString());
-//        });
         _management.updateSingleField(
             'exercises', 'LastUpdated', DateTime.now().toString());
       }
@@ -88,12 +82,7 @@ class UpdateGraphs {
       if (diff > 0) {
         if (DateTime.now().day - diff < 1) {
           if (diff > 7) _management.resetWeeklyNutrGraphs();
-          diff = 7 + DateTime.now().day + diff;
-//          await _management.getSingleFieldInfo('exercises', 'Steps').then((value) {
-//            _management.updateWeeklyProgress(diff, value, 'exercise_weekly_progress', 'Steps');
-//            _management.updateSingleField('exercises', 'Steps', '0');
-//            _management.updateSingleField('exercises', 'LastUpdated', DateTime.now().toString());
-//          });
+          diff = 7 + DateTime.now().day - diff;
           for (var i = 0; i < nutrList.length; ++i) {
             await _management
                 .getSingleFieldInfo('nutrition', nutrList[i])
@@ -114,11 +103,6 @@ class UpdateGraphs {
             });
           }
         }
-//        await _management.getSingleFieldInfo('exercises', 'Steps').then((value) {
-//          _management.updateWeeklyProgress(DateTime.now().day - diff, value, 'exercise_weekly_progress', 'Steps');
-//          _management.updateSingleField('exercises', 'Steps', '0');
-//          _management.updateSingleField('exercises', 'LastUpdated', DateTime.now().toString());
-//        });
         _management.updateSingleField(
             'nutrition', 'LastUpdated', DateTime.now().toString());
       }

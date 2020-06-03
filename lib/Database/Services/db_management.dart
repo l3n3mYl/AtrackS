@@ -12,11 +12,13 @@ class DatabaseManagement {
     try{
       DocumentSnapshot snapshot =
           await _reference.collection(collection).document(_user.uid).get();
-      List<String> list = snapshot[field].split(", ");
-      list[day - 1] = amount;
-      final String data = list.reduce((value, element) => value + ', ' + element);
-      final Map<String, String> map = {field : data};
-      await _reference.collection(collection).document(_user.uid).updateData(map);
+      if(snapshot[field] != null){
+        List<String> list = snapshot[field].split(", ");
+        list[day - 1] = amount;
+        final String data = list.reduce((value, element) => value + ', ' + element);
+        final Map<String, String> map = {field : data};
+        await _reference.collection(collection).document(_user.uid).updateData(map);
+      }
     } catch (e) {
       print(e.toString());
       return null;
