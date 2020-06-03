@@ -1,13 +1,13 @@
 class Exercises{
   String cycling, jogging, pullUps, sitUps, pushUps, steps;
-  DateTime lastTimeUpdated;
+  String lastTimeUpdated;
 
   get timeUpdated {
-    return this.timeUpdated;
+    return this.lastTimeUpdated;
   }
 
-  set timeUpdated(DateTime newTime) {
-    this.timeUpdated = newTime;
+  set timeUpdated(String newTime) {
+    this.lastTimeUpdated = newTime;
   }
 
   get cyclingMin {
@@ -64,7 +64,7 @@ class Exercises{
       "Jogging" : joggingMin,
       "Pull-Ups" : pullUpTimes,
       "Sit-Ups" : sitUpTimes,
-      "Push-ups" : pushUpTimes,
+      "Push-Ups" : pushUpTimes,
       "Steps" : stepCount,
       "LastUpdated" : timeUpdated,
     };
@@ -72,6 +72,6 @@ class Exercises{
     return info;
   }
 
-  Exercises({this.cycling, this.jogging, this.pullUps, this.pushUps, this.sitUps, this.steps});
+  Exercises({this.cycling, this.jogging, this.pullUps, this.pushUps, this.sitUps, this.steps, this.lastTimeUpdated});
 
 }

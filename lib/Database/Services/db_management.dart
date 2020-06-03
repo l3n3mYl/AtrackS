@@ -23,6 +23,32 @@ class DatabaseManagement {
     }
   }
 
+  Future resetWeeklyExercGraphs() async {
+    try{
+      await _reference.collection('exercises').getDocuments().then((value) {
+        value.documents.forEach((doc) {
+          updateSingleField('exercises', doc.documentID, '0');
+        });
+      });
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future resetWeeklyNutrGraphs() async {
+    try{
+      await _reference.collection('nutrition').getDocuments().then((value) {
+        value.documents.forEach((doc) {
+          updateSingleField('nutrition', doc.documentID, '0');
+        });
+      });
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
   Future<Map<String, dynamic>> retrieveExerciseInfoByUid() async {
     Map<String, dynamic> exerciseInfo = new Map();
     try {

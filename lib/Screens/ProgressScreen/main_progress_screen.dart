@@ -46,9 +46,9 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
 
   final List<String> _icons = [
     'images/Icons/steps.png',
-    'images/Icons/push-ups.png',
     'images/Icons/Cycling.png',
     'images/Icons/Sit-Ups.png',
+    'images/Icons/push-ups.png',
     'images/Icons/pull-ups.png',
     'images/Icons/Jogging.png',
   ];
@@ -61,14 +61,15 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
 
     final List<Widget> _screens = [
       WalkingScreen(widget._user),
-      PushUpsScreen(
-        user: widget._user,
-        icon: _icons[1],
-        accentColor: _colorPal[1],
-        appBarTitile: 'Push-Ups Progress',
-      ),
       CyclingScreen(widget._user),
       SitUpsScreen(widget._user),
+      PushUpsScreen(
+        user: widget._user,
+        icon: _icons[3],
+        accentColor: _colorPal[3],
+        appBarTitile: 'Push-Ups Progress',
+        field: 'Push-Ups',
+      ),
       PullUpsScreen(widget._user),
       JoggingScreen(widget._user)
     ];
