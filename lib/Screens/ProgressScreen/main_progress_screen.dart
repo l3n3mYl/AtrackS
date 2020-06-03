@@ -86,6 +86,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
             if (snapshot.hasData) {
               children.clear();
               final Map<String, dynamic> exerciseInfoList = snapshot.data;
+              exerciseInfoList.remove('LastUpdated');
               final int exerciseLen = exerciseInfoList.length;
               children.add(
                 Stack(
