@@ -69,6 +69,8 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         accentColor: _colorPal[3],
         appBarTitile: 'Push-Ups Progress',
         field: 'Push-Ups',
+        popupText: 'This is a popup Text',
+        division: 1,
       ),
       PullUpsScreen(widget._user),
       JoggingScreen(widget._user)

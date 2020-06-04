@@ -23,6 +23,7 @@ class UpdateGraphs {
     'Water',
   ];
 
+  //TODO: check if still updates correctly
   //Check Last Day the exercise was updated
   //Update the weekly graph
   void checkLastDayExercUpdate() async {
@@ -34,9 +35,10 @@ class UpdateGraphs {
     });
     if (lastUpdateDate != null) {
       int diff = DateTime.now().difference(lastUpdateDate).inDays;
-      if (diff > 0) {
+      if (diff > 7) _management.resetWeeklyExercGraphs();
+      else if (diff > 0 && diff <= 7) {
         if (DateTime.now().day - diff < 1) {
-          if (diff > 7) _management.resetWeeklyExercGraphs();
+//          if (diff > 7) _management.resetWeeklyExercGraphs();
           diff = 7 + DateTime.now().day - diff;
           for (var i = 0; i < exercList.length; ++i) {
             await _management
@@ -79,9 +81,9 @@ class UpdateGraphs {
     });
     if (lastUpdateDate != null) {
       int diff = DateTime.now().difference(lastUpdateDate).inDays;
-      if (diff > 0) {
+      if (diff > 7) _management.resetWeeklyNutrGraphs();
+      else if (diff > 0 && diff < 7) {
         if (DateTime.now().day - diff < 1) {
-          if (diff > 7) _management.resetWeeklyNutrGraphs();
           diff = 7 + DateTime.now().day - diff;
           for (var i = 0; i < nutrList.length; ++i) {
             await _management
