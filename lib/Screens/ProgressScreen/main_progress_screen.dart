@@ -37,11 +37,15 @@ class MainProgressScreen extends StatefulWidget {
 class _MainProgressScreenState extends State<MainProgressScreen> {
   final List<Color> _colorPal = [
     Color.fromRGBO(222, 222, 222, 1), //whiteish
-    Color.fromRGBO(255, 243, 96, 1), //yellow
-    Color.fromRGBO(71, 212, 203, 1),
-    Color.fromRGBO(129, 255, 107, 1), //green
-    Color.fromRGBO(38, 200, 0, 1), //dark green
-    Color.fromRGBO(255, 139, 103, 1), //skin
+//    Color.fromRGBO(255, 243, 96, 1), //yellow
+    Color.fromRGBO(157, 247, 250, 1),
+    Color.fromRGBO(71, 212, 203, 1), //blue
+//    Color.fromRGBO(129, 255, 107, 1), //green
+//    Color.fromRGBO(38, 200, 0, 1), //dark green
+    Color.fromRGBO(45, 235, 121, 1),
+    Color.fromRGBO(119, 255, 89, 1),
+    Color.fromRGBO(255, 150, 117, 1),
+//    Color.fromRGBO(255, 139, 103, 1), //skin
   ];
 
   final List<String> _icons = [
@@ -59,21 +63,70 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
 
+//    final List<Widget> _screens = [
+//      WalkingScreen(widget._user),
+//      CyclingScreen(widget._user),
+//      SitUpsScreen(widget._user),
+//      PushUpsScreen(
+//        user: widget._user,
+//        icon: _icons[3],
+//        accentColor: _colorPal[3],
+//        appBarTitile: 'Push-Ups Progress',
+//        field: 'Push-Ups',
+//        popupText: 'This is a popup Text',
+//        division: 1,
+//      ),
+//      PullUpsScreen(widget._user),
+//      JoggingScreen(widget._user)
+//    ];
+
     final List<Widget> _screens = [
       WalkingScreen(widget._user),
-      CyclingScreen(widget._user),
-      SitUpsScreen(widget._user),
+      PushUpsScreen(
+        user: widget._user,
+        icon: _icons[1],
+        accentColor: _colorPal[1],
+        appBarTitile: 'Cycling Progress',
+        field: 'Cycling',
+        popupText: 'None for now',
+        division: 1,
+      ),
+      PushUpsScreen(
+        user: widget._user,
+        icon: _icons[2],
+        accentColor: _colorPal[2],
+        appBarTitile: 'Sit-Ups Progress',
+        field: 'Sit-Ups',
+        popupText: 'None for now',
+        division: 1,
+      ),
       PushUpsScreen(
         user: widget._user,
         icon: _icons[3],
         accentColor: _colorPal[3],
         appBarTitile: 'Push-Ups Progress',
         field: 'Push-Ups',
-        popupText: 'This is a popup Text',
+        popupText: 'None for now',
         division: 1,
       ),
-      PullUpsScreen(widget._user),
-      JoggingScreen(widget._user)
+      PushUpsScreen(
+        user: widget._user,
+        icon: _icons[4],
+        accentColor: _colorPal[4],
+        appBarTitile: 'Pull-Ups Progress',
+        field: 'Pull-Ups',
+        popupText: 'None for now',
+        division: 1,
+      ),
+      PushUpsScreen(
+        user: widget._user,
+        icon: _icons[5],
+        accentColor: _colorPal[5],
+        appBarTitile: 'Jogging Progress',
+        field: 'Jogging',
+        popupText: 'None for now',
+        division: 1,
+      ),
     ];
 
     Future<Map<String, dynamic>> _future = _db.retrieveExerciseInfoByUid();
