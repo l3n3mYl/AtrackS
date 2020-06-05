@@ -273,7 +273,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
                                   color: Colors.black,
                                   image: AssetImage(_icons[i]),
                                 ),
-                                percent: 0.69,
+                                percent: 1,
                                 animationDuration: 2,
                                 lineWidth: 2.0,
                                 progressColor: _colorPal[i].withOpacity(0.7),
