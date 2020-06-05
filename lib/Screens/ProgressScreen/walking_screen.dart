@@ -86,31 +86,38 @@ class _WalkingScreenState extends State<WalkingScreen> {
     });
   }
 
+  //Start listening for steps
   void initPlatformState() async {
     startListening();
   }
 
+  //Pedometer Initialization
   void startListening() {
     _pedometer = new Pedometer();
     _subscription = _pedometer.pedometerStream.listen(_onData,
         onError: _onError, onDone: _onDone, cancelOnError: true);
   }
 
+  //On received data, handle and sort
   void _onData(int newValue) async {
+    //Check if need to reset and count from 0
     if (reset) {
       resetValue += newValue;
       reset = false;
     }
     setState(() {
+      //Update DB with new values
       stepCountVal = "${newValue - resetValue}";
       _updateDB();
     });
   }
 
+  //When done listening, reset to count from 0
   void _onDone() async {
     reset = true;
   }
 
+  //Update db, adding new steps to an old val
   void _updateDB() async {
     _management = new DatabaseManagement(widget.user);
     String oldSteps =
@@ -364,34 +371,16 @@ class _LineChartSample2State extends State<LineChartSample2> {
               padding: const EdgeInsets.only(
                   right: 18.0, left: 12.0, top: 24, bottom: 12),
               child: LineChart(
-                showAvg ? avgData(monthlyDiag) : mainData(weeklyDiag),
+                showAvg ? monthlyData(monthlyDiag) : weeklyData(weeklyDiag),
               ),
             ),
           ),
         ),
-//        SizedBox(
-//          width: 60,
-//          height: 34,
-//          child: FlatButton(
-//            onPressed: () {
-//              setState(() {
-//                showAvg = !showAvg;
-//              });
-//            },
-//            child: Text(
-//              'avg',
-//              style: TextStyle(
-//                  fontSize: 12,
-//                  color:
-//                      showAvg ? Colors.white.withOpacity(0.5) : Colors.white),
-//            ),
-//          ),
-//        ),
       ],
     );
   }
 
-  LineChartData mainData(List<FlSpot> firstList) {
+  LineChartData weeklyData(List<FlSpot> firstList) {
     final List<Color> gradientColors = [
       Colors.grey,
       Colors.white,
@@ -490,7 +479,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
-  LineChartData avgData(List<FlSpot> monthlyDiag) {
+  LineChartData monthlyData(List<FlSpot> monthlyDiag) {
     final List<Color> gradientColors = [
       Colors.white,
       Colors.grey,
