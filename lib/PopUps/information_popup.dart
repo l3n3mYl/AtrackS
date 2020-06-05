@@ -29,12 +29,14 @@ class _PopupScreenState extends State<PopupScreen> {
                   fontFamily: 'PTSerif',
                 ),
             ),
-            content: Text(
-                widget.text,
-                style: TextStyle(
-                  color: Color.fromRGBO(222, 222, 222, 1),
-                  fontFamily: 'PTSerif',
-                ),
+            content: SingleChildScrollView(
+              child: Text(
+                  widget.text,
+                  style: TextStyle(
+                    color: Color.fromRGBO(222, 222, 222, 1),
+                    fontFamily: 'PTSerif',
+                  ),
+              ),
             ),
             actions: <Widget>[
               FlatButton(

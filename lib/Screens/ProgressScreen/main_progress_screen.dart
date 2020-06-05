@@ -36,16 +36,12 @@ class MainProgressScreen extends StatefulWidget {
 
 class _MainProgressScreenState extends State<MainProgressScreen> {
   final List<Color> _colorPal = [
-    Color.fromRGBO(222, 222, 222, 1), //whiteish
-//    Color.fromRGBO(255, 243, 96, 1), //yellow
+    Color.fromRGBO(222, 222, 222, 1),
     Color.fromRGBO(157, 247, 250, 1),
-    Color.fromRGBO(71, 212, 203, 1), //blue
-//    Color.fromRGBO(129, 255, 107, 1), //green
-//    Color.fromRGBO(38, 200, 0, 1), //dark green
+    Color.fromRGBO(71, 212, 203, 1),
     Color.fromRGBO(45, 235, 121, 1),
     Color.fromRGBO(119, 255, 89, 1),
     Color.fromRGBO(255, 150, 117, 1),
-//    Color.fromRGBO(255, 139, 103, 1), //skin
   ];
 
   final List<String> _icons = [
@@ -63,23 +59,6 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
 
-//    final List<Widget> _screens = [
-//      WalkingScreen(widget._user),
-//      CyclingScreen(widget._user),
-//      SitUpsScreen(widget._user),
-//      PushUpsScreen(
-//        user: widget._user,
-//        icon: _icons[3],
-//        accentColor: _colorPal[3],
-//        appBarTitile: 'Push-Ups Progress',
-//        field: 'Push-Ups',
-//        popupText: 'This is a popup Text',
-//        division: 1,
-//      ),
-//      PullUpsScreen(widget._user),
-//      JoggingScreen(widget._user)
-//    ];
-
     final List<Widget> _screens = [
       WalkingScreen(widget._user),
       PushUpsScreen(
@@ -88,7 +67,13 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         accentColor: _colorPal[1],
         appBarTitile: 'Cycling Progress',
         field: 'Cycling',
-        popupText: 'None for now',
+        popupText: 'Circular Progress indicator at the top indicates todays Cycling minutes. '
+            'The bottom graph shows weekly/monthly average progress. '
+            'Press the "Monthly/Weekly" button, at the top of the graph '
+            'to switch between modes. \n\n At the bottom of the weekly '
+            ' graph, letters represents the name of the day.\n\n'
+            'At the bottom of the monthly graph numbers represents the '
+            'months.',
         division: 1,
       ),
       PushUpsScreen(
@@ -97,7 +82,13 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         accentColor: _colorPal[2],
         appBarTitile: 'Sit-Ups Progress',
         field: 'Sit-Ups',
-        popupText: 'None for now',
+        popupText: 'Circular Progress indicator at the top indicates todays Sit-Ups progress. '
+            'The bottom graph shows weekly/monthly average progress. '
+            'Press the "Monthly/Weekly" button, at the top of the graph '
+            'to switch between modes. \n\n At the bottom of the weekly '
+            ' graph, letters represents the name of the day.\n\n'
+            'At the bottom of the monthly graph numbers represents the '
+            'months.',
         division: 1,
       ),
       PushUpsScreen(
@@ -106,7 +97,13 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         accentColor: _colorPal[3],
         appBarTitile: 'Push-Ups Progress',
         field: 'Push-Ups',
-        popupText: 'None for now',
+        popupText: 'Circular Progress indicator at the top indicates todays Push-Ups progress. '
+            'The bottom graph shows weekly/monthly average progress. '
+            'Press the "Monthly/Weekly" button, at the top of the graph '
+            'to switch between modes. \n\n At the bottom of the weekly '
+            ' graph, letters represents the name of the day.\n\n'
+            'At the bottom of the monthly graph numbers represents the '
+            'months.',
         division: 1,
       ),
       PushUpsScreen(
@@ -115,7 +112,13 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         accentColor: _colorPal[4],
         appBarTitile: 'Pull-Ups Progress',
         field: 'Pull-Ups',
-        popupText: 'None for now',
+        popupText: 'Circular Progress indicator at the top indicates todays Pull-Ups progress. '
+            'The bottom graph shows weekly/monthly average progress. '
+            'Press the "Monthly/Weekly" button, at the top of the graph '
+            'to switch between modes. \n\n At the bottom of the weekly '
+            ' graph, letters represents the name of the day.\n\n'
+            'At the bottom of the monthly graph numbers represents the '
+            'months.',
         division: 1,
       ),
       PushUpsScreen(
@@ -124,7 +127,13 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         accentColor: _colorPal[5],
         appBarTitile: 'Jogging Progress',
         field: 'Jogging',
-        popupText: 'None for now',
+        popupText: 'Circular Progress indicator at the top indicates todays Jogging minutes. '
+            'The bottom graph shows weekly/monthly average progress. '
+            'Press the "Monthly/Weekly" button, at the top of the graph '
+            'to switch between modes. \n\n At the bottom of the weekly '
+            ' graph, letters represents the name of the day.\n\n'
+            'At the bottom of the monthly graph numbers represents the '
+            'months.',
         division: 1,
       ),
     ];

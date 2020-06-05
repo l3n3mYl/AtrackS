@@ -70,14 +70,15 @@ class _WalkingScreenState extends State<WalkingScreen> {
         .then((result) {
       List<String> resList = result.split(", ");
       setState(() {
+        monthlyStepList.add(FlSpot(0.1, 2.0));
         for (var i = 0; i < resList.length; ++i) {
-          if (double.parse(resList[i]) / 1000 > 10)
-            monthlyStepList.add(FlSpot(i.toDouble() + 0.05, 10));
+          if (double.parse(resList[i]) / 1000 >= double.parse(stepGoal))
+            monthlyStepList.add(FlSpot(((i.toDouble() + 1) * 2 - 1 + 0.05), double.parse(stepGoal)));
           else
             monthlyStepList.add(
-                FlSpot(i.toDouble() + 0.05, double.parse(resList[i]) / 1000));
-          if (i == resList.length - 1) if (double.parse(resList[i]) / 1000 > 10)
-            monthlyStepList.add(FlSpot(9.95, 10));
+                FlSpot(((i.toDouble() + 1) * 2 - 1 + 0.05), double.parse(resList[i]) / 1000));
+          if (i == resList.length - 1) if (double.parse(resList[i]) / 1000 > double.parse(stepGoal))
+            monthlyStepList.add(FlSpot(9.95, double.parse(stepGoal)));
           else
             monthlyStepList.add(FlSpot(9.95, double.parse(resList[i]) / 1000));
         }
@@ -276,6 +277,7 @@ class _WalkingScreenState extends State<WalkingScreen> {
                               FlSpot(6.9, 0.0)
                             ]
                           : monthlyStepList,
+                      double.parse(stepGoal)
                     ),
                   )
                 ],
@@ -287,8 +289,11 @@ class _WalkingScreenState extends State<WalkingScreen> {
                 'Circular Progress indicator at the top indicates todays steps. '
                 'It fills in with every step untill the goal is reached.\n\n'
                 'The bottom graph shows weekly/monthly average progress for steps. '
-                'Press the "avg" button, at the top right corner of the graph '
-                'to switch between modes',
+                'Press the "Monthly/Weekly" button, at the top of the graph '
+                'to switch between modes. \n\n At the bottom of the weekly '
+                    ' graph, letters represents the name of the day.\n\n'
+                    'At the bottom of the monthly graph numbers represents the '
+                    'months.',
             btnText: 'Continue',
           ),
         ],
@@ -298,10 +303,11 @@ class _WalkingScreenState extends State<WalkingScreen> {
 }
 
 class LineChartSample2 extends StatefulWidget {
-  LineChartSample2(this._weeklyChart, this._monthlyChart);
+  LineChartSample2(this._weeklyChart, this._monthlyChart, this.setGoal);
 
   final List<FlSpot> _weeklyChart;
   final List<FlSpot> _monthlyChart;
+  final double setGoal;
 
   @override
   _LineChartSample2State createState() => _LineChartSample2State();
@@ -315,8 +321,37 @@ class _LineChartSample2State extends State<LineChartSample2> {
     final List<FlSpot> weeklyDiag = widget._weeklyChart;
     final List<FlSpot> monthlyDiag = widget._monthlyChart;
 
-    return Stack(
+    return Column(
       children: <Widget>[
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              showAvg = !showAvg;
+            });
+          },
+          child: Container(
+            width: 120,
+            height: 25,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(56.0),
+                color: Color.fromRGBO(155, 144, 130, 1)),
+            child: Container(
+              margin: const EdgeInsets.all(2.0),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(56.0),
+                  color: Colors.black),
+              child: Center(
+                  child: Text(
+                    'Monthly/Weekly',
+                    style: TextStyle(
+                        color: Color.fromRGBO(155, 144, 130, 1),
+                        fontFamily: 'PTSerif',
+                        fontSize: 10,
+                        fontWeight: FontWeight.w200),
+                  )),
+            ),
+          ),
+        ),
         AspectRatio(
           aspectRatio: 1.70,
           child: Container(
@@ -334,24 +369,24 @@ class _LineChartSample2State extends State<LineChartSample2> {
             ),
           ),
         ),
-        SizedBox(
-          width: 60,
-          height: 34,
-          child: FlatButton(
-            onPressed: () {
-              setState(() {
-                showAvg = !showAvg;
-              });
-            },
-            child: Text(
-              'avg',
-              style: TextStyle(
-                  fontSize: 12,
-                  color:
-                      showAvg ? Colors.white.withOpacity(0.5) : Colors.white),
-            ),
-          ),
-        ),
+//        SizedBox(
+//          width: 60,
+//          height: 34,
+//          child: FlatButton(
+//            onPressed: () {
+//              setState(() {
+//                showAvg = !showAvg;
+//              });
+//            },
+//            child: Text(
+//              'avg',
+//              style: TextStyle(
+//                  fontSize: 12,
+//                  color:
+//                      showAvg ? Colors.white.withOpacity(0.5) : Colors.white),
+//            ),
+//          ),
+//        ),
       ],
     );
   }
@@ -411,20 +446,16 @@ class _LineChartSample2State extends State<LineChartSample2> {
             fontSize: 15,
           ),
           getTitles: (value) {
-            switch (value.toInt()) {
-              case 1:
-                return '1k';
-              case 3:
-                return '3k';
-              case 5:
-                return '5k';
-              case 7:
-                return '7k';
-              case 9:
-                return '9k';
-              case 11:
-                return '11k';
-            }
+            if (value.toInt() == (widget.setGoal ~/ 1000 * 0.1).toInt())
+              return '${(widget.setGoal ~/ 1000 * 0.1).toInt()}';
+            if (value.toInt() == (widget.setGoal ~/ 1000 * 0.3).toInt())
+              return '${(widget.setGoal ~/ 1000 * 0.3).toInt()}';
+            if (value.toInt() == (widget.setGoal ~/ 1000 * 0.5).toInt())
+              return '${(widget.setGoal ~/ 1000 * 0.5).toInt()}';
+            if (value.toInt() == (widget.setGoal ~/ 1000 * 0.75).toInt())
+              return '${(widget.setGoal ~/ 1000 * 0.75).toInt()}';
+            if (value.toInt() == (widget.setGoal ~/ 1000).toInt())
+              return '${(widget.setGoal ~/ 1000).toInt()}';
             return '';
           },
           reservedSize: 28,
@@ -436,10 +467,11 @@ class _LineChartSample2State extends State<LineChartSample2> {
       minX: 0,
       maxX: 7,
       minY: 0,
-      maxY: 12,
+      maxY: widget.setGoal ~/ 1000 + 1.0,
       lineBarsData: [
         LineChartBarData(
           spots: firstList,
+          preventCurveOverShooting: true,
           isCurved: true,
           colors:
               gradientColors.map((color) => color.withOpacity(0.9)).toList(),
@@ -531,14 +563,16 @@ class _LineChartSample2State extends State<LineChartSample2> {
             fontSize: 15,
           ),
           getTitles: (value) {
-            switch (value.toInt()) {
-              case 1:
-                return '1k';
-              case 5:
-                return '5k';
-              case 10:
-                return '10k';
-            }
+            if (value.toInt() == (widget.setGoal ~/ 1000 * 0.1).toInt())
+              return '${(widget.setGoal ~/ 1000 * 0.1).toInt()}';
+            if (value.toInt() == (widget.setGoal ~/ 1000 * 0.3).toInt())
+              return '${(widget.setGoal ~/ 1000 * 0.3).toInt()}';
+            if (value.toInt() == (widget.setGoal ~/ 1000 * 0.5).toInt())
+              return '${(widget.setGoal ~/ 1000 * 0.5).toInt()}';
+            if (value.toInt() == (widget.setGoal ~/ 1000 * 0.75).toInt())
+              return '${(widget.setGoal ~/ 1000 * 0.75).toInt()}';
+            if (value.toInt() == (widget.setGoal ~/ 1000).toInt())
+              return '${(widget.setGoal ~/ 1000).toInt()}';
             return '';
           },
           reservedSize: 28,
@@ -550,9 +584,10 @@ class _LineChartSample2State extends State<LineChartSample2> {
       minX: 0,
       maxX: 10,
       minY: 0,
-      maxY: 11,
+      maxY: widget.setGoal ~/ 1000 + 1.0,
       lineBarsData: [
         LineChartBarData(
+          preventCurveOverShooting: true,
           spots: monthlyDiag,
           isCurved: true,
           colors: gradientColors.map((color) => color.withOpacity(0.9)).toList(),
