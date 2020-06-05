@@ -1,16 +1,11 @@
 import 'package:com/Design/colours.dart';
-import 'package:com/Screens/ProgressScreen/cycling_screen.dart';
-import 'package:com/Screens/ProgressScreen/jogging_screen.dart';
-import 'package:com/Screens/ProgressScreen/pull_ups_screen.dart';
-import 'package:com/Screens/ProgressScreen/push_ups_screen.dart';
-import 'package:com/Screens/ProgressScreen/sit_ups_screen.dart';
+import 'package:com/Screens/ProgressScreen/exercise_screen.dart';
 import 'package:com/Screens/ProgressScreen/walking_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class MainProgressScreenRootClass {
@@ -61,7 +56,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
 
     final List<Widget> _screens = [
       WalkingScreen(widget._user),
-      PushUpsScreen(
+      ExerciseScreen(
         user: widget._user,
         icon: _icons[1],
         accentColor: _colorPal[1],
@@ -76,7 +71,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
             'months.',
         division: 1,
       ),
-      PushUpsScreen(
+      ExerciseScreen(
         user: widget._user,
         icon: _icons[2],
         accentColor: _colorPal[2],
@@ -91,7 +86,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
             'months.',
         division: 1,
       ),
-      PushUpsScreen(
+      ExerciseScreen(
         user: widget._user,
         icon: _icons[3],
         accentColor: _colorPal[3],
@@ -106,7 +101,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
             'months.',
         division: 1,
       ),
-      PushUpsScreen(
+      ExerciseScreen(
         user: widget._user,
         icon: _icons[4],
         accentColor: _colorPal[4],
@@ -121,7 +116,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
             'months.',
         division: 1,
       ),
-      PushUpsScreen(
+      ExerciseScreen(
         user: widget._user,
         icon: _icons[5],
         accentColor: _colorPal[5],
@@ -141,7 +136,6 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
     Future<Map<String, dynamic>> _future = _db.retrieveExerciseInfoByUid();
     List<Widget> children = new List();
 
-    //TODO: make everything tidy
     return Scaffold(
       body: Container(
         color: mainColor,

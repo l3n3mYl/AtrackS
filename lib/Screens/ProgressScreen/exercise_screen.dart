@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
-class PushUpsScreen extends StatefulWidget {
+class ExerciseScreen extends StatefulWidget {
   final FirebaseUser user;
   final String appBarTitile;
   final Color accentColor;
@@ -20,7 +20,7 @@ class PushUpsScreen extends StatefulWidget {
   //100 will be for exercises with low number, to represent the graph better
   final int division;
 
-  PushUpsScreen(
+  ExerciseScreen(
       {this.user,
       this.accentColor,
       this.icon,
@@ -30,10 +30,10 @@ class PushUpsScreen extends StatefulWidget {
       this.division});
 
   @override
-  _PushUpsScreenState createState() => _PushUpsScreenState();
+  _ExerciseScreenState createState() => _ExerciseScreenState();
 }
 
-class _PushUpsScreenState extends State<PushUpsScreen> {
+class _ExerciseScreenState extends State<ExerciseScreen> {
   DatabaseManagement _management;
 
   String exercGoal = '-1';
@@ -128,6 +128,7 @@ class _PushUpsScreenState extends State<PushUpsScreen> {
     delayRun();
   }
 
+  //Delay run in order for graphs to display the correct information
   void delayRun() async {
     await Future.delayed(const Duration(microseconds: 1), () {
       setState(() {
@@ -352,8 +353,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
                   right: 18.0, left: 12.0, top: 10, bottom: 12),
               child: LineChart(
                 showAvg
-                    ? avgData(monthlyDiag, widget._color)
-                    : mainData(weeklyDiag, widget._color),
+                    ? monthlyData(monthlyDiag, widget._color)
+                    : weeklyData(weeklyDiag, widget._color),
               ),
             ),
           ),
@@ -362,7 +363,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
-  LineChartData mainData(List<FlSpot> firstList, Color color) {
+  LineChartData weeklyData(List<FlSpot> firstList, Color color) {
 
     final List<Color> gradientColors = [
       color,
@@ -468,7 +469,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
-  LineChartData avgData(List<FlSpot> monthlyDiag, Color color) {
+  LineChartData monthlyData(List<FlSpot> monthlyDiag, Color color) {
     final List<Color> gradientColors = [
       color
           .withRed(color.red + -50)
