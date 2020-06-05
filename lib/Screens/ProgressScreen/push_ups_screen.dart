@@ -273,7 +273,7 @@ class _PushUpsScreenState extends State<PushUpsScreen> {
           ),
           PopupScreen(
             title: '${widget.field} Tracking Information',
-            text: '${widget.popupText}', //TODO: change
+            text: '${widget.popupText}',
             btnText: 'Continue',
           ),
         ],
