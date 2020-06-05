@@ -61,17 +61,17 @@ class _PushUpsScreenState extends State<PushUpsScreen> {
       setState(() {
         for (var i = 0; i < resList.length; ++i) {
           if (double.parse(resList[i]) / widget.division >= setGoal)
-            weeklyExercList.add(FlSpot(i.toDouble() + 0.05, setGoal));
+            weeklyExercList.add(FlSpot(i.toDouble(), setGoal));
           else
-            weeklyExercList.add(FlSpot(i.toDouble() + 0.05,
+            weeklyExercList.add(FlSpot(i.toDouble(),
                 double.parse(resList[i]) / widget.division));
           if (i == resList.length - 1) if (double.parse(resList[i]) /
                   widget.division >=
               setGoal)
-            weeklyExercList.add(FlSpot(6.95, setGoal));
+            weeklyExercList.add(FlSpot(7, setGoal));
           else
             weeklyExercList
-                .add(FlSpot(6.95, double.parse(resList[i]) / widget.division));
+                .add(FlSpot(7, double.parse(resList[i]) / widget.division));
         }
       });
     });
@@ -84,11 +84,12 @@ class _PushUpsScreenState extends State<PushUpsScreen> {
         .then((result) {
       List<String> resList = result.split(", ");
       setState(() {
+        monthlyExercList.add(FlSpot(0.1, 2.0));
         for (var i = 0; i < resList.length; ++i) {
           if (double.parse(resList[i]) / widget.division >= setGoal)
-            monthlyExercList.add(FlSpot(i.toDouble() + 0.05, setGoal));
+            monthlyExercList.add(FlSpot(((i.toDouble() + 1) * 2 - 1 + 0.05), setGoal));
           else
-            monthlyExercList.add(FlSpot(i.toDouble() + 0.05,
+            monthlyExercList.add(FlSpot(((i.toDouble() + 1) * 2 - 1 + 0.05),
                 double.parse(resList[i]) / widget.division));
           if (i == resList.length - 1) if (double.parse(resList[i]) /
                   widget.division >=
@@ -217,11 +218,14 @@ class _PushUpsScreenState extends State<PushUpsScreen> {
                           height: 150,
                           color: widget.accentColor,
                         ),
-                        Text(
-                          exercGoal == '-1' && exercGoal == '-1'
-                              ? '0 - 0%'
-                              : '$exercTotal - ${((int.parse(exercTotal) * 100 / int.parse(exercGoal))).toStringAsFixed(0)}%',
-                          style: TextStyle(color: Colors.white54),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: Text(
+                            exercGoal == '-1' && exercGoal == '-1'
+                                ? '0 - 0%'
+                                : '$exercTotal - ${((int.parse(exercTotal) * 100 / int.parse(exercGoal))).toStringAsFixed(0)}%',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ],
                     ),
@@ -230,7 +234,7 @@ class _PushUpsScreenState extends State<PushUpsScreen> {
                 SizedBox(
                   height: 1.0,
                   child: Container(
-                    color: widget.accentColor.withOpacity(0.8),
+                    color: Colors.white54,
                   ),
                 ),
                 Center(
@@ -242,7 +246,7 @@ class _PushUpsScreenState extends State<PushUpsScreen> {
                 SizedBox(
                   height: 1.0,
                   child: Container(
-                    color: widget.accentColor.withOpacity(0.8),
+                    color: Colors.white54,
                   ),
                 ),
                 Container(
@@ -313,7 +317,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
             });
           },
           child: Container(
-              width: 69,
+              width: 120,
               height: 25,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(56.0),
@@ -325,7 +329,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
                     color: Colors.black),
                 child: Center(
                     child: Text(
-                  'Manage',
+                  'Monthly/Weekly',
                   style: TextStyle(
                       color: Color.fromRGBO(155, 144, 130, 1),
                       fontFamily: 'PTSerif',
@@ -359,16 +363,17 @@ class _LineChartSample2State extends State<LineChartSample2> {
   }
 
   LineChartData mainData(List<FlSpot> firstList, Color color) {
+
     final List<Color> gradientColors = [
       color,
       color
-          .withRed(color.red + 100)
-          .withBlue(color.blue + 100)
-          .withGreen(color.green + 100),
+          .withRed(color.red + -50)
+          .withBlue(color.blue + -50)
+          .withGreen(color.green + -50),
       color
-          .withRed(color.red + 100)
-          .withBlue(color.blue + 100)
-          .withGreen(color.green + 100),
+          .withRed(color.red + -50)
+          .withBlue(color.blue + -50)
+          .withGreen(color.green + -50),
       color,
     ];
     return LineChartData(
@@ -445,6 +450,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
         LineChartBarData(
           spots: firstList,
           isCurved: true,
+          preventCurveOverShooting: true,
           colors:
               gradientColors.map((color) => color.withOpacity(0.9)).toList(),
           barWidth: 5,
@@ -465,15 +471,15 @@ class _LineChartSample2State extends State<LineChartSample2> {
   LineChartData avgData(List<FlSpot> monthlyDiag, Color color) {
     final List<Color> gradientColors = [
       color
-          .withRed(color.red + 100)
-          .withBlue(color.blue + 100)
-          .withGreen(color.green + 100),
+          .withRed(color.red + -50)
+          .withBlue(color.blue + -50)
+          .withGreen(color.green + -50),
       color,
       color,
       color
-          .withRed(color.red + 100)
-          .withBlue(color.blue + 100)
-          .withGreen(color.green + 100),
+          .withRed(color.red + -50)
+          .withBlue(color.blue + -50)
+          .withGreen(color.green + -50),
     ];
     return LineChartData(
       lineTouchData: LineTouchData(enabled: false),
@@ -493,7 +499,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           showTitles: true,
           reservedSize: 22,
           textStyle: const TextStyle(
-              color: Colors.red, fontWeight: FontWeight.bold, fontSize: 16),
+              color: Colors.white54, fontWeight: FontWeight.bold, fontSize: 16),
           getTitles: (value) {
             switch (value.toInt()) {
               case 1:
@@ -564,6 +570,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
       lineBarsData: [
         LineChartBarData(
           spots: monthlyDiag,
+          preventCurveOverShooting: true,
           isCurved: true,
           colors:
               gradientColors.map((color) => color.withOpacity(0.9)).toList(),
