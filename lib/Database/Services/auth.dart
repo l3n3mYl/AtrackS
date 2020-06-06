@@ -48,11 +48,11 @@ class AuthService {
   );
 
   final MonthNutritionProgress _monthNutritionProgress = MonthNutritionProgress(
-    carbs: '0, 0, 0, 0',
-    protein: '0, 0, 0, 0',
-    fats: '0, 0, 0, 0',
-    calories: '0, 0, 0, 0',
-    water: '0, 0, 0, 0',
+    carbs: '0, 0, 0, 0, 0',
+    protein: '0, 0, 0, 0, 0',
+    fats: '0, 0, 0, 0, 0',
+    calories: '0, 0, 0, 0, 0',
+    water: '0, 0, 0, 0, 0',
     lastTimeUpdated: DateTime.now().toString(),
   );
 
@@ -67,11 +67,11 @@ class AuthService {
   );
 
   final WeeklyNutritionProgress _nutritionProgress = WeeklyNutritionProgress(
-    carbs: '0, 0, 0, 0, 0, 0',
-    protein: '0, 0, 0, 0, 0, 0',
-    fats: '0, 0, 0, 0, 0, 0',
-    calories: '0, 0, 0, 0, 0, 0',
-    water: '0, 0, 0, 0, 0, 0',
+    carbs: '0, 0, 0, 0, 0, 0, 0',
+    protein: '0, 0, 0, 0, 0, 0, 0',
+    fats: '0, 0, 0, 0, 0, 0, 0',
+    calories: '0, 0, 0, 0, 0, 0, 0',
+    water: '0, 0, 0, 0, 0, 0, 0',
     lastTimeUpdated: DateTime.now().toString(),
   );
 
