@@ -117,10 +117,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             dynamic auth =
                                 await _authService.signInGooglePlus();
                             if (auth != null) {
-                              UpdateGraphs(auth).checkLastDayExercUpdate();
-                              UpdateGraphs(auth).checkLastDayNutrUpdate();
-                              UpdateGraphs(auth).checkMongthlyExerciseUpdate();
-                              UpdateGraphs(auth).checkMonthlyNutritionUpdate();
+                              UpdateGraphs(auth).checkAllFieldsForUpdate();
                               Navigator.of(context).pop();
                               Navigator.of(context).pushReplacement(MaterialPageRoute(
                                   builder: (_) => MainScreen(auth)));

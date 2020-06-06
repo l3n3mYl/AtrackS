@@ -23,6 +23,115 @@ class UpdateGraphs {
     'Water',
   ];
 
+  void checkAllFieldsForUpdate() {
+    checkLastDayNutrUpdate();
+    checkLastDayExercUpdate();
+    checkMonthlyNutritionUpdate();
+    checkMonthlyExerciseUpdate();
+    checkFiveRecentMonthsNutritionUpdate();
+    checkFiveRecentMonthsExercUpdate();
+  }
+
+  void checkFiveRecentMonthsNutritionUpdate() async {
+    int lastDigit;
+    DatabaseManagement _management = DatabaseManagement(_user);
+    dynamic lastUpdateDate = await _management
+        .getSingleFieldInfo('nutrition_monthly_progress', 'LastUpdated')
+        .then((value) {
+      lastDigit = int.parse(value.substring(value.length - 1, value.length));
+      if(lastDigit == 5){
+        lastDigit = 0;
+      }
+      return DateTime.parse(value);
+    });
+    if(lastUpdateDate != null){
+      int diff = DateTime.now().difference(lastUpdateDate).inDays;
+      if(diff >= 30){
+        String date = DateTime.now().toString().substring(0, DateTime.now().toString().length - 1);
+
+        //For all exercises
+        for(var i = 0; i < nutrList.length; ++i){
+          String temp = await _management.getSingleFieldInfo(
+              'nutrition_single_month_average',
+              nutrList[i]);
+          List<String> list = temp.split(", ");
+          int sumOfNutritionInfo = 0;
+
+          //Calculate average
+          //Average of 4 weeks
+          for(var j = 0; j < 4; ++j){
+            sumOfNutritionInfo += int.parse(list[j]);
+          }
+
+          int finalAverage = sumOfNutritionInfo ~/ 4;
+
+          //Update a proper list member
+
+          await _management.getSingleFieldInfo('nutrition_monthly_progress', nutrList[i])
+              .then((value) {
+            List<String> oldValueList = value.split(", ");
+            oldValueList[lastDigit] = "$finalAverage";
+            String updateString = oldValueList.reduce((val, elem) => val + ', ' + elem);
+
+            _management.updateSingleField(
+                'nutrition_monthly_progress', nutrList[i], updateString);
+          });
+        }
+        _management.updateSingleField('nutrition_monthly_progress', 'LastUpdated', '$date${lastDigit + 1}');
+      }
+    }
+  }
+  
+  void checkFiveRecentMonthsExercUpdate() async {
+    int lastDigit;
+    DatabaseManagement _management = DatabaseManagement(_user);
+    dynamic lastUpdateDate = await _management
+        .getSingleFieldInfo('exercise_monthly_progress', 'LastUpdated')
+        .then((value) {
+          lastDigit = int.parse(value.substring(value.length - 1, value.length));
+         if(lastDigit == 5){
+           lastDigit = 0;
+         }
+         return DateTime.parse(value);
+    });
+    if(lastUpdateDate != null){
+      int diff = DateTime.now().difference(lastUpdateDate).inDays;
+      if(diff >= 30){
+        String date = DateTime.now().toString().substring(0, DateTime.now().toString().length - 1);
+
+        //For all exercises
+        for(var i = 0; i < exercList.length; ++i){
+          String temp = await _management.getSingleFieldInfo(
+              'exercises_single_month_average',
+              exercList[i]);
+          List<String> list = temp.split(", ");
+          int sumOfExerciseInfo = 0;
+
+          //Calculate average
+          //Average of 4 weeks
+          for(var j = 0; j < 4; ++j){
+            sumOfExerciseInfo += int.parse(list[j]);
+          }
+          
+          int finalAverage = sumOfExerciseInfo ~/ 4;
+          
+          //Update a proper list member
+          
+          await _management.getSingleFieldInfo('exercise_monthly_progress', exercList[i])
+              .then((value) {
+             List<String> oldValueList = value.split(", ");
+             oldValueList[lastDigit] = "$finalAverage";
+             String updateString = oldValueList.reduce((val, elem) => val + ', ' + elem);
+
+             _management.updateSingleField(
+                 'exercise_monthly_progress', exercList[i], updateString);
+          });
+        }
+        _management.updateSingleField('exercise_monthly_progress', 'LastUpdated', '$date${lastDigit + 1}');
+      }
+    }
+  }
+
   void checkMonthlyNutritionUpdate() async {
     int lastDigit;
     DatabaseManagement _management = DatabaseManagement(_user);
@@ -40,7 +149,7 @@ class UpdateGraphs {
       if(diff >= 7) {
         String date = DateTime.now().toString().substring(0, DateTime.now().toString().length - 1);
 
-        //For all of the exercises
+        //For all of the nutrition values
         for( var i = 0; i < nutrList.length; ++i) {
           String temp = await _management.getSingleFieldInfo(
               'nutrition_weekly_progress',
@@ -75,7 +184,7 @@ class UpdateGraphs {
     }
   }
   
-  void checkMongthlyExerciseUpdate() async {
+  void checkMonthlyExerciseUpdate() async {
     int lastDigit;
     DatabaseManagement _management = DatabaseManagement(_user);
     dynamic lastUpdateDate = await _management
@@ -113,7 +222,6 @@ class UpdateGraphs {
                 List<String> oldValueList = value.split(", ");
                 oldValueList[lastDigit] = "$finalAverage";
                 String updateString = oldValueList.reduce((val, elem) => val + ', ' + elem);
-                print(updateString);
                 _management.updateSingleField(
                     'exercises_single_month_average', exercList[i], updateString);
           });
