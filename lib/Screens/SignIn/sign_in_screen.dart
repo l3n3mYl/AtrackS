@@ -80,8 +80,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult()));
                             dynamic auth = await _authService.signInFacebook();
                             if (auth != null) {
-                              UpdateGraphs(auth).checkLastDayExercUpdate();
-                              UpdateGraphs(auth).checkLastDayNutrUpdate();
+                              UpdateGraphs(auth).checkAllFieldsForUpdate();
                               Navigator.of(context).pop();
                               Navigator.of(context).pushReplacement(MaterialPageRoute(
                                   builder: (_) => MainScreen(auth)));
@@ -230,8 +229,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         dynamic auth = await _authService.signInEmailAndPass(
                             _email, _password);
                         if (auth != null) {
-                          UpdateGraphs(auth).checkLastDayExercUpdate();
-                          UpdateGraphs(auth).checkLastDayNutrUpdate();
+                          UpdateGraphs(auth).checkAllFieldsForUpdate();
                           Navigator.of(context).pop();
                           Navigator.of(context).pushReplacement(MaterialPageRoute(
                               builder: (_) => MainScreen(auth)));
