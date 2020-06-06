@@ -26,10 +26,12 @@ class DatabaseManagement {
   }
 
   Future resetWeeklyExercGraphs() async {
+    int iter = 1;
     try{
       await _reference.collection('exercises').getDocuments().then((value) {
         value.documents.forEach((doc) {
-          updateSingleField('exercises', doc.documentID, '0');
+          updateSingleField('exercises', doc.data.keys.elementAt(iter), '0');
+          iter++;
         });
       });
     } catch (e) {
@@ -39,10 +41,12 @@ class DatabaseManagement {
   }
 
   Future resetWeeklyNutrGraphs() async {
+    int iter = 1;
     try{
       await _reference.collection('nutrition').getDocuments().then((value) {
         value.documents.forEach((doc) {
-          updateSingleField('nutrition', doc.documentID, '0');
+          updateSingleField('nutrition', doc.data.keys.elementAt(iter), '0');
+          iter++;
         });
       });
     } catch (e) {

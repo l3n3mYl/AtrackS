@@ -274,9 +274,9 @@ class UpdateGraphs {
             });
           }
         }
+      }
         _management.updateSingleField(
             'exercises', 'LastUpdated', DateTime.now().toString());
-      }
     }
   }
 
@@ -315,9 +315,9 @@ class UpdateGraphs {
             });
           }
         }
+      }
         _management.updateSingleField(
             'nutrition', 'LastUpdated', DateTime.now().toString());
-      }
     }
   }
 }
