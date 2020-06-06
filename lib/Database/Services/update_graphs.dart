@@ -23,7 +23,110 @@ class UpdateGraphs {
     'Water',
   ];
 
-  //TODO: check if still updates correctly
+  void checkMonthlyNutritionUpdate() async {
+    int lastDigit;
+    DatabaseManagement _management = DatabaseManagement(_user);
+    dynamic lastUpdateDate = await _management
+        .getSingleFieldInfo('nutrition_single_month_average', 'LastUpdated')
+        .then((value) {
+      lastDigit = int.parse(value.substring(value.length - 1, value.length));
+      if(lastDigit == 4){
+        lastDigit = 0;
+      }
+      return DateTime.parse(value);
+    });
+    if(lastUpdateDate != null) {
+      int diff = DateTime.now().difference(lastUpdateDate).inDays;
+      if(diff >= 7) {
+        String date = DateTime.now().toString().substring(0, DateTime.now().toString().length - 1);
+
+        //For all of the exercises
+        for( var i = 0; i < nutrList.length; ++i) {
+          String temp = await _management.getSingleFieldInfo(
+              'nutrition_weekly_progress',
+              nutrList[i]); //Get weekly progress list
+          List<String> list = temp.split(", ");
+          int sumOfNutritionInfo = 0;
+
+          //Calculate average
+          //Loop 7 times because there is 7 days in a week
+          for( var j = 0; j < 7; j++){
+            sumOfNutritionInfo += int.parse(list[i]);
+          }
+          int finalAverage = sumOfNutritionInfo ~/ 7;
+
+          //Update a proper list member
+          await _management.getSingleFieldInfo('nutrition_single_month_average', nutrList[i])
+              .then((value) {
+            List<String> oldValueList = value.split(", ");
+            oldValueList[lastDigit] = "$finalAverage";
+            String updateString = oldValueList.reduce((val, elem) => val + ', ' + elem);
+
+            _management.updateSingleField(
+                'nutrition_single_month_average', nutrList[i], updateString);
+          });
+
+        }
+        _management.updateSingleField(
+            'nutrition_single_month_average',
+            'LastUpdated',
+            '$date${lastDigit + 1}');
+      }
+    }
+  }
+  
+  void checkMongthlyExerciseUpdate() async {
+    int lastDigit;
+    DatabaseManagement _management = DatabaseManagement(_user);
+    dynamic lastUpdateDate = await _management
+        .getSingleFieldInfo('exercises_single_month_average', 'LastUpdated')
+        .then((value) {
+          lastDigit = int.parse(value.substring(value.length - 1, value.length));
+          if(lastDigit == 4){
+            lastDigit = 0;
+          }
+          return DateTime.parse(value);
+    });
+    if(lastUpdateDate != null) {
+      int diff = DateTime.now().difference(lastUpdateDate).inDays;
+      if(diff >= 7) {
+        String date = DateTime.now().toString().substring(0, DateTime.now().toString().length - 1);
+
+        //For all of the exercises
+        for( var i = 0; i < exercList.length; ++i) {
+          String temp = await _management.getSingleFieldInfo(
+              'exercise_weekly_progress',
+              exercList[i]); //Get weekly progress list
+          List<String> list = temp.split(", ");
+          int sumOfExerciseInfo = 0;
+          //Calculate average
+          //Loop 7 times because there is 7 days in a week
+          for( var j = 0; j < 7; j++){
+            sumOfExerciseInfo += int.parse(list[i]);
+          }
+          int finalAverage = sumOfExerciseInfo ~/ 7;
+
+
+          //Update a proper list member
+          await _management.getSingleFieldInfo('exercises_single_month_average', exercList[i])
+              .then((value) {
+                List<String> oldValueList = value.split(", ");
+                oldValueList[lastDigit] = "$finalAverage";
+                String updateString = oldValueList.reduce((val, elem) => val + ', ' + elem);
+                print(updateString);
+                _management.updateSingleField(
+                    'exercises_single_month_average', exercList[i], updateString);
+          });
+
+        }
+        _management.updateSingleField(
+            'exercises_single_month_average',
+            'LastUpdated',
+            '$date${lastDigit + 1}');
+      }
+    }
+  }
+
   //Check Last Day the exercise was updated
   //Update the weekly graph
   void checkLastDayExercUpdate() async {
@@ -38,7 +141,6 @@ class UpdateGraphs {
       if (diff > 7) _management.resetWeeklyExercGraphs();
       else if (diff > 0 && diff <= 7) {
         if (DateTime.now().day - diff < 1) {
-//          if (diff > 7) _management.resetWeeklyExercGraphs();
           diff = 7 + DateTime.now().day - diff;
           for (var i = 0; i < exercList.length; ++i) {
             await _management
