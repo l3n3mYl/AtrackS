@@ -1,3 +1,4 @@
+import 'package:com/Screens/NutritionScreen/main_nutrition_screen.dart';
 import 'package:com/Screens/ProgressScreen/main_progress_screen.dart';
 import 'package:com/SecretMenu/menu_background.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
@@ -87,7 +88,7 @@ final Screen settingsScreen = new Screen(
 
 class _MainScreenState extends State<MainScreen> {
 
-  var selectedMenuItemScreen = '2';//TODO: CHANGE TO A NORMAL ID
+  var selectedMenuItemScreen = '7';//TODO: CHANGE TO A NORMAL ID
 
   final menu = new Menu(items: [
     MenuItem(id: '1', title: 'Progress'),
@@ -99,7 +100,7 @@ class _MainScreenState extends State<MainScreen> {
     MenuItem(id: '7', title: 'Settings'),
   ]);
 
-  var activeScreen = secondScreen;
+  var activeScreen = settingsScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +122,7 @@ class _MainScreenState extends State<MainScreen> {
             });
           } else if (itemId == '2') {
             setState(() {
-              activeScreen = secondScreen;
+              activeScreen = new MainNutritionScreenRootClass(widget._user).screen();
             });
           } else if (itemId == '3') {
             setState(() {

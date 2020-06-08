@@ -55,7 +55,7 @@ class DatabaseManagement {
     }
   }
 
-  Future<Map<String, dynamic>> retrieveExerciseInfoByUid() async {
+  Future<Map<String, dynamic>> retrieveExerciseInfoMap() async {
     Map<String, dynamic> exerciseInfo = new Map();
     try {
       await _reference.collection('exercises').getDocuments().then((value) {
@@ -64,6 +64,21 @@ class DatabaseManagement {
         });
       });
       return exerciseInfo;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>> retrieveNutritionInfoMap() async {
+    Map<String, dynamic> nutritionInfo = new Map();
+    try{
+      await _reference.collection('nutrition').getDocuments().then((value) {
+        value.documents.forEach((doc) {
+          nutritionInfo = doc.data;
+        });
+      });
+      return nutritionInfo;
     } catch (e) {
       print(e.toString());
       return null;
