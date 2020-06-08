@@ -133,7 +133,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
       ),
     ];
 
-    Future<Map<String, dynamic>> _future = _db.retrieveExerciseInfoByUid();
+    Future<Map<String, dynamic>> _future = _db.retrieveExerciseInfoMap();
     List<Widget> children = new List();
 
     return Scaffold(
