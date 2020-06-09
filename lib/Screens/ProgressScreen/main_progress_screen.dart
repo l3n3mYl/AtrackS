@@ -60,7 +60,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         user: widget._user,
         icon: _icons[1],
         accentColor: _colorPal[1],
-        appBarTitile: 'Cycling Progress',
+        appBarTitle: 'Cycling Progress',
         field: 'Cycling',
         popupText: 'Circular Progress indicator at the top indicates todays Cycling minutes. '
             'The bottom graph shows weekly/monthly average progress. '
@@ -75,7 +75,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         user: widget._user,
         icon: _icons[2],
         accentColor: _colorPal[2],
-        appBarTitile: 'Sit-Ups Progress',
+        appBarTitle: 'Sit-Ups Progress',
         field: 'Sit-Ups',
         popupText: 'Circular Progress indicator at the top indicates todays Sit-Ups progress. '
             'The bottom graph shows weekly/monthly average progress. '
@@ -90,7 +90,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         user: widget._user,
         icon: _icons[3],
         accentColor: _colorPal[3],
-        appBarTitile: 'Push-Ups Progress',
+        appBarTitle: 'Push-Ups Progress',
         field: 'Push-Ups',
         popupText: 'Circular Progress indicator at the top indicates todays Push-Ups progress. '
             'The bottom graph shows weekly/monthly average progress. '
@@ -105,7 +105,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         user: widget._user,
         icon: _icons[4],
         accentColor: _colorPal[4],
-        appBarTitile: 'Pull-Ups Progress',
+        appBarTitle: 'Pull-Ups Progress',
         field: 'Pull-Ups',
         popupText: 'Circular Progress indicator at the top indicates todays Pull-Ups progress. '
             'The bottom graph shows weekly/monthly average progress. '
@@ -120,7 +120,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         user: widget._user,
         icon: _icons[5],
         accentColor: _colorPal[5],
-        appBarTitile: 'Jogging Progress',
+        appBarTitle: 'Jogging Progress',
         field: 'Jogging',
         popupText: 'Circular Progress indicator at the top indicates todays Jogging minutes. '
             'The bottom graph shows weekly/monthly average progress. '
