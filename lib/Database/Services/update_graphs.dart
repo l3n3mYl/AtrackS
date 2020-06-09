@@ -112,11 +112,11 @@ class UpdateGraphs {
           for(var j = 0; j < 4; ++j){
             sumOfExerciseInfo += int.parse(list[j]);
           }
-          
+
           int finalAverage = sumOfExerciseInfo ~/ 4;
-          
+
           //Update a proper list member
-          
+
           await _management.getSingleFieldInfo('exercise_monthly_progress', exercList[i])
               .then((value) {
              List<String> oldValueList = value.split(", ");
@@ -248,8 +248,8 @@ class UpdateGraphs {
       int diff = DateTime.now().difference(lastUpdateDate).inDays;
       if (diff > 7) _management.resetWeeklyExercGraphs();
       else if (diff > 0 && diff <= 7) {
-        if (DateTime.now().day - diff < 1) {
-          diff = 7 + DateTime.now().day - diff;
+        if (DateTime.now().weekday - diff < 1) {
+          diff = 7 + DateTime.now().weekday - diff;
           for (var i = 0; i < exercList.length; ++i) {
             await _management
                 .getSingleFieldInfo('exercises', exercList[i])
@@ -267,7 +267,7 @@ class UpdateGraphs {
                 .getSingleFieldInfo('exercises', exercList[i])
                 .then((value) {
                   if(!value.contains(" ")){
-                    _management.updateWeeklyProgress(DateTime.now().day - diff, value,
+                    _management.updateWeeklyProgress(DateTime.now().weekday - diff, value,
                         'exercise_weekly_progress', exercList[i]);
                     _management.updateSingleField('exercises', exercList[i], '0');
                   }
@@ -292,9 +292,9 @@ class UpdateGraphs {
     if (lastUpdateDate != null) {
       int diff = DateTime.now().difference(lastUpdateDate).inDays;
       if (diff > 7) _management.resetWeeklyNutrGraphs();
-      else if (diff > 0 && diff < 7) {
-        if (DateTime.now().day - diff < 1) {
-          diff = 7 + DateTime.now().day - diff;
+      else if (diff > 0 && diff <= 7) {
+        if (DateTime.now().weekday - diff < 1) {
+          diff = 7 + DateTime.now().weekday - diff;
           for (var i = 0; i < nutrList.length; ++i) {
             await _management
                 .getSingleFieldInfo('nutrition', nutrList[i])
@@ -306,10 +306,11 @@ class UpdateGraphs {
           }
         } else {
           for (var i = 0; i < nutrList.length; ++i) {
+            print(DateTime.now().weekday - diff);
             await _management
                 .getSingleFieldInfo('nutrition', nutrList[i])
                 .then((value) {
-              _management.updateWeeklyProgress(DateTime.now().day - diff, value,
+              _management.updateWeeklyProgress(DateTime.now().weekday - diff, value,
                   'nutrition_weekly_progress', nutrList[i]);
               _management.updateSingleField('nutrition', nutrList[i], '0');
             });

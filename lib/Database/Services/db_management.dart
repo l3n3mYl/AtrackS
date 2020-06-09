@@ -26,12 +26,13 @@ class DatabaseManagement {
   }
 
   Future resetWeeklyExercGraphs() async {
-    int iter = 1;
     try{
       await _reference.collection('exercises').getDocuments().then((value) {
         value.documents.forEach((doc) {
-          updateSingleField('exercises', doc.data.keys.elementAt(iter), '0');
-          iter++;
+          for(var i = 0; i < doc.data.length; ++i) {
+            if(doc.data.keys.elementAt(i) != 'LastUpdated')
+              updateSingleField('exercises', doc.data.keys.elementAt(i), '0');
+          }
         });
       });
     } catch (e) {
@@ -41,12 +42,13 @@ class DatabaseManagement {
   }
 
   Future resetWeeklyNutrGraphs() async {
-    int iter = 1;
     try{
       await _reference.collection('nutrition').getDocuments().then((value) {
         value.documents.forEach((doc) {
-          updateSingleField('nutrition', doc.data.keys.elementAt(iter), '0');
-          iter++;
+          for(var i = 0; i < doc.data.length; ++i) {
+            if(doc.data.keys.elementAt(i) != 'LastUpdated')
+              updateSingleField('nutrition', doc.data.keys.elementAt(i), '0');
+          }
         });
       });
     } catch (e) {
