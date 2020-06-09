@@ -1,5 +1,6 @@
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
+import 'package:com/Screens/NutritionScreen/individual_nutrition_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:com/UiComponents/nutrition_card_rect.dart';
@@ -91,98 +92,145 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
 
   void addDataCards(Map nutritionInfo, List<double> percentage, List<int> goals,
       List<int> currProgress) {
+
+    final List<Widget> _screens = [
+      IndividualNutritionScreen(
+        division: 100,
+        appBarTitle: 'Water Consumption',
+        user: widget._user,
+        accentColor: _colorPal[0],
+        field: 'Water',
+        popupText: 'Edit me plis',
+      ),
+      IndividualNutritionScreen(
+        division: 10,
+        appBarTitle: 'Carbs Consumption',
+        user: widget._user,
+        accentColor: _colorPal[1],
+        field: 'Carbs',
+        popupText: 'Edit me plis',
+      ),
+      IndividualNutritionScreen(
+        division: 1,
+        appBarTitle: 'Fats Consumption',
+        user: widget._user,
+        accentColor: _colorPal[2],
+        field: 'Fats',
+        popupText: 'Edit me plis',
+      ),
+      IndividualNutritionScreen(
+        division: 100,
+        appBarTitle: 'Calorie Consumption',
+        user: widget._user,
+        accentColor: _colorPal[3],
+        field: 'Calories',
+        popupText: 'Edit me plis',
+      ),
+      IndividualNutritionScreen(
+        division: 1,
+        appBarTitle: 'Protein Consumption',
+        user: widget._user,
+        accentColor: _colorPal[4],
+        field: 'Protein',
+        popupText: 'Edit me plis',
+      ),
+    ];
+
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     Map<String, dynamic> newMap = nutritionInfo;
     newMap.remove('LastUpdated');
     if (nutritionInfo != null) {
       for (var i = 0; i < newMap.length; ++i) {
-        cardList.add(Padding(
-          padding: EdgeInsets.symmetric(vertical: 18.0, horizontal: 30.0),
-          child: Container(
-            width: _width,
-            height: _height * 0.09,
-            color: Colors.black26,
-            child: Stack(
-              children: <Widget>[
-                NutritionCardTriangle(_colorPal[i].withOpacity(0.5)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(left: 10.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        nutritionInfo.keys.elementAt(i),
-                        style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Text(
-                              '${currProgress[i]}',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'PTSerif',
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            Text(
-                              'g',
-                              style: TextStyle(
-                                  color: _colorPal[i],
-                                  fontFamily: 'PTSerif',
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            Text(
-                              ' / ',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'PTSerif',
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            Text(
-                              '${goals[i]}',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'PTSerif',
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            Text(
-                              'g',
-                              style: TextStyle(
-                                  color: _colorPal[i],
-                                  fontFamily: 'PTSerif',
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            SizedBox(
-                              width: 13.0,
-                            )
-                          ],
+        cardList.add(GestureDetector(
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => _screens[i])),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 18.0, horizontal: 30.0),
+            child: Container(
+              width: _width,
+              height: _height * 0.09,
+              color: Colors.black26,
+              child: Stack(
+                children: <Widget>[
+                  NutritionCardTriangle(_colorPal[i].withOpacity(0.5)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(left: 10.0),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          nutritionInfo.keys.elementAt(i),
+                          style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold),
                         ),
-                        Container(
-                            width: _height * 0.2,
-                            height: 30.0,
-                            child: LinearPercentIndicator(
-                              alignment: MainAxisAlignment.center,
-                              percent: percentage[i],
-                              backgroundColor: Colors.white,
-                              progressColor: _colorPal[i],
-                              animationDuration: 2,
-                              animation: true,
-                            )),
-                      ],
-                    )
-                  ],
-                )
-              ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                '${currProgress[i]}',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'PTSerif',
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              Text(
+                                'g',
+                                style: TextStyle(
+                                    color: _colorPal[i],
+                                    fontFamily: 'PTSerif',
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              Text(
+                                ' / ',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'PTSerif',
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              Text(
+                                '${goals[i]}',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'PTSerif',
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              Text(
+                                'g',
+                                style: TextStyle(
+                                    color: _colorPal[i],
+                                    fontFamily: 'PTSerif',
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              SizedBox(
+                                width: 13.0,
+                              )
+                            ],
+                          ),
+                          Container(
+                              width: _height * 0.2,
+                              height: 30.0,
+                              child: LinearPercentIndicator(
+                                alignment: MainAxisAlignment.center,
+                                percent: percentage[i],
+                                backgroundColor: Colors.white,
+                                progressColor: _colorPal[i],
+                                animationDuration: 2,
+                                animation: true,
+                              )),
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ));
@@ -192,6 +240,7 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     return Scaffold(
