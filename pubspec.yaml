@@ -53,3 +53,6 @@ flutter:
     - family: SourceSansPro
       fonts:
         - asset: fonts/SourceSansPro-Regular.ttf
+    - family: LibreBaskerville
+      fonts:
+        - asset: fonts/LibreBaskerville-Regular.ttf

@@ -103,6 +103,7 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
         accentColor: _colorPal[0],
         field: 'Water',
         popupText: 'Edit me plis',
+        measure: 'ml',
       ),
       IndividualNutritionScreen(
         division: 10,
@@ -111,6 +112,7 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
         accentColor: _colorPal[1],
         field: 'Carbs',
         popupText: 'Edit me plis',
+        measure: 'mg',
       ),
       IndividualNutritionScreen(
         division: 1,
@@ -119,6 +121,7 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
         accentColor: _colorPal[2],
         field: 'Fats',
         popupText: 'Edit me plis',
+        measure: 'mg',
       ),
       IndividualNutritionScreen(
         division: 100,
@@ -127,6 +130,7 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
         accentColor: _colorPal[3],
         field: 'Calories',
         popupText: 'Edit me plis',
+        measure: 'kcal',
       ),
       IndividualNutritionScreen(
         division: 1,
@@ -135,6 +139,7 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
         accentColor: _colorPal[4],
         field: 'Protein',
         popupText: 'Edit me plis',
+        measure: 'mg',
       ),
     ];
 

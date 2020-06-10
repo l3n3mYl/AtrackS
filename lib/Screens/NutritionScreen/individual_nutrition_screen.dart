@@ -4,41 +4,61 @@ import 'package:com/PopUps/information_popup.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class IndividualNutritionScreen extends StatefulWidget {
-
   final FirebaseUser user;
   final String appBarTitle;
   final Color accentColor;
   final String field;
   final String popupText;
   final int division;
+  final String measure;
 
-  IndividualNutritionScreen(
-      {this.user,
-        this.accentColor,
-        this.appBarTitle,
-        this.field,
-        this.popupText,
-        this.division,
-      });
+  IndividualNutritionScreen({
+    this.user,
+    this.measure,
+    this.accentColor,
+    this.appBarTitle,
+    this.field,
+    this.popupText,
+    this.division,
+  });
 
   @override
-  _IndividualNutritionScreenState createState() => _IndividualNutritionScreenState();
+  _IndividualNutritionScreenState createState() =>
+      _IndividualNutritionScreenState();
 }
 
 class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
-
   DatabaseManagement _management;
 
-  String exercGoal = '-1';
-  String exercTotal = '-1';
+  String nutritionGoal = '-1';
+  String nutritionTotal = '-1';
   double setGoal = 1.0;
-  List<FlSpot> weeklyExercList = new List<FlSpot>();
-  List<FlSpot> monthlyExercList = new List<FlSpot>();
+  List<FlSpot> weeklyNutrProgList = new List<FlSpot>();
+  List<FlSpot> monthlyNutrProgList = new List<FlSpot>();
+  List<String> factsList = new List<String>(7);
+
+  void getFacts(String field) async {
+    _management = DatabaseManagement(widget.user);
+    _management
+        .retrieveListFromSingleDoc('nutrition_facts', '${field.toLowerCase()}')
+        .then((val) {
+      setState(() {
+        if (val != null) factsList = val;
+      });
+    });
+  }
+
+  Widget factsToWidget(List<String> list) {
+    return new Row(
+      children: list.map((item) => new Text(item)).toList(),
+    );
+  }
 
   void getSetGoal() async {
     _management = DatabaseManagement(widget.user);
@@ -59,14 +79,15 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
       setState(() {
         for (var i = 0; i < resList.length; ++i) {
           if (double.parse(resList[i]) >= setGoal)
-            weeklyExercList.add(FlSpot(i.toDouble(), setGoal / widget.division));
+            weeklyNutrProgList
+                .add(FlSpot(i.toDouble(), setGoal / widget.division));
           else
-            weeklyExercList.add(FlSpot(i.toDouble(),
-                double.parse(resList[i]) / widget.division));
+            weeklyNutrProgList.add(FlSpot(
+                i.toDouble(), double.parse(resList[i]) / widget.division));
           if (i == resList.length - 1) if (double.parse(resList[i]) >= setGoal)
-            weeklyExercList.add(FlSpot(7, setGoal / widget.division));
+            weeklyNutrProgList.add(FlSpot(7, setGoal / widget.division));
           else
-            weeklyExercList
+            weeklyNutrProgList
                 .add(FlSpot(7, double.parse(resList[i]) / widget.division));
         }
       });
@@ -80,17 +101,18 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
         .then((result) {
       List<String> resList = result.split(", ");
       setState(() {
-        monthlyExercList.add(FlSpot(0.1, 2.0));
+        monthlyNutrProgList.add(FlSpot(0.1, 2.0));
         for (var i = 0; i < resList.length; ++i) {
           if (double.parse(resList[i]) >= setGoal)
-            monthlyExercList.add(FlSpot(((i.toDouble() + 1) * 2 - 1 + 0.05), setGoal / widget.division));
+            monthlyNutrProgList.add(FlSpot(((i.toDouble() + 1) * 2 - 1 + 0.05),
+                setGoal / widget.division));
           else
-            monthlyExercList.add(FlSpot(((i.toDouble() + 1) * 2 - 1 + 0.05),
+            monthlyNutrProgList.add(FlSpot(((i.toDouble() + 1) * 2 - 1 + 0.05),
                 double.parse(resList[i]) / widget.division));
           if (i == resList.length - 1) if (double.parse(resList[i]) >= setGoal)
-            monthlyExercList.add(FlSpot(9.95, setGoal / widget.division));
+            monthlyNutrProgList.add(FlSpot(9.95, setGoal / widget.division));
           else
-            monthlyExercList
+            monthlyNutrProgList
                 .add(FlSpot(9.95, double.parse(resList[i]) / widget.division));
         }
       });
@@ -103,14 +125,14 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
         .getSingleFieldInfo('nutrition', widget.field)
         .then((value) {
       setState(() {
-        exercTotal = value;
+        nutritionTotal = value;
       });
     });
     await _management
         .getSingleFieldInfo('nutrition_goals', '${widget.field}_Goals')
         .then((value) {
       setState(() {
-        exercGoal = value;
+        nutritionGoal = value;
       });
     });
   }
@@ -118,7 +140,7 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
   @override
   void initState() {
     super.initState();
-
+    getFacts(widget.field);
     getSetGoal();
     delayRun();
   }
@@ -139,9 +161,11 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainColor,
@@ -160,14 +184,14 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
       body: Stack(
         children: <Widget>[
           Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
+            width: _width,
+            height: _height,
             color: mainColor,
           ),
           BackgroundTriangle(),
           Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
+            width: _width,
+            height: _height,
             child: AspectRatio(
               aspectRatio: 18 / 9,
               child: Opacity(
@@ -180,93 +204,180 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
             ),
           ),
           Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
+            width: _width,
+            height: _height,
             color: Colors.transparent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 13.0),
-                  width: 256,
-                  height: 256,
-                  child: CircularPercentIndicator(
-                    backgroundColor: mainColor,
-                    radius: 250.0,
-                    progressColor: widget.accentColor,
-                    lineWidth: 3.0,
-                    animationDuration: 20,
-                    percent: exercGoal == '-1' && exercTotal == '-1'
-                        ? 0.01
-                        : double.parse(exercTotal) >= double.parse(exercGoal)
-                        ? 1.0
-                        : (double.parse(exercTotal) *
-                        100 /
-                        double.parse(exercGoal)) /
-                        100,
-                    animation: true,
-                    center: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 13.0),
+                    width: _width * 0.9,
+                    height: _height * 0.169,
+                    child: Stack(
                       children: <Widget>[
-                        Icon(
-                          FontAwesomeIcons.print,
-                          size: 150,
-                          color: widget.accentColor,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: Text(
-                            exercGoal == '-1' && exercGoal == '-1'
-                                ? '0 - 0%'
-                                : '$exercTotal - ${((int.parse(exercTotal) * 100 / int.parse(exercGoal))).toStringAsFixed(0)}%',
-                            style: TextStyle(color: Colors.white),
+                        Positioned(
+                          top: _height * 0.0125,
+                          left: _width * 0.069,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              nutritionTotal == '-1'
+                                  ? Text(
+                                      '0',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 45.0,
+                                          fontFamily: 'LibreBaskerville'),
+                                    )
+                                  : Text(
+                                      nutritionTotal,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 30.0,
+                                          fontFamily: 'LibreBaskerville'),
+                                    ),
+                              Text(
+                                widget.measure,
+                                style: TextStyle(
+                                    color: widget.accentColor,
+                                    fontSize: 30.0,
+                                    fontFamily: 'LibreBaskerville'),
+                              ),
+                            ],
                           ),
                         ),
+                        Positioned(
+                          top: _height * 0.02,
+                          left: _width * 0.44,
+                          child: Container(
+                            child: Transform.rotate(
+                              angle: 0.45,
+                              child: SizedBox(
+                                width: 2.0,
+                                height: 65.0,
+                                child: Container(
+                                  color: widget.accentColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: _height * 0.069,
+                          right: _width * 0.169,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              nutritionGoal == '-1'
+                                  ? Text(
+                                      '0',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 45.0,
+                                          fontFamily: 'LibreBaskerville'),
+                                    )
+                                  : Text(
+                                      nutritionGoal,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20.0,
+                                          fontFamily: 'LibreBaskerville'),
+                                    ),
+                              Text(
+                                widget.measure,
+                                style: TextStyle(
+                                    color: widget.accentColor,
+                                    fontSize: 20.0,
+                                    fontFamily: 'LibreBaskerville'),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 1.0,
-                  child: Container(
-                    color: Colors.white54,
+                  Container(
+                      padding: EdgeInsets.only(bottom: 26.0, top: 26.0),
+                      width: _width,
+                      height: _height * 0.13,
+                      child: LinearPercentIndicator(
+                        alignment: MainAxisAlignment.center,
+                        percent: setGoal == 1.0 && nutritionTotal == '-1'
+                            ? 0.1
+                            : (double.parse(nutritionTotal) / setGoal).abs(),
+                        center: setGoal == 1.0 && nutritionTotal == '-1'
+                            ? Text('0%')
+                            : Text(
+                                '${(int.parse(nutritionTotal) / setGoal * 100).toStringAsFixed(0)}%'),
+                        width: _width * 0.69,
+                        lineHeight: 25.0,
+                        progressColor: widget.accentColor,
+                        backgroundColor: Colors.white,
+                      )),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 13.0),
+                    child: LineChartSample2(
+                        weeklyNutrProgList.isEmpty
+                            ? [
+                                FlSpot(0.0, 0.0),
+                                FlSpot(2.0, 0.0),
+                                FlSpot(5.0, 0.0)
+                              ]
+                            : weeklyNutrProgList,
+                        monthlyNutrProgList.isEmpty
+                            ? [
+                                FlSpot(0.0, 0.0),
+                                FlSpot(5.0, 0.0),
+                                FlSpot(6.9, 0.0)
+                              ]
+                            : monthlyNutrProgList,
+                        widget.accentColor,
+                        setGoal,
+                        widget.division),
                   ),
-                ),
-                Center(
-                  child: Text(
-                    'Keep Up The Good Work!',
-                    style: TextStyle(color: widget.accentColor),
+                  SizedBox(
+                    height: 1.0,
+                    child: Container(
+                      color: Colors.white54,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 1.0,
-                  child: Container(
-                    color: Colors.white54,
+                  SizedBox(
+                    height: 13.0,
                   ),
-                ),
-                Container(
-                  child: LineChartSample2(
-                      weeklyExercList.isEmpty
-                          ? [
-                        FlSpot(0.0, 0.0),
-                        FlSpot(2.0, 0.0),
-                        FlSpot(5.0, 0.0)
-                      ]
-                          : weeklyExercList,
-                      monthlyExercList.isEmpty
-                          ? [
-                        FlSpot(0.0, 0.0),
-                        FlSpot(5.0, 0.0),
-                        FlSpot(6.9, 0.0)
-                      ]
-                          : monthlyExercList,
-                      widget.accentColor,
-                      setGoal,
-                      widget.division
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Fact about ${widget.field}',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'PTSerif',
+                          fontSize: 24.0),
+                    ),
                   ),
-                )
-              ],
+                  SizedBox(
+                    height: 13.0,
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: <Widget>[
+                                  Text(
+                                    factsList == [] ? '' : '⦿ ${factsList[DateTime.now().weekday - 1]}',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'PTSerif',
+                                        fontSize: 14.0),
+                                  ),
+                                  SizedBox(
+                                    height: 13.0,
+                                  )
+                                ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           PopupScreen(
@@ -281,8 +392,8 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
 }
 
 class LineChartSample2 extends StatefulWidget {
-  LineChartSample2(
-      this._weeklyChart, this._monthlyChart, this._color, this.setGoal, this.division);
+  LineChartSample2(this._weeklyChart, this._monthlyChart, this._color,
+      this.setGoal, this.division);
 
   final List<FlSpot> _weeklyChart;
   final List<FlSpot> _monthlyChart;
@@ -309,35 +420,6 @@ class _LineChartSample2State extends State<LineChartSample2> {
 
     return Column(
       children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              showAvg = !showAvg;
-            });
-          },
-          child: Container(
-            width: 120,
-            height: 25,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(56.0),
-                color: Color.fromRGBO(155, 144, 130, 1)),
-            child: Container(
-              margin: const EdgeInsets.all(2.0),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(56.0),
-                  color: Colors.black),
-              child: Center(
-                  child: Text(
-                    'Monthly/Weekly',
-                    style: TextStyle(
-                        color: Color.fromRGBO(155, 144, 130, 1),
-                        fontFamily: 'PTSerif',
-                        fontSize: 10,
-                        fontWeight: FontWeight.w200),
-                  )),
-            ),
-          ),
-        ),
         AspectRatio(
           aspectRatio: 1.70,
           child: Container(
@@ -357,12 +439,43 @@ class _LineChartSample2State extends State<LineChartSample2> {
             ),
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 38.0),
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                showAvg = !showAvg;
+              });
+            },
+            child: Container(
+              width: 120,
+              height: 25,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(56.0),
+                  color: Color.fromRGBO(155, 144, 130, 1)),
+              child: Container(
+                margin: const EdgeInsets.all(2.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(56.0),
+                    color: Colors.black),
+                child: Center(
+                    child: Text(
+                  'Monthly/Weekly',
+                  style: TextStyle(
+                      color: Color.fromRGBO(155, 144, 130, 1),
+                      fontFamily: 'PTSerif',
+                      fontSize: 10,
+                      fontWeight: FontWeight.w200),
+                )),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
 
   LineChartData weeklyData(List<FlSpot> firstList, Color color) {
-
     final List<Color> gradientColors = [
       color,
       color
@@ -423,13 +536,17 @@ class _LineChartSample2State extends State<LineChartSample2> {
             fontSize: 15,
           ),
           getTitles: (value) {
-            if (value.toInt() == (widget.setGoal ~/ widget.division * 0.1).toInt())
+            if (value.toInt() ==
+                (widget.setGoal ~/ widget.division * 0.1).toInt())
               return '${(widget.setGoal ~/ widget.division * 0.1).toInt()}';
-            if (value.toInt() == (widget.setGoal ~/ widget.division * 0.25).toInt())
+            if (value.toInt() ==
+                (widget.setGoal ~/ widget.division * 0.25).toInt())
               return '${(widget.setGoal ~/ widget.division * 0.25).toInt()}';
-            if (value.toInt() == (widget.setGoal ~/ widget.division * 0.5).toInt())
+            if (value.toInt() ==
+                (widget.setGoal ~/ widget.division * 0.5).toInt())
               return '${(widget.setGoal ~/ widget.division * 0.5).toInt()}';
-            if (value.toInt() == (widget.setGoal ~/ widget.division * 0.75).toInt())
+            if (value.toInt() ==
+                (widget.setGoal ~/ widget.division * 0.75).toInt())
               return '${(widget.setGoal ~/ widget.division * 0.75).toInt()}';
             if (value.toInt() == (widget.setGoal ~/ widget.division).toInt())
               return '${(widget.setGoal ~/ widget.division).toInt()}';
@@ -451,7 +568,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           isCurved: true,
           preventCurveOverShooting: true,
           colors:
-          gradientColors.map((color) => color.withOpacity(0.9)).toList(),
+              gradientColors.map((color) => color.withOpacity(0.9)).toList(),
           barWidth: 5,
           isStrokeCapRound: true,
           dotData: FlDotData(
@@ -460,7 +577,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           belowBarData: BarAreaData(
             show: true,
             colors:
-            gradientColors.map((color) => color.withOpacity(0.4)).toList(),
+                gradientColors.map((color) => color.withOpacity(0.4)).toList(),
           ),
         ),
       ],
@@ -544,13 +661,17 @@ class _LineChartSample2State extends State<LineChartSample2> {
             fontSize: 15,
           ),
           getTitles: (value) {
-            if (value.toInt() == (widget.setGoal ~/ widget.division * 0.1).toInt())
+            if (value.toInt() ==
+                (widget.setGoal ~/ widget.division * 0.1).toInt())
               return '${(widget.setGoal ~/ widget.division * 0.1).toInt()}';
-            if (value.toInt() == (widget.setGoal ~/ widget.division * 0.25).toInt())
+            if (value.toInt() ==
+                (widget.setGoal ~/ widget.division * 0.25).toInt())
               return '${(widget.setGoal ~/ widget.division * 0.25).toInt()}';
-            if (value.toInt() == (widget.setGoal ~/ widget.division * 0.5).toInt())
+            if (value.toInt() ==
+                (widget.setGoal ~/ widget.division * 0.5).toInt())
               return '${(widget.setGoal ~/ widget.division * 0.5).toInt()}';
-            if (value.toInt() == (widget.setGoal ~/ widget.division * 0.75).toInt())
+            if (value.toInt() ==
+                (widget.setGoal ~/ widget.division * 0.75).toInt())
               return '${(widget.setGoal ~/ widget.division * 0.75).toInt()}';
             if (value.toInt() == (widget.setGoal ~/ widget.division).toInt())
               return '${(widget.setGoal ~/ widget.division).toInt()}';
@@ -572,7 +693,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           preventCurveOverShooting: true,
           isCurved: true,
           colors:
-          gradientColors.map((color) => color.withOpacity(0.9)).toList(),
+              gradientColors.map((color) => color.withOpacity(0.9)).toList(),
           barWidth: 5,
           isStrokeCapRound: true,
           dotData: FlDotData(
@@ -581,7 +702,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           belowBarData: BarAreaData(
             show: true,
             colors:
-            gradientColors.map((color) => color.withOpacity(0.4)).toList(),
+                gradientColors.map((color) => color.withOpacity(0.4)).toList(),
           ),
         ),
       ],

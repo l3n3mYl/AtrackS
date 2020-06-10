@@ -8,6 +8,22 @@ class DatabaseManagement {
 
   final Firestore _reference = Firestore.instance;
 
+  Future<List<String>> retrieveListFromSingleDoc(String collection,
+      String document) async {
+    List<String> _list = new List<String>();
+    try{
+      DocumentSnapshot snapshot = await _reference.collection(collection)
+          .document(document).get();
+      for(var i = 0; i < snapshot.data.length; ++i){
+        _list.add(snapshot["$i"]);
+      }
+      return _list;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
   Future updateWeeklyProgress(int day, String amount, String collection, String field) async {
     try{
       DocumentSnapshot snapshot =
