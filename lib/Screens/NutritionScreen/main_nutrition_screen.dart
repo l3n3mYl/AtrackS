@@ -5,7 +5,9 @@ import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:com/UiComponents/nutrition_card_rect.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class MainNutritionScreenRootClass {
@@ -235,6 +237,80 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
           ),
         ));
       }
+      cardList.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 18.0),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: (){},
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    padding: EdgeInsets.all(2.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(56.0), color: textColor),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(56.0),
+                        color: Colors.black,
+                      ),
+                      child: Icon(FontAwesomeIcons.cameraRetro,
+                        size: 36.0,
+                        color: textColor,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 30.0,),
+                GestureDetector(
+                  onTap: (){},
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    padding: EdgeInsets.all(2.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(56.0), color: textColor),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(56.0),
+                        color: Colors.black,
+                      ),
+                      child: Icon(FontAwesomeIcons.qrcode,
+                        size: 36.0,
+                        color: textColor,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 30.0,),
+                GestureDetector(
+                  onTap: (){},
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    padding: EdgeInsets.all(2.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(56.0), color: textColor),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(56.0),
+                        color: Colors.black,
+                      ),
+                      child: Icon(FontAwesomeIcons.barcode,
+                        size: 36.0,
+                        color: textColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+      );
     }
   }
 
