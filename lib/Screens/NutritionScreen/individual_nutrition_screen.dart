@@ -306,7 +306,7 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
                         alignment: MainAxisAlignment.center,
                         percent: setGoal == 1.0 && nutritionTotal == '-1'
                             ? 0.1
-                            : (double.parse(nutritionTotal) / setGoal).abs(),
+                            : (double.parse(nutritionTotal) / setGoal).abs() >= 1.0 ? 1.0 : (double.parse(nutritionTotal) / setGoal).abs(),
                         center: setGoal == 1.0 && nutritionTotal == '-1'
                             ? Text('0%')
                             : Text(
