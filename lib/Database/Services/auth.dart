@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:com/Database/Models/exercises.dart';
 import 'package:com/Database/Models/exercise_goals.dart';
+import 'package:com/Database/Models/meditation.dart';
 import 'package:com/Database/Models/single_month_progress_exercise.dart';
 import 'package:com/Database/Models/single_month_progress_nutrition.dart';
 import 'package:com/Database/Models/nutrition.dart';
@@ -17,6 +18,13 @@ class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final Firestore _reference = Firestore.instance;
   final User newUser = User();
+
+  final Meditation _meditation = Meditation(
+    current: '0',
+    goal: '15',
+    weeklyStatus: '0, 0, 0, 0, 0, 0, 0',
+    lastUpdated: DateTime.now().toString(),
+  );
 
   final MonthExerciseProgress _singleMonthExerciseProgress = MonthExerciseProgress(
     cycling: '0, 0, 0, 0',
@@ -127,6 +135,7 @@ class AuthService {
       await _reference.collection('exercise_monthly_progress').document(fUser.uid).setData(_monthExerciseProgress.exerciseMonthProgressInfoToMap());
       await _reference.collection('nutrition_single_month_average').document(fUser.uid).setData(_singleMonthNutritionProgress.nutritionMonthProgressInfoToMap());
       await _reference.collection('exercises_single_month_average').document(fUser.uid).setData(_singleMonthExerciseProgress.exerciseMonthProgressInfoToMap());
+      await _reference.collection('meditation').document(fUser.uid).setData(_meditation.statusToMap());
 
       return fUser;
     } catch (e) {
@@ -199,6 +208,7 @@ class AuthService {
         await _reference.collection('exercise_monthly_progress').document(user.uid).setData(_monthExerciseProgress.exerciseMonthProgressInfoToMap());
         await _reference.collection('nutrition_single_month_average').document(user.uid).setData(_singleMonthNutritionProgress.nutritionMonthProgressInfoToMap());
         await _reference.collection('exercises_single_month_average').document(user.uid).setData(_singleMonthExerciseProgress.exerciseMonthProgressInfoToMap());
+        await _reference.collection('meditation').document(user.uid).setData(_meditation.statusToMap());
       }
 
       return user;
@@ -249,6 +259,7 @@ class AuthService {
           await _reference.collection('exercise_monthly_progress').document(user.uid).setData(_monthExerciseProgress.exerciseMonthProgressInfoToMap());
           await _reference.collection('nutrition_single_month_average').document(user.uid).setData(_singleMonthNutritionProgress.nutritionMonthProgressInfoToMap());
           await _reference.collection('exercises_single_month_average').document(user.uid).setData(_singleMonthExerciseProgress.exerciseMonthProgressInfoToMap());
+          await _reference.collection('meditation').document(user.uid).setData(_meditation.statusToMap());
         }
 
         return user;
