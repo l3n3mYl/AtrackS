@@ -254,11 +254,9 @@ class UpdateGraphs {
             await _management
                 .getSingleFieldInfo('exercises', exercList[i])
                 .then((value) {
-                  if(!value.contains(" ")){
                     _management.updateWeeklyProgress(
                         diff, value, 'exercise_weekly_progress', exercList[i]);
                     _management.updateSingleField('exercises', exercList[i], '0');
-                  }
             });
           }
         } else {
@@ -266,11 +264,9 @@ class UpdateGraphs {
             await _management
                 .getSingleFieldInfo('exercises', exercList[i])
                 .then((value) {
-                  if(!value.contains(" ")){
                     _management.updateWeeklyProgress(DateTime.now().weekday - diff, value,
                         'exercise_weekly_progress', exercList[i]);
                     _management.updateSingleField('exercises', exercList[i], '0');
-                  }
             });
           }
         }
@@ -306,7 +302,6 @@ class UpdateGraphs {
           }
         } else {
           for (var i = 0; i < nutrList.length; ++i) {
-            print(DateTime.now().weekday - diff);
             await _management
                 .getSingleFieldInfo('nutrition', nutrList[i])
                 .then((value) {
