@@ -1,3 +1,4 @@
+import 'package:com/Screens/MeditationScreen/meditation_screen.dart';
 import 'package:com/Screens/NutritionScreen/main_nutrition_screen.dart';
 import 'package:com/Screens/ProgressScreen/main_progress_screen.dart';
 import 'package:com/SecretMenu/menu_background.dart';
@@ -130,7 +131,7 @@ class _MainScreenState extends State<MainScreen> {
             });
           } else if(itemId == '4'){
             setState(() {
-              activeScreen = fourthScreen;
+              activeScreen = new MeditationScreenRootClass(widget._user).screen();
             });
           } else if(itemId == '5'){
             setState(() {
