@@ -246,9 +246,15 @@ class UpdateGraphs {
     });
     if (lastUpdateDate != null) {
       int diff = DateTime.now().difference(lastUpdateDate).inDays;
-      if (diff > 7) _management.resetWeeklyExercGraphs();
+      if (diff > 7) {
+        await _management.resetWeeklyExercGraphs().then((_) {
+          _management.updateSingleField(
+              'exercises', 'LastUpdated', DateTime.now().toString());
+        });
+      }
       else if (diff > 0 && diff <= 7) {
         if (DateTime.now().weekday - diff < 1) {
+          print('$diff diff1');
           diff = 7 + DateTime.now().weekday - diff;
           for (var i = 0; i < exercList.length; ++i) {
             await _management
@@ -259,6 +265,8 @@ class UpdateGraphs {
                     _management.updateSingleField('exercises', exercList[i], '0');
             });
           }
+          _management.updateSingleField(
+              'exercises', 'LastUpdated', DateTime.now().toString());
         } else {
           for (var i = 0; i < exercList.length; ++i) {
             await _management
@@ -269,10 +277,10 @@ class UpdateGraphs {
                     _management.updateSingleField('exercises', exercList[i], '0');
             });
           }
+          _management.updateSingleField(
+              'exercises', 'LastUpdated', DateTime.now().toString());
         }
       }
-        _management.updateSingleField(
-            'exercises', 'LastUpdated', DateTime.now().toString());
     }
   }
 

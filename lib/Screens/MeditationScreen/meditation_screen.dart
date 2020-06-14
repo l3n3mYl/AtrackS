@@ -61,12 +61,28 @@ class _MeditationScreenState extends State<MeditationScreen> {
         context, MaterialPageRoute(builder: (context) => StopWatch(goal)));
 
     if (result != null) {
-      await _management.updateSingleField('meditation', 'Current', result);
+      var sec = result.split(':')[1];
+      var min = result.split(':')[0];
+      var cMin = current.split(':')[0];
+      var cSec = current.split(':')[1];
+      String finalSec = (int.parse(sec) + int.parse(cSec)).toString();
+      String finalMin = (int.parse(min) + int.parse(cMin)).toString();
+      if(int.parse(finalSec) < 10){
+        finalSec = '0$finalSec';
+      } else if(int.parse(finalSec) > 59) {
+        finalMin = (int.parse(finalMin) + int.parse(finalSec) ~/ 60).toString();
+        finalSec = (int.parse(finalSec) % 60).toString();
+        if(int.parse(finalSec) < 10)
+          finalSec = '0$finalSec';
+      }
+      if(int.parse(finalMin) < 10)
+        finalMin = '0$finalMin';
+      await _management.updateSingleField('meditation', 'Current', '$finalMin:$finalSec');
+      setState(() {
+        current = '$finalMin:$finalSec';
+      });
     }
 
-    setState(() {
-      current = result;
-    });
   }
 
   @override
@@ -252,18 +268,32 @@ class StopWatch extends StatefulWidget {
 }
 
 class _StopWatchState extends State<StopWatch> {
+  bool startBtn = true;
   bool isStart = true;
   bool isStop = true;
   bool isReset = true;
   double percent = 0.0;
+  String btnName = 'Start';
   String time = '00:00';
   var swatch = Stopwatch();
   final duration = const Duration(seconds: 1);
 
   void getGoal() {
+    var goalMin = int.parse(widget.goal.split(':')[0]);
+    var goalSec = int.parse(widget.goal.split(':')[1]);
+    var finalGoalTime = (goalMin*60) + goalSec;
+
+    var currMin = int.parse(this.time.split(':')[0]);
+    var currSec = int.parse(this.time.split(':')[1]);
+    var finalCurrTime = currMin * 60 + currSec;
     setState(() {
-      percent = double.parse(
-          "${widget.goal.split(':')[0]}.${widget.goal.split(':')[1]}");
+      if(finalCurrTime == 0.0)
+        percent = 0.0;
+      else {
+        percent = (finalCurrTime * 100 / finalGoalTime) / 100;
+        if(percent > 1.0)
+          percent = 1.0;
+      }
     });
   }
 
@@ -274,6 +304,7 @@ class _StopWatchState extends State<StopWatch> {
   void running() {
     if (swatch.isRunning) {
       startTimer();
+      getGoal();
     }
     setState(() {
       time = (swatch.elapsed.inMinutes % 60).toString().padLeft(2, '0') +
@@ -369,21 +400,6 @@ class _StopWatchState extends State<StopWatch> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         RaisedButton(
-                          onPressed: stop,
-                          color: Colors.red,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 40.0,
-                            vertical: 15.0,
-                          ),
-                          child: Text(
-                            'Stop',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        RaisedButton(
                           onPressed: reset,
                           color: Colors.teal,
                           padding: EdgeInsets.symmetric(
@@ -399,20 +415,19 @@ class _StopWatchState extends State<StopWatch> {
                       ],
                     ),
                     RaisedButton(
-                      onPressed: start,
-                      color: Colors.green,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 80.0,
-                        vertical: 20.0,
-                      ),
-                      child: Text(
-                        'Start',
-                        style: TextStyle(fontSize: 24.0, color: Colors.white),
-                      ),
-                    ),
-                    RaisedButton(
                       onPressed: () {
-                        Navigator.pop(context, time);
+                        if(startBtn){
+                          setState(() {
+                            btnName = 'Stop';
+                            startBtn = false;
+                            start();
+                          });
+                        } else {
+                          setState(() {
+                            btnName = 'Start';
+                            stop();
+                          });
+                        }
                       },
                       color: Colors.green,
                       padding: EdgeInsets.symmetric(
@@ -420,10 +435,10 @@ class _StopWatchState extends State<StopWatch> {
                         vertical: 20.0,
                       ),
                       child: Text(
-                        'BACK',
+                        btnName,
                         style: TextStyle(fontSize: 24.0, color: Colors.white),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
