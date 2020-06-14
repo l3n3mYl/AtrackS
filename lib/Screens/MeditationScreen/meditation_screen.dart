@@ -61,28 +61,34 @@ class _MeditationScreenState extends State<MeditationScreen> {
         context, MaterialPageRoute(builder: (context) => StopWatch(goal)));
 
     if (result != null) {
-      var sec = result.split(':')[1];
-      var min = result.split(':')[0];
-      var cMin = current.split(':')[0];
-      var cSec = current.split(':')[1];
+      String sec = result.split(':')[1];
+      String min = result.split(':')[0];
+      String cMin = current.split(':')[0];
+      String cSec = current.split(':')[1];
       String finalSec = (int.parse(sec) + int.parse(cSec)).toString();
       String finalMin = (int.parse(min) + int.parse(cMin)).toString();
-      if(int.parse(finalSec) < 10){
+
+      //Calculate Time
+      if (int.parse(finalSec) < 10) {
         finalSec = '0$finalSec';
-      } else if(int.parse(finalSec) > 59) {
+      } else if (int.parse(finalSec) > 59) {
         finalMin = (int.parse(finalMin) + int.parse(finalSec) ~/ 60).toString();
         finalSec = (int.parse(finalSec) % 60).toString();
-        if(int.parse(finalSec) < 10)
-          finalSec = '0$finalSec';
+        if (int.parse(finalSec) < 10) finalSec = '0$finalSec';
       }
-      if(int.parse(finalMin) < 10)
-        finalMin = '0$finalMin';
-      await _management.updateSingleField('meditation', 'Current', '$finalMin:$finalSec');
+      if (int.parse(finalMin) < 10) finalMin = '0$finalMin';
+
+      //Update Database
+      await _management.updateSingleField(
+          'meditation', 'Current', '$finalMin:$finalSec');
+      await _management.updateMeditationWeeklyTime('meditation', 'WeeklyStatus',
+          DateTime.now().weekday, '$finalMin:$finalSec');
+
       setState(() {
         current = '$finalMin:$finalSec';
+        getUserInfo();
       });
     }
-
   }
 
   @override
@@ -226,8 +232,8 @@ class _MeditationScreenState extends State<MeditationScreen> {
                                                 decoration: BoxDecoration(
                                                     color: Colors.black,
                                                     borderRadius:
-                                                    BorderRadius.circular(
-                                                        56.0)),
+                                                        BorderRadius.circular(
+                                                            56.0)),
                                               ),
                                             ),
                                             Center(
@@ -236,7 +242,8 @@ class _MeditationScreenState extends State<MeditationScreen> {
                                                   height: 45.0,
                                                   child: Image.asset(
                                                     'images/basic-logo.png',
-                                                    color: Color.fromRGBO(169, 1, 1, 1),
+                                                    color: Color.fromRGBO(
+                                                        169, 1, 1, 1),
                                                   )),
                                             )
                                           ],
@@ -272,7 +279,7 @@ class _StopWatchState extends State<StopWatch> {
   bool isStart = true;
   bool isStop = true;
   bool isReset = true;
-  double percent = 0.0;
+  double percent = 0.00;
   String btnName = 'Start';
   String time = '00:00';
   var swatch = Stopwatch();
@@ -281,18 +288,17 @@ class _StopWatchState extends State<StopWatch> {
   void getGoal() {
     var goalMin = int.parse(widget.goal.split(':')[0]);
     var goalSec = int.parse(widget.goal.split(':')[1]);
-    var finalGoalTime = (goalMin*60) + goalSec;
+    var finalGoalTime = (goalMin * 60) + goalSec;
 
     var currMin = int.parse(this.time.split(':')[0]);
     var currSec = int.parse(this.time.split(':')[1]);
     var finalCurrTime = currMin * 60 + currSec;
     setState(() {
-      if(finalCurrTime == 0.0)
+      if (finalCurrTime <= 0.0)
         percent = 0.0;
       else {
-        percent = (finalCurrTime * 100 / finalGoalTime) / 100;
-        if(percent > 1.0)
-          percent = 1.0;
+        percent = finalCurrTime / finalGoalTime;
+        if (percent > 1.0) percent = 1.0;
       }
     });
   }
@@ -416,7 +422,7 @@ class _StopWatchState extends State<StopWatch> {
                     ),
                     RaisedButton(
                       onPressed: () {
-                        if(startBtn){
+                        if (startBtn) {
                           setState(() {
                             btnName = 'Stop';
                             startBtn = false;

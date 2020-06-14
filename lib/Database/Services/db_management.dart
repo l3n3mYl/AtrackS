@@ -8,6 +8,24 @@ class DatabaseManagement {
 
   final Firestore _reference = Firestore.instance;
 
+  Future updateMeditationWeeklyTime(String collection, String field,
+      int day, String time) async {
+    try{
+      DocumentSnapshot snapshot = await _reference.collection(collection)
+              .document(_user.uid).get();
+      if(snapshot[field] != null) {
+        List<String> scList = snapshot[field].split(", ");
+        scList[day - 1] = time;
+        final String data = scList.reduce((value, element) => value + ', ' + element);
+        final Map<String, String> map = {field : data};
+        await _reference.collection(collection).document(_user.uid).updateData(map);
+      }
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
   Future<List<String>> retrieveListFromSingleDoc(String collection,
       String document) async {
     List<String> _list = new List<String>();
