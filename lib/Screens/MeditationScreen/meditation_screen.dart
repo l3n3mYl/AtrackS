@@ -1,12 +1,15 @@
 import 'dart:async';
-
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:com/UiComponents/swipe_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class MeditationScreenRootClass {
@@ -81,8 +84,8 @@ class _MeditationScreenState extends State<MeditationScreen> {
       //Update Database
       await _management.updateSingleField(
           'meditation', 'Current', '$finalMin:$finalSec');
-      await _management.updateMeditationWeeklyTime(DateTime.now().weekday,
-          '$finalMin:$finalSec');
+      await _management.updateMeditationWeeklyTime(
+          DateTime.now().weekday, '$finalMin:$finalSec');
 
       setState(() {
         current = '$finalMin:$finalSec';
@@ -279,6 +282,7 @@ class _StopWatchState extends State<StopWatch> {
   bool isStart = true;
   bool isStop = true;
   bool isReset = true;
+  bool isComplete = false;
   double percent = 0.00;
   String btnName = 'Start';
   String time = '00:00';
@@ -298,9 +302,24 @@ class _StopWatchState extends State<StopWatch> {
         percent = 0.0;
       else {
         percent = finalCurrTime / finalGoalTime;
-        if (percent > 1.0) percent = 1.0;
+        if (percent >= 1.0) {
+          percent = 1.0;
+          completedSound();
+        }
       }
     });
+  }
+
+  void completedSound() async {
+    AudioCache ac = AudioCache();
+    if(isComplete){
+      isComplete = false;
+      try{
+        await ac.play('Sounds/metal-gong.mp3');
+      } catch (e) {
+        print(e.toString());
+      }
+    }
   }
 
   void startTimer() {
@@ -367,89 +386,165 @@ class _StopWatchState extends State<StopWatch> {
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: [
             Colors.black,
-            accentColor,
-            accentColor,
             Colors.black,
             Colors.black,
             Colors.black,
+            mainColor,
           ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
         ),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              flex: 6,
-              child: Container(
-                alignment: Alignment.center,
-                child: CircularPercentIndicator(
-                  radius: 300.0,
-                  progressColor: Colors.orange,
-                  backgroundColor: Colors.white,
-                  percent:
-                      percent <= 0.0 ? 0.0 : percent >= 1.0 ? 1.0 : percent,
-                  center: Text(
-                    time,
-                    style: TextStyle(
-                        fontSize: 50.0,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700),
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                flex: 6,
+                child: Container(
+                  alignment: Alignment.center,
+                  child: CircularPercentIndicator(
+                    radius: 300.0,
+                    progressColor: Colors.red.shade900,
+                    backgroundColor: Colors.white,
+                    percent:
+                        percent <= 0.0 ? 0.0 : percent >= 1.0 ? 1.0 : percent,
+                    center: Text(
+                      time,
+                      style: TextStyle(
+                          fontSize: 66.0,
+                          color: Colors.white,
+                          fontFamily: 'SourceSansPro',
+                          fontWeight: FontWeight.w700),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              flex: 4,
-              child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Expanded(
+                flex: 4,
+                child: Container(
+                  padding: EdgeInsets.only(bottom: 48.0),
+                  alignment: Alignment.center,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        RaisedButton(
-                          onPressed: reset,
-                          color: Colors.teal,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 40.0,
-                            vertical: 15.0,
-                          ),
-                          child: Text(
-                            'Reset',
-                            style:
-                                TextStyle(fontSize: 20.0, color: Colors.white),
+                        GestureDetector(
+                          onTap: () {
+                            if (startBtn) {
+                              setState(() {
+                                btnName = 'Stop';
+                                startBtn = false;
+                                start();
+                              });
+                            } else {
+                              setState(() {
+                                btnName = 'Start';
+                                stop();
+                              });
+                            }
+                          },
+                          child: Center(
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: 120.0,
+                              height: 120.0,
+                              child: startBtn
+                                  ? Center(
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        margin: EdgeInsets.all(2.0),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              Colors.black,
+                                              Colors.black,
+                                              Colors.black87,
+                                              Colors.black54
+                                            ]
+                                          ),
+                                            borderRadius:
+                                                BorderRadius.circular(123.0)),
+                                        padding:
+                                            const EdgeInsets.only(left: 10.0),
+                                        child: Icon(
+                                          FontAwesomeIcons.play,
+                                          color: Colors.grey.shade300,
+                                          size: 50.0,
+                                        ),
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        margin: const EdgeInsets.all(2.0),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.black,
+                                                Colors.black,
+                                                Colors.black87,
+                                                Colors.black54
+                                              ]
+                                          ),
+                                          borderRadius:
+                                            BorderRadius.circular(123.0)),
+                                        child: Icon(
+                                          FontAwesomeIcons.stop,
+                                          color: Colors.white,
+                                          size: 50.0,
+                                        ),
+                                      ),
+                                    ),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(123.0),
+                                  color: textColor),
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                    RaisedButton(
-                      onPressed: () {
-                        if (startBtn) {
-                          setState(() {
-                            btnName = 'Stop';
-                            startBtn = false;
-                            start();
-                          });
-                        } else {
-                          setState(() {
-                            btnName = 'Start';
-                            stop();
-                          });
-                        }
-                      },
-                      color: Colors.green,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 80.0,
-                        vertical: 20.0,
-                      ),
-                      child: Text(
-                        btnName,
-                        style: TextStyle(fontSize: 24.0, color: Colors.white),
-                      ),
-                    ),
-                  ],
+                        GestureDetector(
+                          onTap: reset,
+                          child: Container(
+                            width: 69.0,
+                            height: 69.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(123.0),
+                              color: textColor
+                            ),
+                            child: Center(
+                              child: Container(
+                                padding: EdgeInsets.only(right: 2.5),
+                                width: double.infinity,
+                                height: double.infinity,
+                                margin: EdgeInsets.all(2.0),
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.black,
+                                          Colors.black,
+                                          Colors.black87,
+                                          Colors.black54
+                                        ]
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.circular(123.0)),
+                                child: Icon(
+                                  FontAwesomeIcons.backward,
+                                  color: Colors.grey.shade300,
+                                  size: 40.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ]),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
