@@ -81,8 +81,8 @@ class _MeditationScreenState extends State<MeditationScreen> {
       //Update Database
       await _management.updateSingleField(
           'meditation', 'Current', '$finalMin:$finalSec');
-      await _management.updateMeditationWeeklyTime('meditation', 'WeeklyStatus',
-          DateTime.now().weekday, '$finalMin:$finalSec');
+      await _management.updateMeditationWeeklyTime(DateTime.now().weekday,
+          '$finalMin:$finalSec');
 
       setState(() {
         current = '$finalMin:$finalSec';
