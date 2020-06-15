@@ -18,6 +18,7 @@ dependencies:
   pedometer: ^1.2.0
   fl_chart:
   percent_indicator:
+  audioplayers:
 
 #  sensors:
 
@@ -39,6 +40,7 @@ flutter:
   assets:
     - images/
     - images/Icons/
+    - assets/Sounds/
 
   fonts:
     - family: Pacifico
