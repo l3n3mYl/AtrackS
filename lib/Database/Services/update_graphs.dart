@@ -24,12 +24,63 @@ class UpdateGraphs {
   ];
 
   void checkAllFieldsForUpdate() {
+    checkMeditationUpdate();
     checkLastDayNutrUpdate();
     checkLastDayExercUpdate();
     checkMonthlyNutritionUpdate();
     checkMonthlyExerciseUpdate();
     checkFiveRecentMonthsNutritionUpdate();
     checkFiveRecentMonthsExercUpdate();
+  }
+  
+  void checkMeditationUpdate() async {
+    DatabaseManagement _management = DatabaseManagement(_user);
+    dynamic lastUpdateDate = await _management
+        .getSingleFieldInfo('meditation', 'LastUpdated').then((value) {
+          return DateTime.parse(value);
+    });
+
+    //Check when it was last time updated
+    if(lastUpdateDate != null){
+      int diff = DateTime.now().difference(lastUpdateDate).inDays;
+
+      //Update if update was done yesterday or earlier
+      if(diff > 0){
+        if(diff >= 7){
+          //If difference more than a week, reset the values to 00:00
+          await _management.updateSingleField('meditation', 'Current', '00:00');
+          for(var i = 0; i < 7; ++i){
+            await _management.updateMeditationWeeklyTime(i + 1, '00:00');
+            await _management.updateSingleField('meditation', 'LastUpdated', DateTime.now().toString());
+          }
+        } else if(diff < 7) {
+          //If not more than 7 days have passed
+          int day = DateTime.now().weekday - diff;//calculate if only curr week needs update
+          if(day < 1){
+            int it = DateTime.now().weekday;
+            //update curr week
+            while(it >= 1){
+              await _management.updateMeditationWeeklyTime(it, '00:00');
+              it--;
+            }
+
+            //update prev week
+            while(day <= 0){
+              await _management.updateMeditationWeeklyTime(7 + day, '00:00');
+              day++;
+            }
+          } else if (day >= 1) {
+            //Update only curr week if the difference are in this week only
+            for(var i = 0; i < day; ++i) {
+              await _management.updateMeditationWeeklyTime(DateTime.now().weekday + i, '00:00');
+            }
+          }
+          //Update date and current day's progress
+          await _management.updateSingleField('meditation', 'Current', '00:00');
+          await _management.updateSingleField('meditation', 'LastUpdated', DateTime.now().toString());
+        }
+      }
+    }
   }
 
   void checkFiveRecentMonthsNutritionUpdate() async {
@@ -254,7 +305,6 @@ class UpdateGraphs {
       }
       else if (diff > 0 && diff <= 7) {
         if (DateTime.now().weekday - diff < 1) {
-          print('$diff diff1');
           diff = 7 + DateTime.now().weekday - diff;
           for (var i = 0; i < exercList.length; ++i) {
             await _management

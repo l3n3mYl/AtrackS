@@ -8,10 +8,11 @@ class DatabaseManagement {
 
   final Firestore _reference = Firestore.instance;
 
-  Future updateMeditationWeeklyTime(String collection, String field,
-      int day, String time) async {
+  Future updateMeditationWeeklyTime(int day, String time) async {
+    String collection = 'meditation';
+    String field = 'WeeklyStatus';
     try{
-      DocumentSnapshot snapshot = await _reference.collection(collection)
+      DocumentSnapshot snapshot = await _reference.collection('meditation')
               .document(_user.uid).get();
       if(snapshot[field] != null) {
         List<String> scList = snapshot[field].split(", ");
