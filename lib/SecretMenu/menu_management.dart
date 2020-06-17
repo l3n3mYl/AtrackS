@@ -1,3 +1,4 @@
+import 'package:com/Screens/ExerciseScreen/exercise_screen.dart';
 import 'package:com/Screens/MeditationScreen/meditation_screen.dart';
 import 'package:com/Screens/NutritionScreen/main_nutrition_screen.dart';
 import 'package:com/Screens/ProgressScreen/main_progress_screen.dart';
@@ -119,7 +120,6 @@ class _MainScreenState extends State<MainScreen> {
           if (itemId == '1') {
             setState(() {
               activeScreen = new MainProgressScreenRootClass(widget._user).screen();
-//            activeScreen = secondScreen;
             });
           } else if (itemId == '2') {
             setState(() {
@@ -127,7 +127,7 @@ class _MainScreenState extends State<MainScreen> {
             });
           } else if (itemId == '3') {
             setState(() {
-              activeScreen = thirdScreen;
+              activeScreen = new MainExerciseScreenRootClass(widget._user).screen();
             });
           } else if(itemId == '4'){
             setState(() {
