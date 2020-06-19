@@ -1,14 +1,11 @@
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
-import 'package:com/Screens/NutritionScreen/individual_nutrition_screen.dart';
+import 'package:com/Screens/ExerciseScreen/individual_exercise_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
-import 'package:com/UiComponents/nutrition_card_rect.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class MainExerciseScreenRootClass {
   final FirebaseUser user;
@@ -63,91 +60,63 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
     _management = DatabaseManagement(widget._user);
     await _management.retrieveExerciseInfoMap().then((value) {
       setState(() {
-        calculatePercentage(value);
+        addDataCards(value);
       });
     });
   }
 
-  void calculatePercentage(Map exerciseValue) async {
-    _management = DatabaseManagement(widget._user);
-    List<int> goals = new List<int>();
-    List<int> currProgress = new List<int>();
-    List<double> percentage = new List<double>();
-    for (var i = 0; i < exerciseValue.length; ++i) {
-      if (exerciseValue.keys.elementAt(i).toString() != 'LastUpdated') {
-        await _management
-            .getSingleFieldInfo('exercise_goals',
-                '${exerciseValue.keys.elementAt(i).toString()}_Goal')
-            .then((value) {
-          goals.add(int.parse(value));
-        });
-        await _management
-            .getSingleFieldInfo(
-                'exercises', exerciseValue.keys.elementAt(i).toString())
-            .then((value) {
-          currProgress.add(int.parse(value));
-        });
-      }
-    }
-    if (goals.length != 0 && currProgress.length != 0) {
-      for (var i = 0; i < goals.length; ++i) {
-        percentage.add(currProgress[i] / goals[i]);
-        if (percentage[i] > 1.0) {
-          percentage[i] = 1.0;
-        }
-      }
-      setState(() {
-        addDataCards(exerciseValue);
-      });
-    }
-  }
-
   void addDataCards(Map nutritionInfo) {
     final List<Widget> _screens = [
-      IndividualNutritionScreen(
-        division: 100,
-        appBarTitle: 'Water Consumption',
+      IndividualExerciseScreen(
         user: widget._user,
+        field: 'Steps',
         accentColor: _colorPal[0],
-        field: 'Water',
-        popupText: 'Edit me plis',
-        measure: 'ml',
+        icon: _icons[0],
+        appBarTitle: 'Steps',
+        popupText: 'asd',
+        stepCounter: true,
       ),
-      IndividualNutritionScreen(
-        division: 10,
-        appBarTitle: 'Carbs Consumption',
+      IndividualExerciseScreen(
         user: widget._user,
+        field: 'Cycling',
         accentColor: _colorPal[1],
-        field: 'Carbs',
-        popupText: 'Edit me plis',
-        measure: 'mg',
+        icon: _icons[1],
+        appBarTitle: 'Cycling',
+        popupText: 'asd',
+        timeCounter: true,
       ),
-      IndividualNutritionScreen(
-        division: 1,
-        appBarTitle: 'Fats Consumption',
+      IndividualExerciseScreen(
         user: widget._user,
+        field: 'Sit-Ups',
         accentColor: _colorPal[2],
-        field: 'Fats',
-        popupText: 'Edit me plis',
-        measure: 'mg',
+        icon: _icons[2],
+        appBarTitle: 'Sit-Ups',
+        popupText: 'asd',
       ),
-      IndividualNutritionScreen(
-        division: 100,
-        appBarTitle: 'Calorie Consumption',
+      IndividualExerciseScreen(
         user: widget._user,
+        field: 'Push-Ups',
         accentColor: _colorPal[3],
-        field: 'Calories',
-        popupText: 'Edit me plis',
-        measure: 'kcal',
+        icon: _icons[3],
+        appBarTitle: 'Sit-Ups',
+        popupText: 'asd',
       ),
-      IndividualNutritionScreen(
-        division: 1,
-        appBarTitle: 'Protein Consumption',
+      IndividualExerciseScreen(
         user: widget._user,
+        field: 'Pull-Ups',
         accentColor: _colorPal[4],
-        field: 'Protein',
-        popupText: 'Edit me plis',
-        measure: 'mg',
+        icon: _icons[4],
+        appBarTitle: 'Pull-Ups',
+        popupText: 'asd',
+      ),
+      IndividualExerciseScreen(
+        user: widget._user,
+        field: 'Jogging',
+        accentColor: _colorPal[5],
+        icon: _icons[5],
+        appBarTitle: 'Jogging',
+        popupText: 'asd',
+        stepCounter: true,
       ),
     ];
 
