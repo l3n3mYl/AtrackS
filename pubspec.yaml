@@ -22,7 +22,7 @@ dependencies:
 
 #  sensors:
 
-#  cupertino_icons: ^0.1.2
+  cupertino_icons:
 
 dev_dependencies:
   flutter_launcher_icons:

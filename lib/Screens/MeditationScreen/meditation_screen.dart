@@ -4,6 +4,7 @@ import 'package:com/Screens/MeditationScreen/stop_watch_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:com/UiComponents/swipe_button.dart';
+import 'package:com/Utilities/time_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -60,31 +61,17 @@ class _MeditationScreenState extends State<MeditationScreen> {
         context, MaterialPageRoute(builder: (context) => StopWatch(goal)));
 
     if (result != null) {
-      String sec = result.split(':')[1];
-      String min = result.split(':')[0];
-      String cMin = current.split(':')[0];
-      String cSec = current.split(':')[1];
-      String finalSec = (int.parse(sec) + int.parse(cSec)).toString();
-      String finalMin = (int.parse(min) + int.parse(cMin)).toString();
 
-      //Calculate Time
-      if (int.parse(finalSec) < 10) {
-        finalSec = '0$finalSec';
-      } else if (int.parse(finalSec) > 59) {
-        finalMin = (int.parse(finalMin) + int.parse(finalSec) ~/ 60).toString();
-        finalSec = (int.parse(finalSec) % 60).toString();
-        if (int.parse(finalSec) < 10) finalSec = '0$finalSec';
-      }
-      if (int.parse(finalMin) < 10) finalMin = '0$finalMin';
+      String time = TimeManipulation().timeAddition(result, current);
 
       //Update Database
       await _management.updateSingleField(
-          'meditation', 'Current', '$finalMin:$finalSec');
+          'meditation', 'Current', time);
       await _management.updateMeditationWeeklyTime(
-          DateTime.now().weekday, '$finalMin:$finalSec');
+          DateTime.now().weekday, time);
 
       setState(() {
-        current = '$finalMin:$finalSec';
+        current = time;
         getUserInfo();
       });
     }
