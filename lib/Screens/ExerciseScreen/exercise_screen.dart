@@ -116,7 +116,7 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
         icon: _icons[5],
         appBarTitle: 'Jogging',
         popupText: 'asd',
-        stepCounter: true,
+        timeCounter: true,
       ),
     ];
 

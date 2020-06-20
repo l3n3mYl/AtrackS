@@ -20,15 +20,15 @@ class AuthService {
   final User newUser = User();
 
   final Meditation _meditation = Meditation(
-    current: '0',
-    goal: '15',
-    weeklyStatus: '0, 0, 0, 0, 0, 0, 0',
+    current: '00:00',
+    goal: '15:00',
+    weeklyStatus: '00:00, 00:00, 00:00, 00:00, 00:00, 00:00, 00:00',
     lastUpdated: DateTime.now().toString(),
   );
 
   final MonthExerciseProgress _singleMonthExerciseProgress = MonthExerciseProgress(
-    cycling: '0, 0, 0, 0',
-    jogging: '0, 0, 0, 0',
+    cycling: '00:00, 00:00, 00:00, 00:00',
+    jogging: '00:00, 00:00, 00:00, 00:00',
     pullUps: '0, 0, 0, 0',
     pushUps: '0, 0, 0, 0',
     sitUps: '0, 0, 0, 0,',
@@ -37,8 +37,8 @@ class AuthService {
   );
 
   final MonthExerciseProgress _monthExerciseProgress = MonthExerciseProgress(
-    cycling: '0, 0, 0, 0, 0',
-    jogging: '0, 0, 0, 0, 0',
+    cycling: '00:00, 00:00, 00:00, 00:00',
+    jogging: '00:00, 00:00, 00:00, 00:00',
     pullUps: '0, 0, 0, 0, 0',
     pushUps: '0, 0, 0, 0, 0',
     sitUps: '0, 0, 0, 0, 0',
@@ -65,8 +65,8 @@ class AuthService {
   );
 
   final WeeklyExerciseProgress _exerciseProgress = WeeklyExerciseProgress(
-    cycling: '0, 0, 0, 0, 0, 0, 0',
-    jogging: '0, 0, 0, 0, 0, 0, 0',
+    cycling: '00:00, 00:00, 00:00, 00:00, 00:00, 00:00, 00:00',
+    jogging: '00:00, 00:00, 00:00, 00:00, 00:00, 00:00, 00:00',
     pullUps: '0, 0, 0, 0, 0, 0, 0',
     pushUps: '0, 0, 0, 0, 0, 0, 0',
     sitUps: '0, 0, 0, 0, 0, 0, 0',
@@ -92,8 +92,8 @@ class AuthService {
   );
 
   final ExerciseGoals _newExerciseGoals = ExerciseGoals(
-    cycling_goal: '900',
-    jogging_goal: '900',
+    cycling_goal: '15:00',
+    jogging_goal: '15:00',
     pullUps_gaol: '15',
     pushUps_goal: '25',
     sitUps_goal: '30',
@@ -110,8 +110,8 @@ class AuthService {
   );
 
   final Exercises _newExercises = Exercises(
-    cycling: "0",
-    jogging: "0",
+    cycling: "00:00",
+    jogging: "00:00",
     pullUps: "0",
     pushUps: "0",
     sitUps: "0",
