@@ -17,4 +17,13 @@ class TimeManipulation {
 
     return '$finalMin:$finalSec';
   }
+
+  double timeToString(String time){
+    try{
+      return double.parse('${time.split(':')[0]}.${time.split(':')[1]}');
+    } catch (e) {
+      e.toString();
+      return double.parse('0.0');
+    }
+  }
 }

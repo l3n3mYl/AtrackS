@@ -70,6 +70,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
             'At the bottom of the monthly graph numbers represents the '
             'months.',
         division: 1,
+        isTimerDisplayed: true,
       ),
       ExerciseScreen(
         user: widget._user,
@@ -85,6 +86,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
             'At the bottom of the monthly graph numbers represents the '
             'months.',
         division: 1,
+        isTimerDisplayed: false,
       ),
       ExerciseScreen(
         user: widget._user,
@@ -100,6 +102,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
             'At the bottom of the monthly graph numbers represents the '
             'months.',
         division: 1,
+        isTimerDisplayed: false,
       ),
       ExerciseScreen(
         user: widget._user,
@@ -115,6 +118,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
             'At the bottom of the monthly graph numbers represents the '
             'months.',
         division: 1,
+        isTimerDisplayed: false,
       ),
       ExerciseScreen(
         user: widget._user,
@@ -130,6 +134,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
             'At the bottom of the monthly graph numbers represents the '
             'months.',
         division: 1,
+        isTimerDisplayed: true,
       ),
     ];
 

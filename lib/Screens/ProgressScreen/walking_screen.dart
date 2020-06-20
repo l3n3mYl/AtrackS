@@ -246,7 +246,9 @@ class _WalkingScreenState extends State<WalkingScreen> {
                               ? '0 - 0%'
                               : '$totalSteps - ${((int.parse(totalSteps) * 100 / int.parse(stepGoal))).toStringAsFixed(0)}%',
                               style: TextStyle(
-                                color: Colors.white54
+                                color: Colors.white,
+                                fontFamily: 'PTSerif',
+                                fontSize: 16.0
                               ),
                           )
                         ],
@@ -260,7 +262,7 @@ class _WalkingScreenState extends State<WalkingScreen> {
                     ),
                   ),
                   Center(
-                    child: Text('Keep Up The Good Work!', style: TextStyle(color: Colors.white54),),
+                    child: Text('Keep Up The Good Work!', style: TextStyle(color: Colors.white, fontFamily: 'PTSerif'),),
                   ),
                   SizedBox(
                     height: 1.0,
@@ -405,7 +407,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           showTitles: true,
           reservedSize: 22,
           textStyle: const TextStyle(
-              color: Colors.red, fontWeight: FontWeight.bold, fontSize: 16),
+              color: Colors.red, fontWeight: FontWeight.bold, fontSize: 16, fontFamily: 'PTSerif'),
           getTitles: (value) {
             switch (value.toInt()) {
               case 0:
@@ -433,6 +435,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
             color: Colors.white54,
             fontWeight: FontWeight.bold,
             fontSize: 15,
+            fontFamily: 'SourceSansPro'
           ),
           getTitles: (value) {
             if (value.toInt() == (widget.setGoal ~/ 1000 * 0.1).toInt())
@@ -506,6 +509,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           textStyle: const TextStyle(
               color: Colors.red,
               fontWeight: FontWeight.bold,
+              fontFamily: 'SourceSansPro',
               fontSize: 16),
           getTitles: (value) {
             switch (value.toInt()) {
@@ -549,6 +553,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           textStyle: const TextStyle(
             color: Colors.white54,
             fontWeight: FontWeight.bold,
+            fontFamily: 'SourceSansPro',
             fontSize: 15,
           ),
           getTitles: (value) {

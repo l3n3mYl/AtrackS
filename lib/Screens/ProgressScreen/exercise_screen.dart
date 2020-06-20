@@ -2,6 +2,7 @@ import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
 import 'package:com/PopUps/information_popup.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
+import 'package:com/Utilities/time_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -15,19 +16,23 @@ class ExerciseScreen extends StatefulWidget {
   final String icon;
   final String field;
   final String popupText;
+  final bool isTimerDisplayed;
 
   //For percent calculation, 1k will be for exercises with large numbers
   //100 will be for exercises with low number, to represent the graph better
   final int division;
 
-  ExerciseScreen(
-      {this.user,
+  ExerciseScreen({
+      Key key,
+      this.user,
       this.accentColor,
       this.icon,
       this.appBarTitle,
       this.field,
       this.popupText,
-      this.division});
+      this.division,
+      this.isTimerDisplayed
+      });
 
   @override
   _ExerciseScreenState createState() => _ExerciseScreenState();
@@ -35,6 +40,7 @@ class ExerciseScreen extends StatefulWidget {
 
 class _ExerciseScreenState extends State<ExerciseScreen> {
   DatabaseManagement _management;
+  TimeManipulation _manipulation = TimeManipulation();
 
   String exercGoal = '-1';
   String exercTotal = '-1';
@@ -48,30 +54,38 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
         'exercise_goals', '${widget.field}_Goal');
 
     setState(() {
-      setGoal = double.parse(data);
+      if(widget.isTimerDisplayed)
+        setGoal = _manipulation.timeToString(data);
+      else setGoal = double.parse(data);
     });
   }
 
   void getWeeklyExercProgress() async {
     _management = DatabaseManagement(widget.user);
+    double xAxis = 0.0;
     await _management
         .getSingleFieldInfo('exercise_weekly_progress', widget.field)
         .then((result) {
       List<String> resList = result.split(", ");
       setState(() {
         for (var i = 0; i < resList.length; ++i) {
-          if (double.parse(resList[i]) / widget.division >= setGoal)
+          if(widget.isTimerDisplayed){
+            xAxis = _manipulation.timeToString(resList[i]);
+          } else {
+            xAxis = double.parse(resList[i]);
+          }
+          if (xAxis / widget.division >= setGoal)
             weeklyExercList.add(FlSpot(i.toDouble(), setGoal));
           else
             weeklyExercList.add(FlSpot(i.toDouble(),
-                double.parse(resList[i]) / widget.division));
-          if (i == resList.length - 1) if (double.parse(resList[i]) /
+                xAxis / widget.division));
+          if (i == resList.length - 1) if (xAxis /
                   widget.division >=
               setGoal)
             weeklyExercList.add(FlSpot(7, setGoal));
           else
             weeklyExercList
-                .add(FlSpot(7, double.parse(resList[i]) / widget.division));
+                .add(FlSpot(7, xAxis / widget.division));
         }
       });
     });
@@ -79,6 +93,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
 
   void getMonthlyExercProgress() async {
     _management = DatabaseManagement(widget.user);
+    double xAxis = 0.0;
     await _management
         .getSingleFieldInfo('exercise_monthly_progress', widget.field)
         .then((result) {
@@ -86,18 +101,23 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
       setState(() {
         monthlyExercList.add(FlSpot(0.1, 2.0));
         for (var i = 0; i < resList.length; ++i) {
-          if (double.parse(resList[i]) / widget.division >= setGoal)
+          if(widget.isTimerDisplayed){
+            xAxis = _manipulation.timeToString(resList[i]);
+          } else {
+            xAxis = double.parse(resList[i]);
+          }
+          if (xAxis / widget.division >= setGoal)
             monthlyExercList.add(FlSpot(((i.toDouble() + 1) * 2 - 1 + 0.05), setGoal));
           else
             monthlyExercList.add(FlSpot(((i.toDouble() + 1) * 2 - 1 + 0.05),
-                double.parse(resList[i]) / widget.division));
-          if (i == resList.length - 1) if (double.parse(resList[i]) /
+                xAxis / widget.division));
+          if (i == resList.length - 1) if (xAxis /
                   widget.division >=
               setGoal)
             monthlyExercList.add(FlSpot(9.95, setGoal));
           else
             monthlyExercList
-                .add(FlSpot(9.95, double.parse(resList[i]) / widget.division));
+                .add(FlSpot(9.95, xAxis / widget.division));
         }
       });
     });
@@ -201,14 +221,20 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                     progressColor: widget.accentColor,
                     lineWidth: 3.0,
                     animationDuration: 20,
-                    percent: exercGoal == '-1' && exercTotal == '-1'
-                        ? 0.01
+                    percent: !widget.isTimerDisplayed
+                      ? exercGoal == '-1' && exercTotal == '-1'
+                        ? 0.0
                         : double.parse(exercTotal) >= double.parse(exercGoal)
                             ? 1.0
-                            : (double.parse(exercTotal) *
-                                    100 /
-                                    double.parse(exercGoal)) /
-                                100,
+                            : (double.parse(exercTotal) / double.parse(exercGoal))
+                      : exercGoal != '-1' && exercTotal != '-1'
+                          && widget.isTimerDisplayed
+                        ? double.parse('${exercTotal.split(':')[0]}.${exercTotal.split(':')[1]}') >=
+                                double.parse('${exercGoal.split(':')[0]}.${exercGoal.split(':')[1]}')
+                          ? 1.0
+                          : (double.parse('${exercTotal.split(':')[0]}.${exercTotal.split(':')[1]}') /
+                                double.parse('${exercGoal.split(':')[0]}.${exercGoal.split(':')[1]}'))
+                        : 0.0,
                     animation: true,
                     center: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -221,11 +247,13 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 20.0),
-                          child: Text(
-                            exercGoal == '-1' && exercGoal == '-1'
+                          child: Text(!widget.isTimerDisplayed
+                            ? exercGoal == '-1' && exercTotal == '-1'
                                 ? '0 - 0%'
-                                : '$exercTotal - ${((int.parse(exercTotal) * 100 / int.parse(exercGoal))).toStringAsFixed(0)}%',
-                            style: TextStyle(color: Colors.white),
+                                : '$exercTotal - ${((int.parse(exercTotal) * 100 / int.parse(exercGoal))).toStringAsFixed(0)}%'
+                            : widget.isTimerDisplayed && exercGoal != '-1' && exercTotal != '-1'
+                              ? '$exercTotal min' : '',
+                            style: TextStyle(color: Colors.white, fontFamily: 'SourceSansPro', fontSize: 16.0),
                           ),
                         ),
                       ],
@@ -241,7 +269,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                 Center(
                   child: Text(
                     'Keep Up The Good Work!',
-                    style: TextStyle(color: widget.accentColor),
+                    style: TextStyle(color: widget.accentColor, fontFamily: 'PTSerif'),
                   ),
                 ),
                 SizedBox(
@@ -267,7 +295,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                             ]
                           : monthlyExercList,
                       widget.accentColor,
-                      setGoal),
+                      setGoal != 1.0 ? setGoal : 1.0),
                 )
               ],
             ),
@@ -364,7 +392,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
   }
 
   LineChartData weeklyData(List<FlSpot> firstList, Color color) {
-
+    int temp = 0;
     final List<Color> gradientColors = [
       color,
       color
@@ -395,7 +423,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           showTitles: true,
           reservedSize: 22,
           textStyle: const TextStyle(
-              color: Colors.white54, fontWeight: FontWeight.bold, fontSize: 16),
+              color: Colors.white54, fontWeight: FontWeight.bold, fontSize: 16, fontFamily: 'PTSerif'),
           getTitles: (value) {
             switch (value.toInt()) {
               case 0:
@@ -423,19 +451,16 @@ class _LineChartSample2State extends State<LineChartSample2> {
             color: Colors.white54,
             fontWeight: FontWeight.bold,
             fontSize: 15,
+            fontFamily: 'SourceSansPro'
           ),
           getTitles: (value) {
-            if (value.toInt() == (widget.setGoal * 0.1).toInt())
-              return '${(widget.setGoal * 0.1).toInt()}';
-            if (value.toInt() == (widget.setGoal * 0.25).toInt())
-              return '${(widget.setGoal * 0.25).toInt()}';
-            if (value.toInt() == (widget.setGoal * 0.5).toInt())
-              return '${(widget.setGoal * 0.5).toInt()}';
-            if (value.toInt() == (widget.setGoal * 0.75).toInt())
-              return '${(widget.setGoal * 0.75).toInt()}';
-            if (value.toInt() == (widget.setGoal).toInt())
-              return '${(widget.setGoal).toInt()}';
-            return '';
+            if(temp == 3){
+              temp = 0;
+              return '${value.toInt()}';
+            } else {
+              temp ++;
+              return '';
+            }
           },
           reservedSize: 28,
           margin: 12,
@@ -470,6 +495,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
   }
 
   LineChartData monthlyData(List<FlSpot> monthlyDiag, Color color) {
+    int temp = 0;
     final List<Color> gradientColors = [
       color
           .withRed(color.red + -50)
@@ -546,17 +572,13 @@ class _LineChartSample2State extends State<LineChartSample2> {
             fontSize: 15,
           ),
           getTitles: (value) {
-            if (value.toInt() == (widget.setGoal * 0.1).toInt())
-              return '${(widget.setGoal * 0.1).toInt()}';
-            if (value.toInt() == (widget.setGoal * 0.25).toInt())
-              return '${(widget.setGoal * 0.25).toInt()}';
-            if (value.toInt() == (widget.setGoal * 0.5).toInt())
-              return '${(widget.setGoal * 0.5).toInt()}';
-            if (value.toInt() == (widget.setGoal * 0.75).toInt())
-              return '${(widget.setGoal * 0.75).toInt()}';
-            if (value.toInt() == (widget.setGoal).toInt())
-              return '${(widget.setGoal).toInt()}';
-            return '';
+            if(temp == 3){
+              temp = 0;
+              return '${value.toInt()}';
+            } else {
+              temp++;
+              return '';
+            }
           },
           reservedSize: 28,
           margin: 12,

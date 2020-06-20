@@ -106,8 +106,6 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   void running() {
     if (swatch.isRunning) {
       startTimer();
-//      String goal = '${int.parse(setGoal.floor().toString())}:00';
-////      getGoal(goal);
     }
     setState(() {
       time = (swatch.elapsed.inMinutes % 60).toString().padLeft(2, '0') +
@@ -417,10 +415,19 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
                                 : Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text('$time', style: TextStyle(color: Colors.white, fontFamily: 'SourceSansPro', fontSize: 26.0),),
+                                Text('$time',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'SourceSansPro',
+                                      fontSize: 26.0),
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
-                                  child: Text(' min', style: TextStyle(color: widget.accentColor, fontFamily: 'PTSerif'),),
+                                  child: Text(' min',
+                                    style: TextStyle(
+                                        color: widget.accentColor,
+                                        fontFamily: 'PTSerif'),
+                                  ),
                                 )
                               ],
                             )),
