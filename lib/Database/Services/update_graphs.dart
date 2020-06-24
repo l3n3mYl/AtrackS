@@ -1,4 +1,5 @@
 import 'package:com/Database/Services/db_management.dart';
+import 'package:com/Utilities/time_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UpdateGraphs {
@@ -123,7 +124,6 @@ class UpdateGraphs {
             List<String> oldValueList = value.split(", ");
             oldValueList[lastDigit] = "$finalAverage";
             String updateString = oldValueList.reduce((val, elem) => val + ', ' + elem);
-
             _management.updateSingleField(
                 'nutrition_monthly_progress', nutrList[i], updateString);
           });
@@ -160,9 +160,18 @@ class UpdateGraphs {
 
           //Calculate average
           //Average of 4 weeks
-          for(var j = 0; j < 4; ++j){
-            sumOfExerciseInfo += int.parse(list[j]);
+
+          if(exercList[i] == 'Jogging' || exercList[i] == 'Cycling'){
+            for(var j = 0; j < 4; ++j){
+              double time = TimeManipulation().timeToString(list[j]);
+              sumOfExerciseInfo += time.toInt();
+            }
+          } else {
+            for(var j = 0; j < 4; ++j){
+              sumOfExerciseInfo += int.parse(list[j]);
+            }
           }
+
 
           int finalAverage = sumOfExerciseInfo ~/ 4;
 
@@ -259,11 +268,21 @@ class UpdateGraphs {
               exercList[i]); //Get weekly progress list
           List<String> list = temp.split(", ");
           int sumOfExerciseInfo = 0;
+
           //Calculate average
           //Loop 7 times because there is 7 days in a week
-          for( var j = 0; j < 7; j++){
-            sumOfExerciseInfo += int.parse(list[i]);
+
+          if(exercList[i] == 'Jogging' || exercList[i] == 'Cycling'){
+            for( var j = 0; j < 7; j++){
+              double time = TimeManipulation().timeToString(list[i]);
+              sumOfExerciseInfo += time.toInt();
+            }
+          } else {
+            for( var j = 0; j < 7; j++){
+              sumOfExerciseInfo += int.parse(list[i]);
+            }
           }
+
           int finalAverage = sumOfExerciseInfo ~/ 7;
 
 
@@ -310,9 +329,19 @@ class UpdateGraphs {
             await _management
                 .getSingleFieldInfo('exercises', exercList[i])
                 .then((value) {
+                  if (exercList[i] == 'Jogging'){
+                    _management.updateWeeklyProgress(DateTime.now().weekday - diff, value,
+                        'exercise_weekly_progress', exercList[i]);
+                    _management.updateSingleField('exercises', exercList[i], '00:00');
+                  } else if (exercList[i] == 'Cycling') {
+                    _management.updateWeeklyProgress(DateTime.now().weekday - diff, value,
+                        'exercise_weekly_progress', exercList[i]);
+                    _management.updateSingleField('exercises', exercList[i], '00:00');
+                  } else {
                     _management.updateWeeklyProgress(
                         diff, value, 'exercise_weekly_progress', exercList[i]);
                     _management.updateSingleField('exercises', exercList[i], '0');
+                  }
             });
           }
           _management.updateSingleField(
@@ -322,9 +351,19 @@ class UpdateGraphs {
             await _management
                 .getSingleFieldInfo('exercises', exercList[i])
                 .then((value) {
-                    _management.updateWeeklyProgress(DateTime.now().weekday - diff, value,
-                        'exercise_weekly_progress', exercList[i]);
-                    _management.updateSingleField('exercises', exercList[i], '0');
+                    if (exercList[i] == 'Jogging'){
+                      _management.updateWeeklyProgress(DateTime.now().weekday - diff, value,
+                          'exercise_weekly_progress', exercList[i]);
+                      _management.updateSingleField('exercises', exercList[i], '00:00');
+                    } else if (exercList[i] == 'Cycling') {
+                      _management.updateWeeklyProgress(DateTime.now().weekday - diff, value,
+                          'exercise_weekly_progress', exercList[i]);
+                      _management.updateSingleField('exercises', exercList[i], '00:00');
+                    } else {
+                      _management.updateWeeklyProgress(DateTime.now().weekday - diff, value,
+                          'exercise_weekly_progress', exercList[i]);
+                      _management.updateSingleField('exercises', exercList[i], '0');
+                    }
             });
           }
           _management.updateSingleField(

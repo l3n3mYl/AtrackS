@@ -4,6 +4,7 @@ import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
 import 'package:com/PopUps/information_popup.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
+import 'package:com/Utilities/calorie_calculation.dart';
 import 'package:com/Utilities/time_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:sensors/sensors.dart';
 
 class IndividualExerciseScreen extends StatefulWidget {
   final FirebaseUser user;
@@ -49,6 +51,18 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
 
   Pedometer _pedometer;
   StreamSubscription<int> _subscription;
+
+  //Accel vals
+  List<double> xList = new List<double>();
+  List<double> yList = new List<double>();
+  List<double> zList = new List<double>();
+  List<double> calorieResult = new List<double>();
+  double vecCalledTimes = 0.0;
+  int currCals = 0;
+  int tempSteps = 0;
+  List<double> _accelerometerValues;
+  List<StreamSubscription<dynamic>> _streamSubscriptions =
+        <StreamSubscription<dynamic>>[];
 
   //Aver calc
   String exercGoal = '-1';
@@ -167,15 +181,25 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
 
   void initTapFunctionality() async {
     _management = DatabaseManagement(widget.user);
+    int total = 0;
     timesClicked++;
-    await _management.updateSingleField(
-        'exercises', widget.field, '$timesClicked');
+    await _management.getSingleFieldInfo('exercises', widget.field).then((value){
+      total = 1 + int.parse(value);
+      _management.updateSingleField(
+          'exercises', widget.field, '$total');
+    });
   }
 
   void getSetGoal() async {
     _management = DatabaseManagement(widget.user);
     String data = await _management.getSingleFieldInfo(
         'exercise_goals', '${widget.field}_Goal');
+
+    await _management.getSingleFieldInfo('nutrition', 'Calories').then((result) {
+      setState(() {
+        this.currCals = int.parse(result);
+      });
+    });
 
     setState(() {
       if(widget.timeCounter)
@@ -292,6 +316,13 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
     getSetGoal();
     initPlatformState();
     delayRun();
+
+    //Accelerometer
+    _streamSubscriptions.add(accelerometerEvents.listen((AccelerometerEvent event) {
+      setState(() {
+        _accelerometerValues = <double> [event.x, event.y, event.z];
+      });
+    }));
   }
 
   //Delay run in order for graphs to display the correct information
@@ -307,10 +338,54 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   void dispose() {
     super.dispose();
     if (widget.stepCounter) _subscription.cancel();
+
+    //acceler
+    for(StreamSubscription<dynamic> subscription in _streamSubscriptions) {
+      subscription.cancel();
+    }
+  }
+
+  void getcalor(List<double> x, List<double> y, List<double> z) async {
+    double res = await CalorieCalculation(widget.user).getCalories(xList, yList, zList);
+    calorieResult.add(res);
+    if(calorieResult.length >= 30){
+      var temp = 0.0;
+      for(var i in calorieResult){
+        temp += i;
+      }
+      calorieResult.clear();
+      temp /= 30;
+      if(tempSteps < int.parse(stepCountVal) && temp > 0.0){
+        tempSteps = int.parse(stepCountVal);
+        setState(() {
+          currCals += temp.toInt();
+          _management.updateSingleField('nutrition', 'Calories', currCals.toString());
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if(widget.stepCounter){
+      final List<double> a = _accelerometerValues?.map(
+          (double v) => double.parse(v.toStringAsFixed(1)))?.toList();
+      if(a != null) {
+        xList.add(a.elementAt(0).abs());
+        yList.add(a.elementAt(1).abs());
+        zList.add(a.elementAt(2).abs());
+        if(vecCalledTimes >= 2){
+          getcalor(xList, yList, zList);
+          vecCalledTimes = 0;
+          xList.clear();
+          yList.clear();
+          zList.clear();
+        }
+        vecCalledTimes++;
+      }
+    }
+
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainColor,
@@ -411,7 +486,26 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
                         Padding(
                             padding: const EdgeInsets.only(top: 20.0),
                             child: widget.stepCounter
-                                ? Text('$stepCountVal Step Count Val')
+                                ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text('$stepCountVal',
+                                      style: TextStyle(
+                                        fontFamily: 'SansSourcePro',
+                                        color: Colors.white,
+                                        fontSize: 26.0
+                                      ),),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(' steps',
+                                        style: TextStyle(
+                                          fontFamily: ' PTSerif',
+                                          color: widget.accentColor,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
                                 : Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
@@ -470,9 +564,46 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
                             height: 150,
                             color: widget.accentColor,
                           ),
-                          Padding(
-                              padding: const EdgeInsets.only(top: 20.0),
-                              child: Text('$timesClicked Clicked')),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                exercTotal == '-1' ? '' : exercTotal,
+                                style: TextStyle(
+                                  color: Colors.white54,
+                                  fontFamily: 'SansSourcePro'
+                                ),
+                              ),
+                              Text(' Total',
+                                style: TextStyle(
+                                  color: Colors.white54,
+                                  fontFamily: 'PTSerif'
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 3.0,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('$timesClicked',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'SansSourcePro',
+                                  fontSize: 26.0
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(' Current',
+                                  style: TextStyle(
+                                    color: widget.accentColor,
+                                    fontFamily: 'PTSerif'
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -484,10 +615,30 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
                     color: Colors.white54,
                   ),
                 ),
-                Center(
-                  child: Text(
-                    'Keep Up The Good Work!',
-                    style: TextStyle(color: widget.accentColor),
+                Container(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Keep Up The Good Work!',
+                        style: TextStyle(
+                            color: widget.accentColor,
+                            fontSize: 20.0,
+                            fontFamily: 'PTSerif'
+                        ),
+                      ),
+                      widget.stepCounter
+                      ? Padding(
+                          padding: EdgeInsets.only(top: 23.0),
+                          child: Text(
+                              'Steps are monitored automatically here',
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontFamily: 'PTSerif'
+                            ),
+                          ),
+                      )
+                      : SizedBox()
+                    ],
                   ),
                 ),
                 widget.timeCounter
@@ -659,7 +810,10 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
                     ],
                   ),
                 )
-                    : Container(),
+                    : Container(
+                  height: 1.0,
+                  color: Colors.white54,
+                ),
                 Container(
                   padding: EdgeInsets.only(left: 13.0),
                   alignment: Alignment.center,
@@ -678,7 +832,7 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
                               fontFamily: 'PTSerif'
                             ),
                           ),
-                          Text('200',
+                          Text('$currCals',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 24.0,
