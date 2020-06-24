@@ -157,6 +157,31 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                         children: <Widget>[
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 55.0),
+                            child: DropdownButton<String>(
+                              icon: Icon(
+                                FontAwesomeIcons.angleDown,
+                                color: textColor,
+                              ),
+                              underline: SizedBox(height: 1.0, child: Container(color: accentColor,),),
+                              hint: Text('Gender'),
+                              value: dropDownValue,
+                              items: <String>[
+                                'Male',
+                                'Female',
+                              ].map<DropdownMenuItem<String>>((String value){
+                                return DropdownMenuItem<String>(value: value, child: Text(value, style: TextStyle(color: textColor),));
+                              }).toList(),
+                              onChanged: (gender) {
+                                widget.user.g = gender;
+                                setState(() {
+                                  dropDownValue = gender;
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 20.0,),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 55.0),
                             child: TextFormField(
                               validator: (emailField) {
                                 if(emailField.isEmpty) return 'This Field Is Required';
@@ -231,6 +256,7 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 55.0),
                             child: TextFormField(
+                              autofocus: false,
                               validator: (weightField) {
                                 if(weightField.isNotEmpty){
                                   if(!isNumeric(weightField)) return 'OnlyNumbers';
@@ -241,7 +267,7 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                               },
                               textAlign: TextAlign.left,
                               maxLines: 1,
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.phone,
                               style: TextStyle(color: textColor,
                                   fontFamily: 'PTSerif',
                                   fontSize: 18,
@@ -273,6 +299,7 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 55.0),
                             child: TextFormField(
+                              autofocus: false,
                               validator: (heightField) {
                                 if(heightField.isNotEmpty){
                                   if(!isNumeric(heightField)) return 'OnlyNumbers';
@@ -283,7 +310,7 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                               },
                               textAlign: TextAlign.left,
                               maxLines: 1,
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.phone,
                               style: TextStyle(color: textColor,
                                   fontFamily: 'PTSerif',
                                   fontSize: 18,
@@ -312,27 +339,6 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                           SizedBox(
                             height: 20.0,
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 55.0),
-                            child: DropdownButton<String>(
-                              hint: Text('Gender'),
-                              value: dropDownValue,
-                              items: <String>[
-                                'Male',
-                                'Female',
-                                'Mental',
-                              ].map<DropdownMenuItem<String>>((String value){
-                                return DropdownMenuItem<String>(value: value, child: Text(value));
-                              }).toList(),
-                              onChanged: (gender) {
-                                widget.user.g = gender;
-                                setState(() {
-                                  dropDownValue = gender;
-                                });
-                              },
-                            ),
-                          ),
-                          SizedBox(height: 20.0,),
                           Text(
                             error,
                             style: TextStyle(color: Colors.red.shade700,
