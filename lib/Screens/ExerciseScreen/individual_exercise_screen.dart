@@ -346,7 +346,7 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   }
 
   void getcalor(List<double> x, List<double> y, List<double> z) async {
-    double res = await CalorieCalculation(widget.user).getCalories(xList, yList, zList);
+    double res = await CalorieCalculation(widget.user).getCaloriesWalking(xList, yList, zList);
     calorieResult.add(res);
     if(calorieResult.length >= 30){
       var temp = 0.0;

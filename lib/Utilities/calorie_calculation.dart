@@ -8,9 +8,9 @@ class CalorieCalculation {
   final FirebaseUser user;
 
   CalorieCalculation(this.user);
-
   DatabaseManagement _management;
-  Future<double> getCalories(List<double> xList, List<double> yList,
+
+  Future<double> getCaloriesWalking(List<double> xList, List<double> yList,
       List<double> zList) async {
 
     final x = xList[1] - xList[0];
@@ -63,5 +63,30 @@ class CalorieCalculation {
       result = 0.0;
 
     return result;
+  }
+
+  Future<double> getCaloriesCycling(int time) async {
+    _management = DatabaseManagement(user);
+
+    String weight, age, gender = '';
+    int averHeartRate = 200;
+
+    await _management.getSingleFieldInfo('users', 'Gender').then((value) {
+      gender = value;
+    });
+    await _management.getSingleFieldInfo('users', 'Weight').then((value){
+      weight = value;
+    });
+    await _management.getSingleFieldInfo('users', 'Age').then((value) {
+      age = value;
+    });
+
+    averHeartRate = (207 - (0.7 * int.parse(age))).toInt();
+
+    if(gender != '' && gender == 'Male') {
+      return (int.parse(age) * 0.2017) - (int.parse(weight) * 0.09036) + (averHeartRate * 0.6309) - 55.0969 * (time / 4.184);
+    } else if(gender != '' && gender == 'Female') {
+      return (int.parse(age) * 0.074) - (int.parse(weight) * 0.05741) + (averHeartRate * 0.4472) - 20.4022 * (time / 4.184);
+    } else return 0.0;
   }
 }

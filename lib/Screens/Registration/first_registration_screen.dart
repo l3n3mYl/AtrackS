@@ -22,6 +22,18 @@ class _FirstRegistrationScreenState extends State<FirstRegistrationScreen> {
   final AuthService _authService = AuthService();
   final double btnSize = 40.0;
 
+  bool isNumeric(String s){
+    bool numeric = true;
+    if(s == null) return false;
+    try{
+      int.parse(s);
+    } catch (error) {
+      numeric = false;
+    }
+    if(numeric) return true;
+    else return false;
+  }
+
   String error = '';
 
   @override
@@ -239,6 +251,46 @@ class _FirstRegistrationScreenState extends State<FirstRegistrationScreen> {
                                 border: UnderlineInputBorder(
                                     borderSide: BorderSide(color: accentColor))),
                             onChanged: (repPassField){},
+                          ),
+                        ),
+                        SizedBox(height: 20.0,),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 55.0),
+                          child: TextFormField(
+                            validator: (ageField) {
+                              if(ageField.isNotEmpty){
+                                if(!isNumeric(ageField)) return 'Wrong format';
+                                if(int.parse(ageField) < 3 || int.parse(ageField) >= 99) return 'Leave the field empty or enter a valid age';
+                                else return null;
+                              }
+                              else return null;
+                            },
+                            textAlign: TextAlign.left,
+                            maxLines: 1,
+                            keyboardType: TextInputType.phone,
+                            style: TextStyle(color: textColor,
+                                fontFamily: 'PTSerif',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w200
+                            ),
+                            cursorColor: accentColor,
+                            decoration: InputDecoration(
+                                hintText: 'Age (Optional)',
+                                hintStyle: TextStyle(color: textColor,
+                                    fontFamily: 'PTSerif',
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w200),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor))),
+                            onChanged: (ageField){
+                              if(ageField.isEmpty){
+                                _user.setAge = "0";
+                              } else _user.setAge = ageField;
+                            },
                           ),
                         ),
                         SizedBox(height: 20.0,),

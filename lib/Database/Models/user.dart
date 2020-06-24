@@ -1,5 +1,13 @@
 class User{
-  String username, password, email, weight, height, gender;
+  String username, password, email, weight, height, gender, age;
+
+  get getAge {
+    return this.age;
+  }
+
+  set setAge(String newAge) {
+    this.age = newAge;
+  }
 
   get name {
     return this.username;
@@ -55,12 +63,13 @@ class User{
       "Email" : mail,
       "Weight" : w,
       "Height" : h,
-      "Gender" : g
+      "Gender" : g,
+      "Age" : getAge,
     };
 
     return stats;
   }
 
-  User({this.username, this.password, this.email, this.weight, this.height, this.gender});
+  User({this.username, this.password, this.email, this.weight, this.height, this.gender, this.age});
 
 }
