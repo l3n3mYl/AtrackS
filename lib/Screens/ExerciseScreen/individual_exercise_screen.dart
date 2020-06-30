@@ -64,6 +64,10 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   List<StreamSubscription<dynamic>> _streamSubscriptions =
         <StreamSubscription<dynamic>>[];
 
+  //Cycling
+  var _count = 0;
+  var _tapPosition;
+
   //Aver calc
   String exercGoal = '-1';
   String exercTotal = '-1';
@@ -75,6 +79,8 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
 
   //Clicker values
   int timesClicked = 0;
+  List<double> timeBetweenExercise = new List<double>();
+  double totalCaloriesBurned = 0.0;
 
   //Timer value
   bool startBtn = true;
@@ -333,11 +339,41 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
       });
     });
   }
+  
+  void _updateUpsCalories(int totalKcal) async {
+    await _management.getSingleFieldInfo('nutrition', 'Calories').then((value) {
+      totalKcal += int.parse(value);
+      _management.updateSingleField('nutrition', 'Calories',
+          totalKcal.toString());
+    });
+  }
+
+  void _updateCyclingCalories(String time) async {
+    CalorieCalculation calculation = CalorieCalculation(widget.user);
+
+    int totalKcal = -1;
+    int timeInMins = int.parse(time.split(':')[0]);
+
+    await _management.getSingleFieldInfo('nutrition', 'Calories').then((value) {
+      totalKcal = int.parse(value);
+    });
+      if(timeInMins == 0) {
+      } else if (timeInMins > 0){
+        dynamic cyCals = await calculation.getCaloriesCycling(int.parse(time.split(':')[0]), _count);
+        if(cyCals != null) {
+          totalKcal += cyCals.round();
+        }
+      }
+      _management.updateSingleField('nutrition', 'Calories',
+          totalKcal.toString());
+  }
 
   @override
   void dispose() {
     super.dispose();
     if (widget.stepCounter) _subscription.cancel();
+    else if (!widget.stepCounter && !widget.timeCounter)
+      _updateUpsCalories(totalCaloriesBurned.floor());
 
     //acceler
     for(StreamSubscription<dynamic> subscription in _streamSubscriptions) {
@@ -345,7 +381,8 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
     }
   }
 
-  void getcalor(List<double> x, List<double> y, List<double> z) async {
+  void getKcal(List<double> x, List<double> y, List<double> z) async {
+
     double res = await CalorieCalculation(widget.user).getCaloriesWalking(xList, yList, zList);
     calorieResult.add(res);
     if(calorieResult.length >= 30){
@@ -365,6 +402,25 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
     }
   }
 
+  void showCustomMenu() {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+
+    showMenu(
+        context: context,
+        items: <PopupMenuEntry<int>>[MetEntry()],
+        position: RelativeRect.fromRect(_tapPosition & Size(40, 40), Offset.zero & overlay.size)
+    ).then<void>((int delta) {
+      if(delta == null) return;
+      setState(() {
+        _count = delta;
+      });
+    });
+  }
+
+  void selectMET(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
+  }
+
   @override
   Widget build(BuildContext context) {
     if(widget.stepCounter){
@@ -375,7 +431,7 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
         yList.add(a.elementAt(1).abs());
         zList.add(a.elementAt(2).abs());
         if(vecCalledTimes >= 2){
-          getcalor(xList, yList, zList);
+          getKcal(xList, yList, zList);
           vecCalledTimes = 0;
           xList.clear();
           yList.clear();
@@ -384,7 +440,6 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
         vecCalledTimes++;
       }
     }
-
 
     return Scaffold(
       appBar: AppBar(
@@ -530,7 +585,23 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
                   ),
                 )
                     : GestureDetector(
-                  onTap: () {
+                  onTap: () async {
+                    if (widget.field == 'Sit-Ups' ||
+                        widget.field == 'Push-Ups') {
+                      timeBetweenExercise.add(
+                        DateTime.now().millisecondsSinceEpoch / 60000
+                      );
+                      if(timeBetweenExercise.length >= 2){
+                        dynamic calories = await CalorieCalculation(widget.user).getCaloriesSitPushUps(timeBetweenExercise);
+                        if(calories != null){
+                          totalCaloriesBurned += calories;
+                        }
+                        timeBetweenExercise.clear();
+                      }
+                    }
+                    else if (widget.field == 'Pull-Ups') {
+                      totalCaloriesBurned += 1;
+                    }
                     setState(() {
                       initTapFunctionality();
                     });
@@ -615,30 +686,34 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
                     color: Colors.white54,
                   ),
                 ),
-                Container(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'Keep Up The Good Work!',
-                        style: TextStyle(
-                            color: widget.accentColor,
-                            fontSize: 20.0,
-                            fontFamily: 'PTSerif'
-                        ),
-                      ),
-                      widget.stepCounter
-                      ? Padding(
-                          padding: EdgeInsets.only(top: 23.0),
-                          child: Text(
-                              'Steps are monitored automatically here',
-                            style: TextStyle(
-                              color: Colors.white54,
+                GestureDetector(
+                  onLongPress: showCustomMenu,
+                  onTapDown: selectMET,
+                  child: Container(
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          'Keep Up The Good Work!',
+                          style: TextStyle(
+                              color: widget.accentColor,
+                              fontSize: 20.0,
                               fontFamily: 'PTSerif'
-                            ),
                           ),
-                      )
-                      : SizedBox()
-                    ],
+                        ),
+                        widget.stepCounter
+                        ? Padding(
+                            padding: EdgeInsets.only(top: 23.0),
+                            child: Text(
+                                'Steps are monitored automatically here',
+                              style: TextStyle(
+                                color: Colors.white54,
+                                fontFamily: 'PTSerif'
+                              ),
+                            ),
+                        )
+                        : SizedBox()
+                      ],
+                    ),
                   ),
                 ),
                 widget.timeCounter
@@ -674,6 +749,7 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
                           children: <Widget>[
                             GestureDetector(
                               onTap: (){
+                                  _updateCyclingCalories(time);
                                   stopFunct();
                                   setState(() {
                                     pauseBtn = false;
@@ -898,4 +974,47 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
       ),
     );
   }
+}
+
+class MetEntry extends PopupMenuEntry<int> {
+  @override
+  State<StatefulWidget> createState() => MetEntryState();
+
+  @override
+  double get height => 100;
+
+  @override
+  bool represents(int value) => value == 1 || value == -1;
+}
+
+class MetEntryState extends State<MetEntry> {
+
+  void _leisure() {
+    Navigator.pop<int>(context, 0);
+  }
+
+  void _averLeisure() {
+    Navigator.pop<int>(context, 1);
+  }
+
+  void _lightEffort() {
+    Navigator.pop<int>(context, 2);
+  }
+
+  void _moreEffort() {
+    Navigator.pop<int>(context, 3);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Expanded(child: FlatButton(onPressed: _leisure, child: Text('10 km/h'),),),
+        Expanded(child: FlatButton(onPressed: _averLeisure, child: Text('15 km/h'),),),
+        Expanded(child: FlatButton(onPressed: _lightEffort, child: Text('20 km/h'),),),
+        Expanded(child: FlatButton(onPressed: _moreEffort, child: Text('25 km/h'),),),
+      ],
+    );
+  }
+
 }

@@ -183,6 +183,7 @@ class AuthService {
         gender: 'Null',
         height: 'Null',
         weight: 'Null',
+        age: 'Null',
         username: user.displayName
       );
 
@@ -235,6 +236,7 @@ class AuthService {
           gender: 'Null',
           height: 'Null',
           weight: 'Null',
+          age: 'Null',
           username: user.displayName,
         );
 

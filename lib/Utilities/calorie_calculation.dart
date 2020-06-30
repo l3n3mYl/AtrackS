@@ -38,7 +38,7 @@ class CalorieCalculation {
     await _management.getSingleFieldInfo('users', 'Height').then(
         (value) {
           try{
-            height = double.parse(value);
+            height = double.parse(value) / 100;
           } catch (e) {
             height = value;
           }
@@ -65,28 +65,51 @@ class CalorieCalculation {
     return result;
   }
 
-  Future<double> getCaloriesCycling(int time) async {
+  Future<double> getCaloriesCycling(int time, int count) async { //TODO: fix calculations
     _management = DatabaseManagement(user);
 
-    String weight, age, gender = '';
-    int averHeartRate = 200;
+    String weight;
 
-    await _management.getSingleFieldInfo('users', 'Gender').then((value) {
-      gender = value;
-    });
+    double met = 0.0;
+
+    if(count == 0) {
+      met = 3.5;
+    } else if (count == 1) {
+      met = 5.8;
+    } else if (count == 2) {
+      met = 6.8;
+    } else if (count == 3) {
+      met = 10;
+    }
+
     await _management.getSingleFieldInfo('users', 'Weight').then((value){
       weight = value;
     });
-    await _management.getSingleFieldInfo('users', 'Age').then((value) {
-      age = value;
+
+    return (met * int.parse(weight) * 3.5) / 200;
+  }
+
+  Future<double> getCaloriesSitPushUps(List<double> times) async {
+    _management = DatabaseManagement(user);
+
+    int weight = 0;
+    double result = 0.0;
+
+    await _management.getSingleFieldInfo('users', 'Weight').then((value) {
+      weight = int.parse(value);
     });
 
-    averHeartRate = (207 - (0.7 * int.parse(age))).toInt();
+    weight = (weight.toDouble() * 2.205).round();
 
-    if(gender != '' && gender == 'Male') {
-      return (int.parse(age) * 0.2017) - (int.parse(weight) * 0.09036) + (averHeartRate * 0.6309) - 55.0969 * (time / 4.184);
-    } else if(gender != '' && gender == 'Female') {
-      return (int.parse(age) * 0.074) - (int.parse(weight) * 0.05741) + (averHeartRate * 0.4472) - 20.4022 * (time / 4.184);
-    } else return 0.0;
+    if(times.length >= 2){
+      double finalTime = times[1] - times[0];
+      result = (weight / 2.2) * 8 * 0.0175 * finalTime;
+    } else {
+      double finalTime = 0.05;
+      result = (weight / 2.2) * 8 * 0.0175 * finalTime;
+    }
+
+    return double.parse(result.toStringAsFixed(5));
   }
+
 }
