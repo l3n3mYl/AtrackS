@@ -353,6 +353,8 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
     int totalKcal = -1;
     int timeInMins = int.parse(time.split(':')[0]);
 
+    if(widget.field == 'Jogging') _count = 8;
+
     await _management.getSingleFieldInfo('nutrition', 'Calories').then((value) {
       totalKcal = int.parse(value);
     });
