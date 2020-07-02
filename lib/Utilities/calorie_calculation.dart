@@ -78,7 +78,9 @@ class CalorieCalculation {
     } else if (count == 2) {
       met = 6.8;
     } else if (count == 3) {
-      met = 10;
+      met = 10.0;
+    } else {
+      met = count.toDouble();
     }
 
     await _management.getSingleFieldInfo('users', 'Weight').then((value){

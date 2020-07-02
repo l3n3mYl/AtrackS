@@ -73,7 +73,12 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
         accentColor: _colorPal[0],
         icon: _icons[0],
         appBarTitle: 'Steps',
-        popupText: 'asd',
+        popupText: 'In here the steps will be monitored automatically.\n\n'
+            'Calories will be shown down below according to your pace and '
+            'the amount of steps you have made.\n\n'
+            'Daily step goal can be changed in the settings at any time.\n\n'
+            'Calories will be calculated depending on your pace and the amount '
+            'of steps you have made.',
         stepCounter: true,
       ),
       IndividualExerciseScreen(
@@ -82,7 +87,13 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
         accentColor: _colorPal[1],
         icon: _icons[1],
         appBarTitle: 'Cycling',
-        popupText: 'asd',
+        popupText: 'Press and hold onto the cycling icon to choose the pace '
+            'you will be cycling.\n\n'
+            'The default pace is set to 9 km/h. This will determine the amount '
+            'of burned calories.\n\n'
+            'The Daily goal can always be changed in the settings.\n\n'
+            'Calories will be counted by your weight, time and pace you are '
+            'cycling.',
         timeCounter: true,
       ),
       IndividualExerciseScreen(
@@ -91,7 +102,16 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
         accentColor: _colorPal[2],
         icon: _icons[2],
         appBarTitle: 'Sit-Ups',
-        popupText: 'asd',
+        popupText: 'Place your phone on a table, or any other surface, '
+            'facing up\n\n'
+            'Tap the Sit Up icon when in the lowest sit up position to '
+            'indicate your first sit up.\n\n'
+            'Repeat for all of the situps.\n\n'
+            'The Calories will be calculated according to the amount of situps '
+            'you have made and the time it took you between even number of '
+            'situps.\n\n'
+            'Your weight will also be taken into the calculations for a better '
+            'accuracy.',
       ),
       IndividualExerciseScreen(
         user: widget._user,
@@ -99,7 +119,11 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
         accentColor: _colorPal[3],
         icon: _icons[3],
         appBarTitle: 'Sit-Ups',
-        popupText: 'asd',
+        popupText: 'Place your phone on the floor facing up.\n\n'
+            'When in the lowest push up position, try to tap the push up icon '
+            'with your nose to record the push up.\n\n'
+            'Calories will be calculated depending on your weight and time '
+            'between even number of push ups.',
       ),
       IndividualExerciseScreen(
         user: widget._user,
@@ -107,7 +131,10 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
         accentColor: _colorPal[4],
         icon: _icons[4],
         appBarTitle: 'Pull-Ups',
-        popupText: 'asd',
+        popupText: 'Try to get creative with this exercise tracking.\n\n'
+            'One pull up burns around 1 calorie.\n\nYou can tap the screen for '
+            'the amount of pull ups you have made or try to tap the screen '
+            'after each pull up in a more creative way.',
       ),
       IndividualExerciseScreen(
         user: widget._user,
@@ -115,7 +142,12 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
         accentColor: _colorPal[5],
         icon: _icons[5],
         appBarTitle: 'Jogging',
-        popupText: 'asd',
+        popupText: 'Calories are calculated depending on time you are jogging.\n\n'
+            'Your weight also has an impact on the amount of burned calories.\n\n'
+            'Daily goal can always be set in the settings.\n\n'
+            'Don\'t forget that you can pause and continue at any time when '
+            'jogging.\n\n'
+            'If you leave this screen, the timer will be reset.',
         timeCounter: true,
       ),
     ];
