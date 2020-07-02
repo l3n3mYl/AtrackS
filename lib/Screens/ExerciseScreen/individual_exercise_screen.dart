@@ -66,7 +66,6 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
 
   //Cycling
   var _count = 0;
-  var _tapPosition;
 
   //Aver calc
   String exercGoal = '-1';
@@ -965,10 +964,10 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   }
 }
 
-class MetEntry extends StatefulWidget {//TODO
+class MetEntry extends StatefulWidget {
 
-  int count;
-  Function(int) callback;
+  final int count;
+  final Function(int) callback;
 
   MetEntry(this.callback, this.count);
 
@@ -1092,10 +1091,10 @@ class MetEntryState extends State<MetEntry> with SingleTickerProviderStateMixin{
                       ),
                     ),
                     Transform.translate(
-                      offset: Offset.fromDirection(degToRad(180), _animation2.value * 125),
+                      offset: Offset.fromDirection(degToRad(180), _animation3.value * 125),
                       child: Transform(
                         transform: Matrix4.rotationZ(degToRad(_rotation.value))
-                          ..scale(_animation2.value),
+                          ..scale(_animation3.value),
                         alignment: Alignment.center,
                         child: CircButton(
                           width: 50,
@@ -1117,7 +1116,6 @@ class MetEntryState extends State<MetEntry> with SingleTickerProviderStateMixin{
       ),
     );
   }
-
 }
 
 class CircButton extends StatelessWidget {
