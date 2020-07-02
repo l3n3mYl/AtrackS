@@ -65,9 +65,8 @@ class CalorieCalculation {
     return result;
   }
 
-  Future<double> getCaloriesCycling(int time, int count) async { //TODO: fix calculations
+  Future<double> getCaloriesCycling(int time, int count) async {
     _management = DatabaseManagement(user);
-
     String weight;
 
     double met = 0.0;

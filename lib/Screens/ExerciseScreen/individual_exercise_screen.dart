@@ -402,23 +402,10 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
     }
   }
 
-  void showCustomMenu() {
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
-
-    showMenu(
-        context: context,
-        items: <PopupMenuEntry<int>>[MetEntry()],
-        position: RelativeRect.fromRect(_tapPosition & Size(40, 40), Offset.zero & overlay.size)
-    ).then<void>((int delta) {
-      if(delta == null) return;
-      setState(() {
-        _count = delta;
-      });
+  void callback(int newCount) {
+    setState(() {
+      _count = newCount;
     });
-  }
-
-  void selectMET(TapDownDetails details) {
-    _tapPosition = details.globalPosition;
   }
 
   @override
@@ -686,34 +673,30 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
                     color: Colors.white54,
                   ),
                 ),
-                GestureDetector(
-                  onLongPress: showCustomMenu,
-                  onTapDown: selectMET,
-                  child: Container(
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Keep Up The Good Work!',
-                          style: TextStyle(
-                              color: widget.accentColor,
-                              fontSize: 20.0,
-                              fontFamily: 'PTSerif'
-                          ),
+                Container(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Keep Up The Good Work!',
+                        style: TextStyle(
+                            color: widget.accentColor,
+                            fontSize: 20.0,
+                            fontFamily: 'PTSerif'
                         ),
-                        widget.stepCounter
-                        ? Padding(
-                            padding: EdgeInsets.only(top: 23.0),
-                            child: Text(
-                                'Steps are monitored automatically here',
-                              style: TextStyle(
-                                color: Colors.white54,
-                                fontFamily: 'PTSerif'
-                              ),
+                      ),
+                      widget.stepCounter
+                      ? Padding(
+                          padding: EdgeInsets.only(top: 23.0),
+                          child: Text(
+                              'Steps are monitored automatically here',
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontFamily: 'PTSerif'
                             ),
-                        )
-                        : SizedBox()
-                      ],
-                    ),
+                          ),
+                      )
+                      : SizedBox()
+                    ],
                   ),
                 ),
                 widget.timeCounter
@@ -965,6 +948,12 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
               ],
             ),
           ),
+          widget.field == 'Cycling'
+              ? Positioned(
+            top: MediaQuery.of(context).size.height * 0.0595,
+            child: MetEntry(callback, _count),
+          )
+              : Container(),
           PopupScreen(
             title: '${widget.field} Tracking Information',
             text: '${widget.popupText}',
@@ -976,45 +965,212 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   }
 }
 
-class MetEntry extends PopupMenuEntry<int> {
+class MetEntry extends StatefulWidget {//TODO
+
+  int count;
+  Function(int) callback;
+
+  MetEntry(this.callback, this.count);
+
   @override
   State<StatefulWidget> createState() => MetEntryState();
-
-  @override
-  double get height => 100;
-
-  @override
-  bool represents(int value) => value == 1 || value == -1;
 }
 
-class MetEntryState extends State<MetEntry> {
+class MetEntryState extends State<MetEntry> with SingleTickerProviderStateMixin{
 
-  void _leisure() {
-    Navigator.pop<int>(context, 0);
+  AnimationController _controller;
+  Animation _animation0, _animation1, _animation2, _animation3;
+  Animation _rotation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this,
+        duration: const Duration(milliseconds: 250));
+    _animation0 = TweenSequence([
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0, end: 1.2), weight: 75.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.2, end: 1.0), weight: 25.0)
+    ]).animate(_controller);
+    _animation1 = TweenSequence([
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0, end: 1.4), weight: 55.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.4, end: 1.0), weight: 45.0)
+    ]).animate(_controller);
+    _animation2 = TweenSequence([
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0, end: 1.6), weight: 35.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.6, end: 1.0), weight: 65.0)
+    ]).animate(_controller);
+    _animation3 = TweenSequence([
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0, end: 1.8), weight: 25.0),
+      TweenSequenceItem<double>(tween: Tween<double>(begin: 1.8, end: 1.0), weight: 75.0)
+    ]).animate(_controller);
+    _rotation = Tween<double>(begin: 270.0, end: 0.0).animate(CurvedAnimation(
+      parent: _controller, curve: Curves.easeOut
+    ));
+    _controller.addListener(() {
+      setState(() {});
+    });
   }
 
-  void _averLeisure() {
-    Navigator.pop<int>(context, 1);
-  }
-
-  void _lightEffort() {
-    Navigator.pop<int>(context, 2);
-  }
-
-  void _moreEffort() {
-    Navigator.pop<int>(context, 3);
+  double degToRad(double deg) {
+    double rads = 57.295779513;
+    return deg / rads;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Expanded(child: FlatButton(onPressed: _leisure, child: Text('10 km/h'),),),
-        Expanded(child: FlatButton(onPressed: _averLeisure, child: Text('15 km/h'),),),
-        Expanded(child: FlatButton(onPressed: _lightEffort, child: Text('20 km/h'),),),
-        Expanded(child: FlatButton(onPressed: _moreEffort, child: Text('25 km/h'),),),
-      ],
+
+    Size size = MediaQuery.of(context).size;
+
+    return GestureDetector(
+      onLongPress: (){
+        if(_controller.isCompleted)
+          _controller.reverse();
+        else _controller.forward();
+      },
+      child: Container(
+        width: size.width,
+        height: 240,
+        color: Colors.transparent,
+        child: Stack(
+            children: <Widget>[
+              IgnorePointer(),
+              Center(
+                child: Stack(
+                  children: <Widget>[
+                    Transform.translate(
+                      offset: Offset.fromDirection(degToRad(0), _animation0.value * 125),
+                      child: Transform(
+                        transform: Matrix4.rotationZ(degToRad(_rotation.value))
+                            ..scale(_animation0.value),
+                        alignment: Alignment.center,
+                        child: CircButton(
+                          width: 50,
+                          height: 50,
+                          color: Colors.black,
+                          onClick: () {
+                            _controller.reverse();
+                            widget.callback(0);
+                          },
+                          text: '9',
+                        ),
+                      ),
+                    ),
+                    Transform.translate(
+                      offset: Offset.fromDirection(degToRad(45), _animation1.value * 125),
+                      child: Transform(
+                        transform: Matrix4.rotationZ(degToRad(_rotation.value))
+                          ..scale(_animation1.value),
+                        alignment: Alignment.center,
+                        child: CircButton(
+                          width: 50,
+                          height: 50,
+                          color: Colors.black,
+                          onClick: () {
+                            _controller.reverse();
+                            widget.callback(1);
+                          },
+                          text: '14',
+                        )
+                      ),
+                    ),
+                    Transform.translate(
+                      offset: Offset.fromDirection(degToRad(135), _animation2.value * 125),
+                      child: Transform(
+                        transform: Matrix4.rotationZ(degToRad(_rotation.value))
+                          ..scale(_animation2.value),
+                        alignment: Alignment.center,
+                        child: CircButton(
+                          width: 50,
+                          height: 50,
+                          color: Colors.black,
+                          onClick: () {
+                            _controller.reverse();
+                            widget.callback(2);
+                          },
+                          text: '18',
+                        )
+                      ),
+                    ),
+                    Transform.translate(
+                      offset: Offset.fromDirection(degToRad(180), _animation2.value * 125),
+                      child: Transform(
+                        transform: Matrix4.rotationZ(degToRad(_rotation.value))
+                          ..scale(_animation2.value),
+                        alignment: Alignment.center,
+                        child: CircButton(
+                          width: 50,
+                          height: 50,
+                          color: Colors.black,
+                          onClick: () {
+                            _controller.reverse();
+                            widget.callback(3);
+                          },
+                          text: '24',
+                        )
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+        ),
+      ),
     );
   }
 
 }
+
+class CircButton extends StatelessWidget {
+
+  final double width, height;
+  final String text;
+  final Color color;
+  final Function onClick;
+
+  CircButton({this.text, this.color, this.height, this.width, this.onClick});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onClick,
+      child: Center(
+        child: Container(
+          padding: EdgeInsets.all(2.0),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: textColor
+          ),
+          child: Container(
+            width: width,
+            height: height,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                    text,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'SourceSansPro',
+                      fontSize: 16.0
+                    ),
+                  ),
+                Text('km/h',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'PTSerif',
+                    fontSize: 12.0
+                  ),
+                )
+              ],
+            ),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
