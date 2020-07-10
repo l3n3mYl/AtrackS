@@ -65,10 +65,35 @@ class DatabaseManagement {
       await _reference.collection('exercises').getDocuments().then((value) {
         value.documents.forEach((doc) {
           for(var i = 0; i < doc.data.length; ++i) {
-            if(doc.data.keys.elementAt(i) != 'LastUpdated')
-              updateSingleField('exercises', doc.data.keys.elementAt(i), '0');
+            if(doc.data.keys.elementAt(i) != 'LastUpdated'){
+              if(doc.data.keys.elementAt(i) == 'Cycling')
+                updateSingleField('exercises', doc.data.keys.elementAt(i), '00:00');
+              else if(doc.data.keys.elementAt(i) == 'Jogging')
+                updateSingleField('exercises', doc.data.keys.elementAt(i), '00:00');
+              else updateSingleField('exercises', doc.data.keys.elementAt(i), '0');
+            }
           }
         });
+      });
+      await _reference.collection('exercise_weekly_progress').getDocuments()
+          .then((value) {
+         value.documents.forEach((doc) {
+           for(var i = 0; i < doc.data.length; ++i) {
+             if(doc.data.keys.elementAt(i) != 'LastUpdated'){
+               if(doc.data.keys.elementAt(i) == 'Cycling')
+                 updateSingleField('exercise_weekly_progress',
+                     doc.data.keys.elementAt(i),
+                     '00:00, 00:00, 00:00, 00:00, 00:00, 00:00, 00:00');
+               else if(doc.data.keys.elementAt(i) == 'Jogging')
+                 updateSingleField('exercise_weekly_progress',
+                     doc.data.keys.elementAt(i),
+                     '00:00, 00:00, 00:00, 00:00, 00:00, 00:00, 00:00');
+               else updateSingleField('exercise_weekly_progress',
+                     doc.data.keys.elementAt(i),
+                     '0, 0, 0, 0, 0, 0, 0');
+             }
+           }
+         });
       });
     } catch (e) {
       print(e.toString());
@@ -85,6 +110,15 @@ class DatabaseManagement {
               updateSingleField('nutrition', doc.data.keys.elementAt(i), '0');
           }
         });
+      });
+      await _reference.collection('nutrition_weekly_progress').getDocuments()
+        .then((value) {
+          value.documents.forEach((doc) {
+            for(var i = 0; i < doc.data.length; ++i) {
+              updateSingleField('nutrition_weekly_progress',
+                  doc.data.keys.elementAt(i), '0, 0, 0, 0, 0, 0, 0');
+            }
+          });
       });
     } catch (e) {
       print(e.toString());

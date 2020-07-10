@@ -28,10 +28,9 @@ class UpdateGraphs {
     checkMeditationUpdate();
     checkLastDayNutrUpdate();
     checkLastDayExercUpdate();
-    checkMonthlyNutritionUpdate();
-    checkMonthlyExerciseUpdate();
     checkFiveRecentMonthsNutritionUpdate();
     checkFiveRecentMonthsExercUpdate();
+    checkWeeklyExerciseUpdate();
   }
   
   void checkMeditationUpdate() async {
@@ -99,9 +98,10 @@ class UpdateGraphs {
     if(lastUpdateDate != null){
       int diff = DateTime.now().difference(lastUpdateDate).inDays;
       if(diff >= 30){
-        String date = DateTime.now().toString().substring(0, DateTime.now().toString().length - 1);
+        String date = DateTime.now().toString()
+            .substring(0, DateTime.now().toString().length - 1);
 
-        //For all exercises
+        //For all nutr values
         for(var i = 0; i < nutrList.length; ++i){
           String temp = await _management.getSingleFieldInfo(
               'nutrition_single_month_average',
@@ -111,14 +111,14 @@ class UpdateGraphs {
 
           //Calculate average
           //Average of 4 weeks
-          for(var j = 0; j < 4; ++j){
-            sumOfNutritionInfo += int.parse(list[j]);
-          }
+
+          list.forEach((element) {
+            sumOfNutritionInfo += int.parse(element);
+          });
 
           int finalAverage = sumOfNutritionInfo ~/ 4;
 
           //Update a proper list member
-
           await _management.getSingleFieldInfo('nutrition_monthly_progress', nutrList[i])
               .then((value) {
             List<String> oldValueList = value.split(", ");
@@ -128,7 +128,8 @@ class UpdateGraphs {
                 'nutrition_monthly_progress', nutrList[i], updateString);
           });
         }
-        _management.updateSingleField('nutrition_monthly_progress', 'LastUpdated', '$date${lastDigit + 1}');
+        _management.updateSingleField('nutrition_monthly_progress', 'LastUpdated',
+            '$date${lastDigit + 1}');
       }
     }
   }
@@ -148,7 +149,8 @@ class UpdateGraphs {
     if(lastUpdateDate != null){
       int diff = DateTime.now().difference(lastUpdateDate).inDays;
       if(diff >= 30){
-        String date = DateTime.now().toString().substring(0, DateTime.now().toString().length - 1);
+        String date = DateTime.now().toString()
+            .substring(0, DateTime.now().toString().length - 1);
 
         //For all exercises
         for(var i = 0; i < exercList.length; ++i){
@@ -156,151 +158,135 @@ class UpdateGraphs {
               'exercises_single_month_average',
               exercList[i]);
           List<String> list = temp.split(", ");
-          int sumOfExerciseInfo = 0;
+          double sumOfExerciseInfo = 0;
 
           //Calculate average
           //Average of 4 weeks
-
-          if(exercList[i] == 'Jogging' || exercList[i] == 'Cycling'){
-            for(var j = 0; j < 4; ++j){
-              double time = TimeManipulation().timeToString(list[j]);
-              sumOfExerciseInfo += time.toInt();
-            }
-          } else {
-            for(var j = 0; j < 4; ++j){
-              sumOfExerciseInfo += int.parse(list[j]);
-            }
+          try{
+            double.parse(list[0]);
+            list.forEach((element) {
+              sumOfExerciseInfo += int.parse(element);
+            });
+          } catch (e) {
+            list.forEach((element) {
+              sumOfExerciseInfo += TimeManipulation().timeToDouble(element);
+            });
           }
 
-
-          int finalAverage = sumOfExerciseInfo ~/ 4;
+          double finalAverage = sumOfExerciseInfo / 4;
 
           //Update a proper list member
-
           await _management.getSingleFieldInfo('exercise_monthly_progress', exercList[i])
               .then((value) {
              List<String> oldValueList = value.split(", ");
-             oldValueList[lastDigit] = "$finalAverage";
-             String updateString = oldValueList.reduce((val, elem) => val + ', ' + elem);
 
+             try{
+               double.parse(oldValueList[0]);
+               oldValueList[lastDigit] = "${finalAverage.round()}";
+             } catch (e) {
+               oldValueList[lastDigit] = "${TimeManipulation().doubleToStringTime(finalAverage)}";
+             }
+
+             String updateString = oldValueList.reduce((val, elem) => val + ', ' + elem);
              _management.updateSingleField(
                  'exercise_monthly_progress', exercList[i], updateString);
           });
         }
-        _management.updateSingleField('exercise_monthly_progress', 'LastUpdated', '$date${lastDigit + 1}');
-      }
-    }
-  }
-
-  void checkMonthlyNutritionUpdate() async {
-    int lastDigit;
-    DatabaseManagement _management = DatabaseManagement(_user);
-    dynamic lastUpdateDate = await _management
-        .getSingleFieldInfo('nutrition_single_month_average', 'LastUpdated')
-        .then((value) {
-      lastDigit = int.parse(value.substring(value.length - 1, value.length));
-      if(lastDigit == 4){
-        lastDigit = 0;
-      }
-      return DateTime.parse(value);
-    });
-    if(lastUpdateDate != null) {
-      int diff = DateTime.now().difference(lastUpdateDate).inDays;
-      if(diff >= 7) {
-        String date = DateTime.now().toString().substring(0, DateTime.now().toString().length - 1);
-
-        //For all of the nutrition values
-        for( var i = 0; i < nutrList.length; ++i) {
-          String temp = await _management.getSingleFieldInfo(
-              'nutrition_weekly_progress',
-              nutrList[i]); //Get weekly progress list
-          List<String> list = temp.split(", ");
-          int sumOfNutritionInfo = 0;
-
-          //Calculate average
-          //Loop 7 times because there is 7 days in a week
-          for( var j = 0; j < 7; j++){
-            sumOfNutritionInfo += int.parse(list[i]);
-          }
-          int finalAverage = sumOfNutritionInfo ~/ 7;
-
-          //Update a proper list member
-          await _management.getSingleFieldInfo('nutrition_single_month_average', nutrList[i])
-              .then((value) {
-            List<String> oldValueList = value.split(", ");
-            oldValueList[lastDigit] = "$finalAverage";
-            String updateString = oldValueList.reduce((val, elem) => val + ', ' + elem);
-
-            _management.updateSingleField(
-                'nutrition_single_month_average', nutrList[i], updateString);
-          });
-
-        }
-        _management.updateSingleField(
-            'nutrition_single_month_average',
-            'LastUpdated',
+        _management.updateSingleField('exercise_monthly_progress', 'LastUpdated',
             '$date${lastDigit + 1}');
       }
     }
   }
-  
-  void checkMonthlyExerciseUpdate() async {
-    int lastDigit;
+
+  void checkWeeklyExerciseUpdate() async {
+
     DatabaseManagement _management = DatabaseManagement(_user);
-    dynamic lastUpdateDate = await _management
-        .getSingleFieldInfo('exercises_single_month_average', 'LastUpdated')
+
+    //get weekly date
+    DateTime lastUpdateDate = await _management
+        .getSingleFieldInfo('exercise_weekly_progress', 'LastUpdated')
         .then((value) {
-          lastDigit = int.parse(value.substring(value.length - 1, value.length));
-          if(lastDigit == 4){
-            lastDigit = 0;
-          }
           return DateTime.parse(value);
     });
+
+    //get last week updated
+    int lastDigit =
+    await _management.getSingleFieldInfo(
+        'exercises_single_month_average', 'LastUpdated').then((value) {
+      return int.parse(value.substring(value.length - 1, value.length));
+    });
+
     if(lastUpdateDate != null) {
       int diff = DateTime.now().difference(lastUpdateDate).inDays;
-      if(diff >= 7) {
-        String date = DateTime.now().toString().substring(0, DateTime.now().toString().length - 1);
-
-        //For all of the exercises
-        for( var i = 0; i < exercList.length; ++i) {
-          String temp = await _management.getSingleFieldInfo(
+      if(diff > 7 && diff < 14) {
+        //update monthly
+        for(var i = 0; i < exercList.length; ++i) {
+          List<String> progress =
+          await _management.getSingleFieldInfo(
               'exercise_weekly_progress',
-              exercList[i]); //Get weekly progress list
-          List<String> list = temp.split(", ");
-          int sumOfExerciseInfo = 0;
-
-          //Calculate average
-          //Loop 7 times because there is 7 days in a week
-
-          if(exercList[i] == 'Jogging' || exercList[i] == 'Cycling'){
-            for( var j = 0; j < 7; j++){
-              double time = TimeManipulation().timeToString(list[i]);
-              sumOfExerciseInfo += time.toInt();
-            }
-          } else {
-            for( var j = 0; j < 7; j++){
-              sumOfExerciseInfo += int.parse(list[i]);
-            }
-          }
-
-          int finalAverage = sumOfExerciseInfo ~/ 7;
-
-
-          //Update a proper list member
-          await _management.getSingleFieldInfo('exercises_single_month_average', exercList[i])
-              .then((value) {
-                List<String> oldValueList = value.split(", ");
-                oldValueList[lastDigit] = "$finalAverage";
-                String updateString = oldValueList.reduce((val, elem) => val + ', ' + elem);
-                _management.updateSingleField(
-                    'exercises_single_month_average', exercList[i], updateString);
+              exercList[i]).then((value) {
+                return value.split(', ');
           });
 
+          double average = 0.0;
+
+          if(progress != null) {
+            try{
+              double.parse(progress[0]);
+              progress.forEach((element) {
+                average += double.parse(element);
+              });
+            } catch (e) {
+              progress.forEach((element) {
+                average += TimeManipulation().timeToDouble(element);
+              });
+            }
+
+            average = double.parse((average / 7).toStringAsFixed(2));
+
+            if(lastDigit > 0 && lastDigit < 5 && lastDigit != null) {
+              await _management.getSingleFieldInfo(
+                  'exercises_single_month_average',
+                  exercList[i]).then((value) {
+                    List<String> list = value.split(', ');
+
+                    try{
+                      double.parse(list[0]);
+                      list[lastDigit - 1] = average.toInt().toString();
+                    } catch (e) {
+                      list[lastDigit - 1] = TimeManipulation().doubleToStringTime(average);
+                    }
+
+                    final String updateValue = list.reduce((value, element) =>
+                      value + ', ' + element);
+
+                    _management.updateSingleField(
+                        'exercises_single_month_average', exercList[i], updateValue);
+              });
+            } else print('There was an error in last digit');
+          }
         }
-        _management.updateSingleField(
-            'exercises_single_month_average',
-            'LastUpdated',
-            '$date${lastDigit + 1}');
+        if(lastDigit == 4)
+          lastDigit = 1;
+        else lastDigit += 1;
+
+        await _management.updateSingleField('exercise_weekly_progress',
+            'LastUpdated', '${DateTime.now().toString()}$lastDigit');
+      } else if (diff >= 14) {
+        //reset weekly add monthly
+        for(var i = 0; i < exercList.length; ++i) {
+          if(exercList[i] != 'LastUpdated'){
+            if(exercList[i] == 'Cycling' || exercList[i] == 'Jogging'){
+              await _management.updateSingleField('exercise_single_month_average',
+                  exercList[i], '00:00, 00:00, 00:00, 00:00');
+            } else {
+              await _management.updateSingleField('exercise_single_month_average',
+                  exercList[i], '0, 0, 0, 0');
+            }
+          }
+        }
+          await _management.updateSingleField('exercise_weekly_progress',
+              'LastUpdated', DateTime.now().toString());
       }
     }
   }
@@ -330,11 +316,11 @@ class UpdateGraphs {
                 .getSingleFieldInfo('exercises', exercList[i])
                 .then((value) {
                   if (exercList[i] == 'Jogging'){
-                    _management.updateWeeklyProgress(DateTime.now().weekday - diff, value,
+                    _management.updateWeeklyProgress(diff, value,
                         'exercise_weekly_progress', exercList[i]);
                     _management.updateSingleField('exercises', exercList[i], '00:00');
                   } else if (exercList[i] == 'Cycling') {
-                    _management.updateWeeklyProgress(DateTime.now().weekday - diff, value,
+                    _management.updateWeeklyProgress(diff, value,
                         'exercise_weekly_progress', exercList[i]);
                     _management.updateSingleField('exercises', exercList[i], '00:00');
                   } else {
@@ -384,7 +370,12 @@ class UpdateGraphs {
     });
     if (lastUpdateDate != null) {
       int diff = DateTime.now().difference(lastUpdateDate).inDays;
-      if (diff > 7) _management.resetWeeklyNutrGraphs();
+      if (diff > 7) {
+        await _management.resetWeeklyNutrGraphs().then((_) {
+          _management.updateSingleField(
+              'nutrition', 'LastUpdated', DateTime.now().toString());
+        });
+      }
       else if (diff > 0 && diff <= 7) {
         if (DateTime.now().weekday - diff < 1) {
           diff = 7 + DateTime.now().weekday - diff;
@@ -397,6 +388,8 @@ class UpdateGraphs {
               _management.updateSingleField('nutrition', nutrList[i], '0');
             });
           }
+          _management.updateSingleField('nutrition', 'LastUpdated',
+              DateTime.now().toString());
         } else {
           for (var i = 0; i < nutrList.length; ++i) {
             await _management
@@ -407,10 +400,10 @@ class UpdateGraphs {
               _management.updateSingleField('nutrition', nutrList[i], '0');
             });
           }
+          _management.updateSingleField('nutrition', 'LastUpdated',
+              DateTime.now().toString());
         }
       }
-        _management.updateSingleField(
-            'nutrition', 'LastUpdated', DateTime.now().toString());
     }
   }
 }

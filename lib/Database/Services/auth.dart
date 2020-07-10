@@ -33,17 +33,17 @@ class AuthService {
     pushUps: '0, 0, 0, 0',
     sitUps: '0, 0, 0, 0,',
     steps: '0, 0, 0, 0',
-    lastTimeUpdated: DateTime.now().toString(),
+    lastTimeUpdated: '${DateTime.now().toString()}1',
   );
 
   final MonthExerciseProgress _monthExerciseProgress = MonthExerciseProgress(
-    cycling: '00:00, 00:00, 00:00, 00:00',
-    jogging: '00:00, 00:00, 00:00, 00:00',
+    cycling: '00:00, 00:00, 00:00, 00:00, 00:00',
+    jogging: '00:00, 00:00, 00:00, 00:00, 00:00',
     pullUps: '0, 0, 0, 0, 0',
     pushUps: '0, 0, 0, 0, 0',
     sitUps: '0, 0, 0, 0, 0',
     steps: '0, 0, 0, 0, 0',
-    lastTimeUpdated: DateTime.now().toString(),
+    lastTimeUpdated: '${DateTime.now().toString()}0',
   );
 
   final MonthNutritionProgress _singleMonthNutritionProgress = MonthNutritionProgress(
@@ -52,7 +52,7 @@ class AuthService {
     fats: '0, 0, 0, 0',
     calories: '0, 0, 0, 0',
     water: '0, 0, 0, 0',
-    lastTimeUpdated: DateTime.now().toString(),
+    lastTimeUpdated: '${DateTime.now().toString()}1',
   );
 
   final MonthNutritionProgress _monthNutritionProgress = MonthNutritionProgress(
@@ -61,7 +61,7 @@ class AuthService {
     fats: '0, 0, 0, 0, 0',
     calories: '0, 0, 0, 0, 0',
     water: '0, 0, 0, 0, 0',
-    lastTimeUpdated: DateTime.now().toString(),
+    lastTimeUpdated: '${DateTime.now().toString()}0',
   );
 
   final WeeklyExerciseProgress _exerciseProgress = WeeklyExerciseProgress(
