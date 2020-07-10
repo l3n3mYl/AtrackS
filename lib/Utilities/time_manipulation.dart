@@ -18,12 +18,31 @@ class TimeManipulation {
     return '$finalMin:$finalSec';
   }
 
-  double timeToString(String time){
+  double timeToDouble(String time){
     try{
       return double.parse('${time.split(':')[0]}.${time.split(':')[1]}');
     } catch (e) {
       e.toString();
       return double.parse('0.0');
+    }
+  }
+
+  String doubleToStringTime(double time) {
+    try{
+      String min = time.toInt().toString();
+      String sec = time.toString().split('.')[1];
+
+      if(int.parse(sec) > 59){
+        min = (int.parse(min) + int.parse(sec) ~/ 60).toString();
+        sec = (int.parse(sec) % 60).toString();
+      }
+      if(int.parse(min) < 10) min = '0$min';
+      if(sec.length < 2) sec = '$sec\0';
+
+      return '$min:$sec';
+    } catch (e) {
+      print(e);
+      return null;
     }
   }
 }

@@ -55,7 +55,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
 
     setState(() {
       if(widget.isTimerDisplayed)
-        setGoal = _manipulation.timeToString(data);
+        setGoal = _manipulation.timeToDouble(data);
       else setGoal = double.parse(data);
     });
   }
@@ -70,7 +70,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
       setState(() {
         for (var i = 0; i < resList.length; ++i) {
           if(widget.isTimerDisplayed){
-            xAxis = _manipulation.timeToString(resList[i]);
+            xAxis = _manipulation.timeToDouble(resList[i]);
           } else {
             xAxis = double.parse(resList[i]);
           }
@@ -102,7 +102,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
         monthlyExercList.add(FlSpot(0.1, 2.0));
         for (var i = 0; i < resList.length; ++i) {
           if(widget.isTimerDisplayed){
-            xAxis = _manipulation.timeToString(resList[i]);
+            xAxis = _manipulation.timeToDouble(resList[i]);
           } else {
             xAxis = double.parse(resList[i]);
           }
