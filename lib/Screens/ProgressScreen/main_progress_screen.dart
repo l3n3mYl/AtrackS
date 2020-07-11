@@ -1,4 +1,5 @@
 import 'package:com/Design/colours.dart';
+import 'package:com/PopUps/progress_indicator.dart';
 import 'package:com/Screens/ProgressScreen/exercise_screen.dart';
 import 'package:com/Screens/ProgressScreen/walking_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
@@ -360,7 +361,9 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children: children,
+                        children: children.length == 0
+                          ? awaitResult('Calculating Your Progress')
+                          : children,
                       ),
                     ),
                   ),

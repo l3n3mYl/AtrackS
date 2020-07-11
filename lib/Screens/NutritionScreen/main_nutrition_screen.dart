@@ -1,5 +1,6 @@
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
+import 'package:com/PopUps/progress_indicator.dart';
 import 'package:com/Screens/NutritionScreen/individual_nutrition_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
@@ -325,17 +326,8 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     return Scaffold(
-        body: cardList == []
-            ? Container(
-                width: _width,
-                height: _height,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    backgroundColor: Colors.white,
-                    strokeWidth: 2.0,
-                  ),
-                ),
-              )
+        body: cardList.length == 0
+            ? awaitResult('Food Is Important')
             : Container(
                 color: mainColor,
                 child: Stack(
