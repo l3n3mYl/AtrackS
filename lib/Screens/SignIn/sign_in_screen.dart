@@ -77,7 +77,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             shape: BoxShape.circle, color: textColor),
                         child: RawMaterialButton(
                           onPressed: () async {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult('Doing Boring Stuff In The Backgroud')));
                             dynamic auth = await _authService.signInFacebook();
                             if (auth != null) {
                               UpdateGraphs(auth).checkAllFieldsForUpdate();
@@ -112,7 +112,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             shape: BoxShape.circle, color: textColor),
                         child: RawMaterialButton(
                           onPressed: () async {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult('Doing Boring Stuff In The Backgroud')));
                             dynamic auth =
                                 await _authService.signInGooglePlus();
                             if (auth != null) {
@@ -225,7 +225,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         vertical: 8.0, horizontal: 0.0),
                     child: SwipeButton(
                       onChanged: (_) async {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult()));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult('Doing Boring Stuff In The Backgroud')));
                         dynamic auth = await _authService.signInEmailAndPass(
                             _email, _password);
                         if (auth != null) {

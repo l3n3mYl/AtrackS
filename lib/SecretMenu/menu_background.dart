@@ -36,7 +36,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
     super.initState();
 
     titleAnimationController = new AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 400));
+        vsync: this, duration: const Duration(milliseconds: 350));
   }
 
   @override
@@ -87,8 +87,6 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
   createMenuItems(MenuController menuController) {
     final List<Widget> listItems = [];
 
-//    final animationIntervalDuration = 0.2;//TODO: DELETE IF EVERYTHING WORKS AFTER IMPLEMENTATION
-
     final perListItemDelay =
         menuController.state != MenuState.closing ? 0.15 : 0.0;
 
@@ -101,7 +99,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
       listItems.add(AnimatedMenuListItem(
         menuState: menuController.state,
         isSelected: isSelected,
-        duration: Duration(milliseconds: 450),
+        duration: Duration(milliseconds: 350),
         curve: Interval(animationIntervalStart, animationIntervalEnd,
             curve: Curves.easeOut),
         menuListItem: new _MenuListItem(

@@ -350,7 +350,7 @@ class _FinalRegistrationScreenState extends State<FinalRegistrationScreen> {
                           GestureDetector(
                             onTap: () async {
                               if(_formKey.currentState.validate()){
-                                Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult()));
+                                Navigator.of(context).push(MaterialPageRoute(builder: (_) => awaitResult('Creating Profile For You')));
                                 dynamic result = await _authService.registerWithEmailAndPass(widget.user);
                                 if(result != null) {
                                   Navigator.of(context).pop();
