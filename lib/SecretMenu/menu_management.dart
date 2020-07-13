@@ -1,3 +1,4 @@
+import 'package:com/Screens/DiaryScreen/main_diary_screen.dart';
 import 'package:com/Screens/ExerciseScreen/exercise_screen.dart';
 import 'package:com/Screens/MeditationScreen/meditation_screen.dart';
 import 'package:com/Screens/NutritionScreen/main_nutrition_screen.dart';
@@ -135,7 +136,7 @@ class _MainScreenState extends State<MainScreen> {
             });
           } else if(itemId == '5'){
             setState(() {
-              activeScreen = fifthScreen;
+              activeScreen = new DiaryScreenRootClass(widget._user).screen();
             });
           } else if(itemId == '7'){
             setState(() {

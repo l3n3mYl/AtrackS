@@ -4,7 +4,7 @@ description: A new Flutter application.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.2.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -15,12 +15,13 @@ dependencies:
   google_sign_in:
   flutter_facebook_login:
   font_awesome_flutter:
-  pedometer: ^1.2.0
+  pedometer:
+  shared_preferences:
   fl_chart:
   percent_indicator:
   audioplayers:
   cupertino_icons:
-
+  table_calendar:
   sensors:
 
 
