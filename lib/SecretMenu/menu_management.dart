@@ -136,7 +136,7 @@ class _MainScreenState extends State<MainScreen> {
             });
           } else if(itemId == '5'){
             setState(() {
-              activeScreen = new DiaryScreenRootClass(widget._user).screen();
+              activeScreen = new DiaryScreenRootClass().screen();
             });
           } else if(itemId == '7'){
             setState(() {
