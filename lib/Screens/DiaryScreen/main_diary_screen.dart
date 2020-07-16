@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:com/Design/colours.dart';
+import 'package:com/Screens/DiaryScreen/event_viewing_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -12,20 +12,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class DiaryScreenRootClass {
-  final FirebaseUser user;
-
-  DiaryScreenRootClass(this.user);
-
   Screen screen() {
-    return Screen(title: 'Diary', contentBuilder: (_) => DiaryScreen(user));
+    return Screen(title: 'Diary', contentBuilder: (_) => DiaryScreen());
   }
 }
 
 class DiaryScreen extends StatefulWidget {
-  final FirebaseUser _user;
-
-  DiaryScreen(this._user);
-
   @override
   _DiaryScreenState createState() => _DiaryScreenState();
 }
@@ -35,7 +27,6 @@ class _DiaryScreenState extends State<DiaryScreen>{
   CalendarController _controller;
   SharedPreferences _preferences;
   Map<DateTime, List<dynamic>> _events;
-  TextEditingController _eventController;
   List<dynamic> _selectedEvents;
 
   @override
@@ -45,7 +36,6 @@ class _DiaryScreenState extends State<DiaryScreen>{
     _selectedEvents = [];
     _initPrefs();
     _controller = CalendarController();
-    _eventController = TextEditingController();
   }
 
   void _initPrefs() async {
@@ -174,30 +164,33 @@ class _DiaryScreenState extends State<DiaryScreen>{
                 String description = event.split(' _*_ ')[1];
 
                 return ListTile(
-                onLongPress: () {
-                  setState(() {
-                    if(_events[_controller.selectedDay].length > 1){
-                      _events[_controller.selectedDay].remove(event);
-                    } else {
-                      _events[_controller.selectedDay].clear();
-                    }
-                    _preferences.setString("events", json.encode(encodeMap(_events)));
-                    return _selectedEvents;
-                  });
-                },
-                title: Container(
-                  padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 25.0),
-                  margin: EdgeInsets.symmetric(horizontal: 25.0, vertical: 13.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 1.0,
-                      color: Colors.black
-                    )
+                  onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => SingleEventScreen(
+                          title, description))),
+                  onLongPress: () {
+                    setState(() {
+                      if(_events[_controller.selectedDay].length > 1){
+                        _events[_controller.selectedDay].remove(event);
+                      } else {
+                        _events[_controller.selectedDay].clear();
+                      }
+                      _preferences.setString("events", json.encode(encodeMap(_events)));
+                      return _selectedEvents;
+                    });
+                  },
+                  title: Container(
+                    padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 25.0),
+                    margin: EdgeInsets.symmetric(horizontal: 25.0, vertical: 13.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1.0,
+                        color: Colors.black
+                      )
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: Text('$title')
                   ),
-                  alignment: Alignment.centerLeft,
-                  child: Text('$title')
-                ),
-              );
+                );
               },
             ),
           ],
@@ -234,7 +227,7 @@ class _DiaryScreenState extends State<DiaryScreen>{
                         ),
                       ),
                       SizedBox(
-                        height: 55.0,
+                        height: 50.0,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 13.0),
@@ -243,7 +236,7 @@ class _DiaryScreenState extends State<DiaryScreen>{
                             if(data.isEmpty) return 'Please Enter A Title';
                             else return null;
                           },
-                          maxLines: null,
+                          maxLines: 2,
                           keyboardType: TextInputType.multiline,
                           cursorColor: accentColor.withRed(150),
                           decoration: InputDecoration(
@@ -270,7 +263,7 @@ class _DiaryScreenState extends State<DiaryScreen>{
                           },
                         ),
                       ),
-                      SizedBox(height: 55.0,),
+                      SizedBox(height: 50.0,),
                       Padding(
                         padding: EdgeInsets.only(bottom: 100.0, left: 20.0, right: 20.0),
                         child: TextFormField(
@@ -305,7 +298,7 @@ class _DiaryScreenState extends State<DiaryScreen>{
                           },
                         ),
                       ),
-                      SizedBox(height: 55.0,),
+                      SizedBox(height: 50.0,),
                       Align(
                         alignment: Alignment.bottomRight,
                         child: FlatButton(
@@ -316,17 +309,17 @@ class _DiaryScreenState extends State<DiaryScreen>{
                               fontWeight: FontWeight.w200
                             ),
                           ),
-                          onPressed: (){
+                          onPressed: () {
                             if(_formKey.currentState.validate()) {
-                              setState(() {
-                                if(_events[_controller.selectedDay] != null){
-                                  _events[_controller.selectedDay].add('$title _*_ $description');
-                                } else {
-                                  _events[_controller.selectedDay] = ['$title _*_ $description'];
+                                setState(() {
+                                  if(_events[_controller.selectedDay] != null){
+                                    _events[_controller.selectedDay].add('$title _*_ $description');
+                                  } else {
+                                    _events[_controller.selectedDay] = ['$title _*_ $description'];
+                                  }
+                                  _preferences.setString("events", json.encode(encodeMap(_events)));
+                                  Navigator.pop(context);
                                 }
-                                _preferences.setString("events", json.encode(encodeMap(_events)));
-                                Navigator.pop(context);
-                              }
                               );
                             }
                           },
