@@ -5,6 +5,7 @@ import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -167,15 +168,21 @@ class _DiaryScreenState extends State<DiaryScreen>{
                   renderDaysOfWeek: true,
                 ),
                 calendarController: _controller,
-              ),..._selectedEvents.map((event) => ListTile(
+              ),..._selectedEvents.map((event) {
+
+                String title = event.split(' _*_ ')[0];
+                String description = event.split(' _*_ ')[1];
+
+                return ListTile(
                 onLongPress: () {
                   setState(() {
-                    if(_events[_controller.selectedDay] != null) {
-                      setState(() {
-                        _preferences.remove(event);
-                        _events[_controller.selectedDay].remove(event);
-                      });
+                    if(_events[_controller.selectedDay].length > 1){
+                      _events[_controller.selectedDay].remove(event);
+                    } else {
+                      _events[_controller.selectedDay].clear();
                     }
+                    _preferences.setString("events", json.encode(encodeMap(_events)));
+                    return _selectedEvents;
                   });
                 },
                 title: Container(
@@ -188,9 +195,10 @@ class _DiaryScreenState extends State<DiaryScreen>{
                     )
                   ),
                   alignment: Alignment.centerLeft,
-                  child: Text('$event')
+                  child: Text('$title')
                 ),
-              ),
+              );
+              },
             ),
           ],
         ),
@@ -203,31 +211,136 @@ class _DiaryScreenState extends State<DiaryScreen>{
   }
 
   void _showAddDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        content: TextField(
-          controller: _eventController,
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('save'),
-            onPressed: (){
-              if(_eventController.text.isEmpty) return;
-              setState(() {
-                if(_events[_controller.selectedDay] != null) {
-                  _events[_controller.selectedDay].add(_eventController.text);
-                } else {
-                  _events[_controller.selectedDay] = [_eventController.text];
-                }
-                _preferences.setString("events", json.encode(encodeMap(_events)));
-                _eventController.clear();
-                Navigator.pop(context);
-              });
-            },
-          )
-        ],
-      ),
-    );
-  }
+      String title, description;
+
+      final _formKey = GlobalKey<FormState>();
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+            backgroundColor: mainColor,
+            content: Container(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Text('New Event',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'PTSerif',
+                          fontSize: 22.0
+                        ),
+                      ),
+                      SizedBox(
+                        height: 55.0,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 13.0),
+                        child: TextFormField(
+                          validator: (data) {
+                            if(data.isEmpty) return 'Please Enter A Title';
+                            else return null;
+                          },
+                          maxLines: null,
+                          keyboardType: TextInputType.multiline,
+                          cursorColor: accentColor.withRed(150),
+                          decoration: InputDecoration(
+                            hintText: 'Title',
+                            hintStyle: TextStyle(color: textColor,
+                                fontFamily: 'PTSerif',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w200
+                            ),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: accentColor.withRed(150))),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: accentColor.withRed(150))),
+                              border: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: accentColor.withRed(150))),
+                          ),
+                          style: TextStyle(color: textColor,
+                              fontFamily: 'PTSerif',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w200
+                          ),
+                          onChanged: (data) {
+                            title = data;
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 55.0,),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 100.0, left: 20.0, right: 20.0),
+                        child: TextFormField(
+                          validator: (data) {
+                            if(data.isEmpty) return 'Please Enter A Description';
+                            else return null;
+                          },
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          cursorColor: accentColor.withRed(150),
+                          decoration: InputDecoration(
+                            hintText: 'Description',
+                            hintStyle: TextStyle(color: textColor,
+                                fontFamily: 'PTSerif',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w200
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: accentColor.withRed(150))),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: accentColor.withRed(150))),
+                            border: UnderlineInputBorder(
+                                borderSide: BorderSide(color: accentColor.withRed(150))),
+                          ),
+                          style: TextStyle(color: textColor,
+                              fontFamily: 'PTSerif',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w200
+                          ),
+                          onChanged: (data) {
+                            description = data;
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 55.0,),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: FlatButton(
+                          child: Text('Save',
+                          style: TextStyle(color: textColor,
+                              fontFamily: 'PTSerif',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w200
+                            ),
+                          ),
+                          onPressed: (){
+                            if(_formKey.currentState.validate()) {
+                              setState(() {
+                                if(_events[_controller.selectedDay] != null){
+                                  _events[_controller.selectedDay].add('$title _*_ $description');
+                                } else {
+                                  _events[_controller.selectedDay] = ['$title _*_ $description'];
+                                }
+                                _preferences.setString("events", json.encode(encodeMap(_events)));
+                                Navigator.pop(context);
+                              }
+                              );
+                            }
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      setState(() {
+        _selectedEvents = _events[_controller.selectedDay];
+      });
+    }
 }
