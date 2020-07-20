@@ -41,6 +41,7 @@ flutter:
   assets:
     - images/
     - images/Icons/
+    - images/Water/
     - assets/Sounds/
 
   fonts:
