@@ -50,10 +50,8 @@ class SingleEventScreen extends StatelessWidget {
                           width: size.width,
                           child: Text(
                             '$title',
-                            maxLines: 4,
+                            maxLines: null,
                             textAlign: TextAlign.center,
-                            softWrap: true,
-                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: Colors.white,
                               fontFamily: 'PTSerif',
@@ -79,29 +77,42 @@ class SingleEventScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                      Container(
-                        alignment: Alignment.center,
-                        width: 60.0,
-                        height: 60.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.black,
-                          border: Border.all(
-                            color: textColor,
-                            width: 2.0
-                          )
-                        ),
-                        child: Center(
-                          child: IconButton(
-                            iconSize: 35.0,
-                            onPressed: () => Navigator.of(context).pop(),
-                            icon: Icon(
-                              FontAwesomeIcons.times,
+                      SizedBox(height: 35.0,),
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: 70.0,
+                          height: 35.0,
+                          child: Text(
+                              'Close',
+                            style: TextStyle(
                               color: textColor,
+                              fontFamily: 'PTSerif'
                             ),
                           ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(123.0),
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.grey.shade700,
+                                Colors.grey.shade800,
+                                Colors.black,
+                                Colors.black,
+                                Colors.black,
+                                Colors.black,
+                              ]
+                            ),
+                            border: Border.all(
+                              color: textColor,
+                              width: 2.0
+                            )
+                          ),
                         ),
-                      )
+                      ),
+                      SizedBox(height: 35.0,)
                     ],
                   ),
                 ),
