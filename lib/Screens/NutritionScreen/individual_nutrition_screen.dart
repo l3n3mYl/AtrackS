@@ -119,7 +119,7 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
     });
   }
 
-  void getInitExercInfo() async {
+  void getInitNutrInfo() async {
     _management = DatabaseManagement(widget.user);
     await _management
         .getSingleFieldInfo('nutrition', widget.field)
@@ -137,6 +137,30 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
     });
   }
 
+  void _addWater(String count) async {
+    _management = DatabaseManagement(widget.user);
+    await _management.getSingleFieldInfo('nutrition', widget.field).then((value) {
+      count = (int.parse(value) + int.parse(count)).toString();
+      _management.updateSingleField('nutrition', widget.field, count);
+    });
+    setState(() {
+      getInitNutrInfo();
+    });
+  }
+
+  void _removeWater(String count) async {
+    _management = DatabaseManagement(widget.user);
+    await _management.getSingleFieldInfo('nutrition', widget.field).then((value) {
+      if(int.parse(value) - int.parse(count) >= 0) {
+        count = (int.parse(value) - int.parse(count)).toString();
+        _management.updateSingleField('nutrition', widget.field, count);
+      }
+    });
+    setState(() {
+      getInitNutrInfo();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -151,7 +175,7 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
       setState(() {
         getWeeklyNutritionProgress();
         getMonthlyNutritionProgress();
-        getInitExercInfo();
+        getInitNutrInfo();
       });
     });
   }
@@ -299,7 +323,7 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
                     ),
                   ),
                   Container(
-                      padding: EdgeInsets.only(bottom: 26.0, top: 26.0),
+                      padding: EdgeInsets.symmetric(vertical: 20.0),
                       width: _width,
                       height: _height * 0.13,
                       child: LinearPercentIndicator(
@@ -317,7 +341,6 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
                         backgroundColor: Colors.white,
                       )),
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 13.0),
                     child: LineChartSample2(
                         weeklyNutrProgList.isEmpty
                             ? [
@@ -337,6 +360,67 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
                         setGoal,
                         widget.division),
                   ),
+                  widget.field == 'Water'
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            _addWater('100');
+                          },
+                          onLongPress: () {
+                            _removeWater('100');
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            child: Image.asset('images/Water/100ml.png'),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _addWater('200');
+                          },
+                          onLongPress: () {
+                            _removeWater('200');
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            child: Image.asset('images/Water/200ml.png'),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: (){
+                            _addWater('500');
+                          },
+                          onLongPress: () {
+                            _removeWater('500');
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            child: Image.asset('images/Water/500ml.png'),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: (){
+                            _addWater('1000');
+                          },
+                          onLongPress: () {
+                            _removeWater('1000');
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            child: Image.asset('images/Water/1kml.png'),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(),
+                  SizedBox(height: 13.0,),
                   SizedBox(
                     height: 1.0,
                     child: Container(
@@ -355,9 +439,6 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
                           fontFamily: 'PTSerif',
                           fontSize: 24.0),
                     ),
-                  ),
-                  SizedBox(
-                    height: 13.0,
                   ),
                   Container(
                     padding: EdgeInsets.all(8.0),
