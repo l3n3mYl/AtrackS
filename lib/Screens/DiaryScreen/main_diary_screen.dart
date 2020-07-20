@@ -197,7 +197,8 @@ class _DiaryScreenState extends State<DiaryScreen>{
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(FontAwesomeIcons.plus),
+        backgroundColor: Colors.amber,
+        child: Icon(FontAwesomeIcons.plus, color: Colors.black,),
         onPressed: _showAddDialog,
       ),
     );
@@ -236,7 +237,7 @@ class _DiaryScreenState extends State<DiaryScreen>{
                             if(data.isEmpty) return 'Please Enter A Title';
                             else return null;
                           },
-                          maxLines: 2,
+                          maxLines: null,
                           keyboardType: TextInputType.multiline,
                           cursorColor: accentColor.withRed(150),
                           decoration: InputDecoration(
@@ -298,7 +299,7 @@ class _DiaryScreenState extends State<DiaryScreen>{
                           },
                         ),
                       ),
-                      SizedBox(height: 50.0,),
+                      SizedBox(height: 13.0,),
                       Align(
                         alignment: Alignment.bottomRight,
                         child: FlatButton(
