@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MeditationScreenRootClass {
-  final FirebaseUser user;
+  final User user;
 
   MeditationScreenRootClass(this.user);
 
@@ -21,7 +21,7 @@ class MeditationScreenRootClass {
 }
 
 class MeditationScreen extends StatefulWidget {
-  final FirebaseUser _user;
+  final User _user;
 
   MeditationScreen(this._user);
 

@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MainExerciseScreenRootClass {
-  final FirebaseUser user;
+  final User user;
 
   MainExerciseScreenRootClass(this.user);
 
@@ -20,7 +20,7 @@ class MainExerciseScreenRootClass {
 }
 
 class MainExerciseScreen extends StatefulWidget {
-  final FirebaseUser _user;
+  final User _user;
 
   MainExerciseScreen(this._user);
 

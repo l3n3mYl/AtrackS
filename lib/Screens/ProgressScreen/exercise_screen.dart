@@ -10,7 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class ExerciseScreen extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
   final String appBarTitle;
   final Color accentColor;
   final String icon;

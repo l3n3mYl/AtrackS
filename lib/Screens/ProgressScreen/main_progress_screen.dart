@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class MainProgressScreenRootClass {
-  final FirebaseUser user;
+  final User user;
 
   MainProgressScreenRootClass(this.user);
 
@@ -22,7 +22,7 @@ class MainProgressScreenRootClass {
 }
 
 class MainProgressScreen extends StatefulWidget {
-  final FirebaseUser _user;
+  final User _user;
 
   MainProgressScreen(this._user);
 

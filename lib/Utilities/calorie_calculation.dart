@@ -5,7 +5,7 @@ import 'package:com/Database/Services/db_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class CalorieCalculation {
-  final FirebaseUser user;
+  final User user;
 
   CalorieCalculation(this.user);
   DatabaseManagement _management;

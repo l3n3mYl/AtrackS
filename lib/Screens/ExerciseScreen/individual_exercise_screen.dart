@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
 import 'package:com/PopUps/information_popup.dart';
@@ -16,7 +15,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:sensors/sensors.dart';
 
 class IndividualExerciseScreen extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
   final String appBarTitle;
   final Color accentColor;
   final String icon;
@@ -49,9 +48,6 @@ class IndividualExerciseScreen extends StatefulWidget {
 class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   DatabaseManagement _management;
 
-  Pedometer _pedometer;
-  StreamSubscription<int> _subscription;
-
   //Accel vals
   List<double> xList = new List<double>();
   List<double> yList = new List<double>();
@@ -64,7 +60,7 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   List<StreamSubscription<dynamic>> _streamSubscriptions =
         <StreamSubscription<dynamic>>[];
 
-  //Cycling
+  //Cycling vals
   var _count = 0;
 
   //Aver calc
@@ -72,7 +68,8 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   String exercTotal = '-1';
 
   //Step Counter values
-  String stepCountVal = '0';
+  Stream<StepCount> _stepCountStream;
+  String _steps = '0';
   String stepGoal = '0';
   String totalSteps = '0';
 
@@ -228,11 +225,21 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
     }
   }
 
+  void onStepCount(StepCount event) {
+    setState(() {
+      _steps = event.steps.toString();
+      _sortSteeps(int.parse(_steps));
+    });
+  }
+
+  void onStepCountError(error) => print(error);
+
   //Pedometer Initialization
-  void startListening() {
-    _pedometer = new Pedometer();
-    _subscription = _pedometer.pedometerStream.listen(_onData,
-        onError: _onError, onDone: _onDone, cancelOnError: true);
+  Future<void> startListening() async {
+    _stepCountStream = await Pedometer.stepCountStream;
+    _stepCountStream.listen(onStepCount).onError(onStepCountError);
+
+    if(!mounted) return;
   }
 
   //Update db, adding new steps to an old val
@@ -241,7 +248,7 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
     String oldSteps =
     await _management.getSingleFieldInfo('exercises', 'Steps');
     String sumOfValues =
-    (int.parse(oldSteps) + int.parse(stepCountVal)).toString();
+    (int.parse(oldSteps) + int.parse(_steps)).toString();
     await _management.updateSingleField('exercises', 'Steps', sumOfValues);
     setState(() {
       this.totalSteps = sumOfValues;
@@ -249,7 +256,7 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   }
 
   //On received data, handle and sort
-  void _onData(int newValue) async {
+  void _sortSteeps(int newValue) async {
     //Check if need to reset and count from 0
     if (reset) {
       resetValue += newValue;
@@ -257,7 +264,7 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
     }
     setState(() {
       //Update DB with new values
-      stepCountVal = "${newValue - resetValue}";
+      _steps = "${newValue - resetValue}";
       _updateDB();
     });
   }
@@ -277,12 +284,12 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
     }
   }
 
-  void _onError(error) => print('Error: $error');
-
-  //When done listening, reset to count from 0
-  void _onDone() async {
-    reset = true;
-  }
+//  void _onError(error) => print('Error: $error');
+//
+//  //When done listening, reset to count from 0
+//  void _onDone() async {
+//    reset = true;
+//  }
 
   void getInitExercInfo() async {
     _management = DatabaseManagement(widget.user);
@@ -372,7 +379,8 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   @override
   void dispose() {
     super.dispose();
-    if (widget.stepCounter) _subscription.cancel();
+//    if (widget.stepCounter) _subscription.cancel();
+    if(widget.stepCounter) return;//TODO delete if statement
     else if (!widget.stepCounter && !widget.timeCounter)
       _updateUpsCalories(totalCaloriesBurned.floor());
 
@@ -393,8 +401,8 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
       }
       calorieResult.clear();
       temp /= 30;
-      if(tempSteps < int.parse(stepCountVal) && temp > 0.0){
-        tempSteps = int.parse(stepCountVal);
+      if(tempSteps < int.parse(_steps) && temp > 0.0){
+        tempSteps = int.parse(_steps);
         setState(() {
           currCals += temp.toInt();
           _management.updateSingleField('nutrition', 'Calories', currCals.toString());
@@ -532,7 +540,7 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
                                 ? Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Text('$stepCountVal',
+                                    Text('$_steps',
                                       style: TextStyle(
                                         fontFamily: 'SansSourcePro',
                                         color: Colors.white,

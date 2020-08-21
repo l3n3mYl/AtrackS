@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
 
-  final FirebaseUser _user;
+  final User _user;
 
   MainScreen(this._user);
 

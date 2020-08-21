@@ -12,7 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class MainNutritionScreenRootClass {
-  final FirebaseUser user;
+  final User user;
 
   MainNutritionScreenRootClass(this.user);
 
@@ -24,7 +24,7 @@ class MainNutritionScreenRootClass {
 }
 
 class MainNutritionScreen extends StatefulWidget {
-  final FirebaseUser _user;
+  final User _user;
 
   MainNutritionScreen(this._user);
 

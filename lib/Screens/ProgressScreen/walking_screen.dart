@@ -11,7 +11,7 @@ import 'package:pedometer/pedometer.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class WalkingScreen extends StatefulWidget {
-  final FirebaseUser user;
+  final User user;
 
   WalkingScreen(this.user);
 
@@ -20,12 +20,12 @@ class WalkingScreen extends StatefulWidget {
 }
 
 class _WalkingScreenState extends State<WalkingScreen> {
-  Pedometer _pedometer;
-  StreamSubscription<int> _subscription;
+  Stream<StepCount> _stepCountStream;
   DatabaseManagement _management;
   List<FlSpot> weeklyStepList = new List<FlSpot>();
   List<FlSpot> monthlyStepList = new List<FlSpot>();
   String stepCountVal = '0';
+  String _steps;
   String stepGoal = '0';
   String totalSteps = '0';
   int resetValue = 0;
@@ -91,11 +91,23 @@ class _WalkingScreenState extends State<WalkingScreen> {
     startListening();
   }
 
+  void onStepCount(StepCount event) {
+    setState(() {
+      _steps = event.steps.toString();
+      _onData(int.parse(_steps));
+    });
+  }
+
+  void onStepCountError(error) => print(error);
+
   //Pedometer Initialization
-  void startListening() {
-    _pedometer = new Pedometer();
-    _subscription = _pedometer.pedometerStream.listen(_onData,
-        onError: _onError, onDone: _onDone, cancelOnError: true);
+  void startListening() async {
+    _stepCountStream = await Pedometer.stepCountStream;
+    _stepCountStream.listen(onStepCount).onError(onStepCountError);
+
+//    _pedometer = new Pedometer();
+//    _subscription = _pedometer.pedometerStream.listen(_onData,
+//        onError: _onError, onDone: _onDone, cancelOnError: true);
   }
 
   //On received data, handle and sort
@@ -163,7 +175,6 @@ class _WalkingScreenState extends State<WalkingScreen> {
   @override
   void dispose() {
     super.dispose();
-    _subscription.cancel();
     _onDone();
   }
 
