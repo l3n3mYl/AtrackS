@@ -1,6 +1,7 @@
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
 import 'package:com/PopUps/progress_indicator.dart';
+import 'package:com/Screens/NutritionScreen/image_recognition.dart';
 import 'package:com/Screens/NutritionScreen/individual_nutrition_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class MainNutritionScreenRootClass {
@@ -48,6 +50,16 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
   void initState() {
     super.initState();
     getNutritionInfo();
+  }
+
+  void chooseImage(String type) async {
+    var image;
+    type == 'Camera'
+      ? image = await ImagePicker.platform.pickImage(source: ImageSource.camera)
+      : image = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) =>
+        ImageRecognitionScreen(image: image,)));
   }
 
   void getNutritionInfo() async {
@@ -251,7 +263,7 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 GestureDetector(
-                  onTap: (){},
+                  onTap: () => chooseImage('Camera'),
                   child: Container(
                     width: 60,
                     height: 60,
@@ -272,7 +284,7 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
                 ),
                 SizedBox(width: 30.0,),
                 GestureDetector(
-                  onTap: (){},
+                  onTap: () => chooseImage('Gallery'),
                   child: Container(
                     width: 60,
                     height: 60,
