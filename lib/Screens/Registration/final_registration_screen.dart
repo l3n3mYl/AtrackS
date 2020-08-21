@@ -10,7 +10,7 @@ final Color textColor = Color.fromRGBO(163, 149, 135, 1);
 final Color accentColor = Color.fromRGBO(213, 1, 1, 1);
 
 class FinalRegistrationScreen extends StatefulWidget {
-  final User user;
+  final NewUser user;
   FinalRegistrationScreen(this.user);
 
 

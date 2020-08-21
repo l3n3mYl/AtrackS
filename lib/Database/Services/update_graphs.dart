@@ -3,7 +3,7 @@ import 'package:com/Utilities/time_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UpdateGraphs {
-  final FirebaseUser _user;
+  final User _user;
 
   UpdateGraphs(this._user);
 

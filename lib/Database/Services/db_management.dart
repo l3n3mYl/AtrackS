@@ -4,22 +4,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 class DatabaseManagement {
   DatabaseManagement(this._user);
 
-  final FirebaseUser _user;
+  final User _user;
 
-  final Firestore _reference = Firestore.instance;
+  final FirebaseFirestore _reference = FirebaseFirestore.instance;
 
   Future updateMeditationWeeklyTime(int day, String time) async {
     String collection = 'meditation';
     String field = 'WeeklyStatus';
     try{
       DocumentSnapshot snapshot = await _reference.collection('meditation')
-              .document(_user.uid).get();
-      if(snapshot[field] != null) {
-        List<String> scList = snapshot[field].split(", ");
+              .doc(_user.uid).get();
+      if(snapshot.data()[field] != null) {
+        List<String> scList = snapshot.data()[field].split(", ");
         scList[day - 1] = time;
         final String data = scList.reduce((value, element) => value + ', ' + element);
         final Map<String, String> map = {field : data};
-        await _reference.collection(collection).document(_user.uid).updateData(map);
+        await _reference.collection(collection).doc(_user.uid).update(map);
       }
     } catch (e) {
       print(e.toString());
@@ -32,9 +32,9 @@ class DatabaseManagement {
     List<String> _list = new List<String>();
     try{
       DocumentSnapshot snapshot = await _reference.collection(collection)
-          .document(document).get();
-      for(var i = 0; i < snapshot.data.length; ++i){
-        _list.add(snapshot["$i"]);
+          .doc(document).get();
+      for(var i = 0; i < snapshot.data().length; ++i){
+        _list.add(snapshot.data()["$i"]);
       }
       return _list;
     } catch (e) {
@@ -46,13 +46,13 @@ class DatabaseManagement {
   Future updateWeeklyProgress(int day, String amount, String collection, String field) async {
     try{
       DocumentSnapshot snapshot =
-          await _reference.collection(collection).document(_user.uid).get();
-      if(snapshot[field] != null){
-        List<String> list = snapshot[field].split(", ");
+          await _reference.collection(collection).doc(_user.uid).get();
+      if(snapshot.data()[field] != null){
+        List<String> list = snapshot.data()[field].split(", ");
         list[day - 1] = amount;
         final String data = list.reduce((value, element) => value + ', ' + element);
         final Map<String, String> map = {field : data};
-        await _reference.collection(collection).document(_user.uid).updateData(map);
+        await _reference.collection(collection).doc(_user.uid).update(map);
       }
     } catch (e) {
       print(e.toString());
@@ -62,34 +62,34 @@ class DatabaseManagement {
 
   Future resetWeeklyExercGraphs() async {
     try{
-      await _reference.collection('exercises').getDocuments().then((value) {
-        value.documents.forEach((doc) {
-          for(var i = 0; i < doc.data.length; ++i) {
-            if(doc.data.keys.elementAt(i) != 'LastUpdated'){
-              if(doc.data.keys.elementAt(i) == 'Cycling')
-                updateSingleField('exercises', doc.data.keys.elementAt(i), '00:00');
-              else if(doc.data.keys.elementAt(i) == 'Jogging')
-                updateSingleField('exercises', doc.data.keys.elementAt(i), '00:00');
-              else updateSingleField('exercises', doc.data.keys.elementAt(i), '0');
+      await _reference.collection('exercises').get().then((value) {
+        value.docs.forEach((doc) {
+          for(var i = 0; i < doc.data().length; ++i) {
+            if(doc.data().keys.elementAt(i) != 'LastUpdated'){
+              if(doc.data().keys.elementAt(i) == 'Cycling')
+                updateSingleField('exercises', doc.data().keys.elementAt(i), '00:00');
+              else if(doc.data().keys.elementAt(i) == 'Jogging')
+                updateSingleField('exercises', doc.data().keys.elementAt(i), '00:00');
+              else updateSingleField('exercises', doc.data().keys.elementAt(i), '0');
             }
           }
         });
       });
-      await _reference.collection('exercise_weekly_progress').getDocuments()
+      await _reference.collection('exercise_weekly_progress').get()
           .then((value) {
-         value.documents.forEach((doc) {
-           for(var i = 0; i < doc.data.length; ++i) {
-             if(doc.data.keys.elementAt(i) != 'LastUpdated'){
-               if(doc.data.keys.elementAt(i) == 'Cycling')
+         value.docs.forEach((doc) {
+           for(var i = 0; i < doc.data().length; ++i) {
+             if(doc.data().keys.elementAt(i) != 'LastUpdated'){
+               if(doc.data().keys.elementAt(i) == 'Cycling')
                  updateSingleField('exercise_weekly_progress',
-                     doc.data.keys.elementAt(i),
+                     doc.data().keys.elementAt(i),
                      '00:00, 00:00, 00:00, 00:00, 00:00, 00:00, 00:00');
-               else if(doc.data.keys.elementAt(i) == 'Jogging')
+               else if(doc.data().keys.elementAt(i) == 'Jogging')
                  updateSingleField('exercise_weekly_progress',
-                     doc.data.keys.elementAt(i),
+                     doc.data().keys.elementAt(i),
                      '00:00, 00:00, 00:00, 00:00, 00:00, 00:00, 00:00');
                else updateSingleField('exercise_weekly_progress',
-                     doc.data.keys.elementAt(i),
+                     doc.data().keys.elementAt(i),
                      '0, 0, 0, 0, 0, 0, 0');
              }
            }
@@ -103,20 +103,20 @@ class DatabaseManagement {
 
   Future resetWeeklyNutrGraphs() async {
     try{
-      await _reference.collection('nutrition').getDocuments().then((value) {
-        value.documents.forEach((doc) {
-          for(var i = 0; i < doc.data.length; ++i) {
-            if(doc.data.keys.elementAt(i) != 'LastUpdated')
-              updateSingleField('nutrition', doc.data.keys.elementAt(i), '0');
+      await _reference.collection('nutrition').get().then((value) {
+        value.docs.forEach((doc) {
+          for(var i = 0; i < doc.data().length; ++i) {
+            if(doc.data().keys.elementAt(i) != 'LastUpdated')
+              updateSingleField('nutrition', doc.data().keys.elementAt(i), '0');
           }
         });
       });
-      await _reference.collection('nutrition_weekly_progress').getDocuments()
+      await _reference.collection('nutrition_weekly_progress').get()
         .then((value) {
-          value.documents.forEach((doc) {
-            for(var i = 0; i < doc.data.length; ++i) {
+          value.docs.forEach((doc) {
+            for(var i = 0; i < doc.data().length; ++i) {
               updateSingleField('nutrition_weekly_progress',
-                  doc.data.keys.elementAt(i), '0, 0, 0, 0, 0, 0, 0');
+                  doc.data().keys.elementAt(i), '0, 0, 0, 0, 0, 0, 0');
             }
           });
       });
@@ -129,9 +129,9 @@ class DatabaseManagement {
   Future<Map<String, dynamic>> retrieveExerciseInfoMap() async {
     Map<String, dynamic> exerciseInfo = new Map();
     try {
-      await _reference.collection('exercises').getDocuments().then((value) {
-        value.documents.forEach((doc) {
-          exerciseInfo = doc.data;
+      await _reference.collection('exercises').get().then((value) {
+        value.docs.forEach((doc) {
+          exerciseInfo = doc.data();
         });
       });
       return exerciseInfo;
@@ -144,9 +144,9 @@ class DatabaseManagement {
   Future<Map<String, dynamic>> retrieveNutritionInfoMap() async {
     Map<String, dynamic> nutritionInfo = new Map();
     try{
-      await _reference.collection('nutrition').getDocuments().then((value) {
-        value.documents.forEach((doc) {
-          nutritionInfo = doc.data;
+      await _reference.collection('nutrition').get().then((value) {
+        value.docs.forEach((doc) {
+          nutritionInfo = doc.data();
         });
       });
       return nutritionInfo;
@@ -159,8 +159,8 @@ class DatabaseManagement {
   Future<String> getSingleFieldInfo(String collection, String field) async {
     try {
       DocumentSnapshot snapshot =
-          await _reference.collection(collection).document(_user.uid).get();
-      return snapshot[field];
+          await _reference.collection(collection).doc(_user.uid).get();
+      return snapshot.data()[field];
     } catch (e) {
       print(e.toString());
       return null;
@@ -173,8 +173,8 @@ class DatabaseManagement {
     try {
       await _reference
           .collection(collection)
-          .document(_user.uid)
-          .updateData(data);
+          .doc(_user.uid)
+          .update(data);
     } catch (e) {
       print(e.toString());
     }
@@ -182,8 +182,8 @@ class DatabaseManagement {
 
 //TODO: DON'T TOUCH
 //  Future deleteFirebaseDocs() async {
-//    _reference.collection('exercises').getDocuments().then((snapshot) {
-//      for(DocumentSnapshot ds in snapshot.documents){
+//    _reference.collection('exercises').get().then((snapshot) {
+//      for(DocumentSnapshot ds in snapshot.docs){
 //        ds.reference.delete();
 //      }
 //    });

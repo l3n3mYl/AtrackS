@@ -16,7 +16,7 @@ class FirstRegistrationScreen extends StatefulWidget {
 }
 
 class _FirstRegistrationScreenState extends State<FirstRegistrationScreen> {
-  User _user = new User();
+  NewUser _user = new NewUser();
   final _formKey = GlobalKey<FormState>();
 
   final AuthService _authService = AuthService();

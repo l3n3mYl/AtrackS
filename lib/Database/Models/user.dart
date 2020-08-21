@@ -1,4 +1,4 @@
-class User{
+class NewUser{
   String username, password, email, weight, height, gender, age;
 
   get getAge {
@@ -70,6 +70,6 @@ class User{
     return stats;
   }
 
-  User({this.username, this.password, this.email, this.weight, this.height, this.gender, this.age});
+  NewUser({this.username, this.password, this.email, this.weight, this.height, this.gender, this.age});
 
 }
