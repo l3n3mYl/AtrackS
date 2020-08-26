@@ -179,6 +179,26 @@ class DatabaseManagement {
       print(e.toString());
     }
   }
+  
+  Future updateNutritionWithProduct(List<String> nutritionList) async {
+
+    final List<String> nutritionNames = [
+      'Carbs',
+      'Fats',
+      'Protein',
+      'Calories',
+    ];
+
+    try{
+      for(var i = 0; i < nutritionList.length - 1; ++i) {
+        await _reference.collection('nutrition').doc(_user.uid)
+            .update({nutritionNames[i] : nutritionList[i+1]});
+        // print({nutritionNames[i]:nutritionList[i+1]});
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
 //TODO: DON'T TOUCH
 //  Future deleteFirebaseDocs() async {

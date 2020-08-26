@@ -135,6 +135,9 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
         nutritionGoal = value;
       });
     });
+    if(double.parse(nutritionTotal) >= double.parse(nutritionGoal)){
+      nutritionTotal = nutritionGoal;
+    }
   }
 
   void _addWater(String count) async {
@@ -274,7 +277,7 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
                         ),
                         Positioned(
                           top: _height * 0.02,
-                          left: _width * 0.44,
+                          left: _width * 0.46,
                           child: Container(
                             child: Transform.rotate(
                               angle: 0.45,
@@ -334,7 +337,7 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
                         center: setGoal == 1.0 && nutritionTotal == '-1'
                             ? Text('0%')
                             : Text(
-                                '${(int.parse(nutritionTotal) / setGoal * 100).toStringAsFixed(0)}%'),
+                                '${(double.parse(nutritionTotal) / setGoal * 100).toStringAsFixed(0)}%'),
                         width: _width * 0.69,
                         lineHeight: 25.0,
                         progressColor: widget.accentColor,
