@@ -1,27 +1,31 @@
-import 'dart:io';
-
+import 'package:com/Database/Services/db_management.dart';
+import 'package:com/Design/colours.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite/tflite.dart';
 
 class ImageRecognitionScreen extends StatefulWidget {
-
   final image;
+  final User user;
 
-  ImageRecognitionScreen({this.image});
+  ImageRecognitionScreen({this.image, this.user});
 
   @override
   _ImageRecognitionScreenState createState() => _ImageRecognitionScreenState();
 }
 
 class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
+  final GlobalKey _formKey = GlobalKey<FormState>();
 
   bool _isloading;
   PickedFile _image;
-  String _product, _calories;
+  String _product;
+  List<String> _nutritionList;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _isloading = true;
     loadTFModel().then((value) {
@@ -34,50 +38,338 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
 
   runModelOnImage(PickedFile image) async {
     List result = await Tflite.runModelOnImage(
-      path: image.path,
-      numResults: 1,
-      imageMean: 127.5,
-      imageStd: 127.5,
-      threshold: 0.5
-    );
+        path: image.path,
+        numResults: 1,
+        imageMean: 127.5,
+        imageStd: 127.5,
+        threshold: 0.5);
     setState(() {
       _isloading = false;
       _product = result[0]['label'].split(' ')[1].split('_')[0];
-      _calories = result[0]['label'].split(' ')[1].split('_')[1];
+      _nutritionList = result[0]['label'].split(' ')[1].split('_');
     });
   }
 
   loadTFModel() async {
     await Tflite.loadModel(
         model: 'assets/Model/model_unquant.tflite',
-        labels: 'assets/Model/labels.txt'
-    );
+        labels: 'assets/Model/labels.txt');
   }
 
   @override
   Widget build(BuildContext context) {
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      body: Container(
-        color: Colors.black,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                _product == null ? '' : '$_product',
-                style: TextStyle(
-                  color: Colors.white
+      body: SingleChildScrollView(
+        child: Stack(
+          children: <Widget>[
+            Container(
+              width: _width,
+              height: _height,
+              color: mainColor,
+            ),
+            Container(
+              width: _width,
+              height: _height,
+              child: AspectRatio(
+                aspectRatio: 18 / 9,
+                child: Opacity(
+                  opacity: 0.2,
+                  child: Image(
+                    image: AssetImage('images/main_pattern.jpg'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-              Text(
-                _calories == null ? '' : '$_calories',
-                style: TextStyle(
-                    color: Colors.white
+            ),
+            Container(
+              alignment: Alignment.center,
+              width: _width,
+              height: _height,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Is it ',
+                          style: TextStyle(
+                            color: textColor,
+                            fontFamily: 'PTSerif',
+                            fontSize: 36
+                          ),
+                        ),
+                        Text(
+                          '$_product?',
+                          style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              color: textColor,
+                              fontFamily: 'PTSerif',
+                              fontSize: 36
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                            alignment: Alignment.center,
+                            width: 100,
+                            height: 50,
+                            child: Text(
+                                'Carbs',
+                                style: TextStyle(
+                                  fontFamily: 'PTSerif',
+                                  fontSize: 18.0,
+                                  color: Colors.white54
+                                ),
+                            ),
+                        ),
+                        Container(
+                          width: 200,
+                          height: 50,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(right: 50.0),
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            maxLines: 1,
+                            keyboardType: TextInputType.emailAddress,
+                            style: TextStyle(
+                                color: textColor,
+                                fontFamily: 'SourceSansPro',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w200),
+                            cursorColor: accentColor,
+                            decoration: InputDecoration(
+                                hintText: _nutritionList == null
+                                    ? ''
+                                    : '${_nutritionList[1]}',
+                                hintStyle: TextStyle(
+                                    color: textColor,
+                                    fontFamily: 'SourceSansPro',
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w200),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor))),
+                            onChanged: (emailField) {},
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                            alignment: Alignment.center,
+                            width: 100,
+                            height: 50,
+                            child: Text(
+                              'Fats',
+                              style: TextStyle(
+                                  fontFamily: 'PTSerif',
+                                  fontSize: 18.0,
+                                  color: Colors.white54
+                              ),
+                            )),
+                        Container(
+                          width: 200,
+                          height: 50,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(right: 50.0),
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            maxLines: 1,
+                            keyboardType: TextInputType.emailAddress,
+                            style: TextStyle(
+                                color: textColor,
+                                fontFamily: 'SourceSansPro',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w200),
+                            cursorColor: accentColor,
+                            decoration: InputDecoration(
+                                hintText: _nutritionList == null
+                                    ? ''
+                                    : '${_nutritionList[2]}',
+                                hintStyle: TextStyle(
+                                    color: textColor,
+                                    fontFamily: 'SourceSansPro',
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w200),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor))),
+                            onChanged: (emailField) {},
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                            alignment: Alignment.center,
+                            width: 100,
+                            height: 50,
+                            child: Text(
+                              'Protein',
+                              style: TextStyle(
+                                  fontFamily: 'PTSerif',
+                                  fontSize: 18.0,
+                                  color: Colors.white54
+                              ),
+                            )),
+                        Container(
+                          width: 200,
+                          height: 50,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(right: 50.0),
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            maxLines: 1,
+                            keyboardType: TextInputType.emailAddress,
+                            style: TextStyle(
+                                color: textColor,
+                                fontFamily: 'SourceSansPro',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w200),
+                            cursorColor: accentColor,
+                            decoration: InputDecoration(
+                                hintText: _nutritionList == null
+                                    ? ''
+                                    : '${_nutritionList[3]}',
+                                hintStyle: TextStyle(
+                                    color: textColor,
+                                    fontFamily: 'SourceSansPro',
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w200),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor))),
+                            onChanged: (emailField) {},
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                            alignment: Alignment.center,
+                            width: 100,
+                            height: 50,
+                            child: Text(
+                              'Calories',
+                              style: TextStyle(
+                                  fontFamily: 'PTSerif',
+                                  fontSize: 18.0,
+                                  color: Colors.white54
+                              ),
+                            )),
+                        Container(
+                          width: 200,
+                          height: 50,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(right: 50.0),
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            maxLines: 1,
+                            keyboardType: TextInputType.emailAddress,
+                            style: TextStyle(
+                                color: textColor,
+                                fontFamily: 'SourceSansPro',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w200),
+                            cursorColor: accentColor,
+                            decoration: InputDecoration(
+                                hintText: _nutritionList == null
+                                    ? ''
+                                    : '${_nutritionList[4]}',
+                                hintStyle: TextStyle(
+                                    color: textColor,
+                                    fontFamily: 'SourceSansPro',
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w200),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor))),
+                            onChanged: (emailField) {},
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        DatabaseManagement(widget.user)
+                            .updateNutritionWithProduct(_nutritionList);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 25.0),
+                        child: Container(
+                          width: 219,
+                          height: 42,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(56.0),
+                              color: textColor),
+                          child: Container(
+                            margin: const EdgeInsets.all(2.0),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(56.0),
+                                color: Colors.black),
+                            child: Center(
+                                child: Text(
+                              'Proceed',
+                              style: TextStyle(
+                                  color: textColor,
+                                  fontFamily: 'PTSerif',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w200),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

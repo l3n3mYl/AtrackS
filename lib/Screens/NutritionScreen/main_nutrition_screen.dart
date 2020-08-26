@@ -39,8 +39,8 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
     Color.fromRGBO(189, 253, 255, 1), //blue
     Color.fromRGBO(255, 188, 122, 1), //orange
     Color.fromRGBO(156, 255, 162, 1), //green
-    Color.fromRGBO(246, 255, 125, 1), //yellow
     Color.fromRGBO(255, 163, 163, 1), //pink
+    Color.fromRGBO(246, 255, 125, 1), //yellow
   ];
 
   DatabaseManagement _management;
@@ -59,7 +59,7 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
       : image = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
 
     Navigator.of(context).push(MaterialPageRoute(builder: (_) =>
-        ImageRecognitionScreen(image: image,)));
+        ImageRecognitionScreen(image: image, user: widget._user,)));
   }
 
   void getNutritionInfo() async {
@@ -73,8 +73,8 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
 
   void calculatePercentage(Map nutritionValue) async {
     _management = DatabaseManagement(widget._user);
-    List<int> goals = new List<int>();
-    List<int> currProgress = new List<int>();
+    List<double> goals = new List<double>();
+    List<double> currProgress = new List<double>();
     List<double> percentage = new List<double>();
     for (var i = 0; i < nutritionValue.length; ++i) {
       if (nutritionValue.keys.elementAt(i).toString() != 'LastUpdated') {
@@ -82,13 +82,13 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
             .getSingleFieldInfo('nutrition_goals',
                 '${nutritionValue.keys.elementAt(i).toString()}_Goals')
             .then((value) {
-          goals.add(int.parse(value));
+          goals.add(double.parse(value));
         });
         await _management
             .getSingleFieldInfo(
                 'nutrition', nutritionValue.keys.elementAt(i).toString())
             .then((value) {
-          currProgress.add(int.parse(value));
+          currProgress.add(double.parse(value));
         });
       }
     }
@@ -105,8 +105,8 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
     }
   }
 
-  void addDataCards(Map nutritionInfo, List<double> percentage, List<int> goals,
-      List<int> currProgress) {
+  void addDataCards(Map nutritionInfo, List<double> percentage, List<double> goals,
+      List<double> currProgress) {
 
     final List<Widget> _screens = [
       IndividualNutritionScreen(
@@ -137,23 +137,24 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
         measure: 'mg',
       ),
       IndividualNutritionScreen(
-        division: 100,
-        appBarTitle: 'Calorie Consumption',
-        user: widget._user,
-        accentColor: _colorPal[3],
-        field: 'Calories',
-        popupText: 'Edit me plis',
-        measure: 'kcal',
-      ),
-      IndividualNutritionScreen(
         division: 1,
         appBarTitle: 'Protein Consumption',
         user: widget._user,
-        accentColor: _colorPal[4],
+        accentColor: _colorPal[3],
         field: 'Protein',
         popupText: 'Edit me plis',
         measure: 'mg',
       ),
+      IndividualNutritionScreen(
+        division: 100,
+        appBarTitle: 'Calorie Consumption',
+        user: widget._user,
+        accentColor: _colorPal[4],
+        field: 'Calories',
+        popupText: 'Edit me plis',
+        measure: 'kcal',
+      ),
+
     ];
 
     double _width = MediaQuery.of(context).size.width;
@@ -195,14 +196,20 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
                           Row(
                             children: <Widget>[
                               Text(
-                                '${currProgress[i]}',
+                                currProgress[i] >= goals[i]
+                                    ? '${goals[i]}'
+                                    : '${currProgress[i]}',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'PTSerif',
                                     fontWeight: FontWeight.w400),
                               ),
                               Text(
-                                'g',
+                                nutritionInfo.keys.elementAt(i) == 'Water'
+                                    ? 'ml'
+                                    : nutritionInfo.keys.elementAt(i) == 'Calories'
+                                      ? 'kcal'
+                                      : 'g',
                                 style: TextStyle(
                                     color: _colorPal[i],
                                     fontFamily: 'PTSerif',
@@ -223,7 +230,11 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
                                     fontWeight: FontWeight.w400),
                               ),
                               Text(
-                                'g',
+                                nutritionInfo.keys.elementAt(i) == 'Water'
+                                    ? 'ml'
+                                    : nutritionInfo.keys.elementAt(i) == 'Calories'
+                                      ? 'kcal'
+                                      : 'g',
                                 style: TextStyle(
                                     color: _colorPal[i],
                                     fontFamily: 'PTSerif',
