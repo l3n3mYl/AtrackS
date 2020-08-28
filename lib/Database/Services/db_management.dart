@@ -180,21 +180,34 @@ class DatabaseManagement {
     }
   }
   
-  Future updateNutritionWithProduct(List<String> nutritionList) async {
+  Future updateNutritionWithProduct(List<String> nutritionList,
+      String nutritionMass) async {
 
     final List<String> nutritionNames = [
+      'Calories',
       'Carbs',
       'Fats',
       'Protein',
-      'Calories',
     ];
 
+    double temp;
+    nutritionList.removeAt(0);
+
     try{
-      for(var i = 0; i < nutritionList.length - 1; ++i) {
-        await _reference.collection('nutrition').doc(_user.uid)
-            .update({nutritionNames[i] : nutritionList[i+1]});
-        // print({nutritionNames[i]:nutritionList[i+1]});
-      }
+      await _reference.collection('nutrition').doc(_user.uid)
+            .get().then((value) => {
+              for(var i = 0; i < value.data().keys.length; ++i) {
+                for(var j = 0; j < nutritionNames.length; ++j) {
+                  if(value.data().keys.elementAt(i) == nutritionNames[j]) {
+                    temp = double.parse(value.data().values.elementAt(i)),
+                    temp += double.parse(nutritionList[j]),
+                    temp *= double.parse(nutritionMass) / 100,
+                    _reference.collection('nutrition').doc(_user.uid)
+                          .update({'${value.data().keys.elementAt(i)}':'${temp.toStringAsFixed(2)}'})
+                  }
+                },
+              },
+      });
     } catch (e) {
       print(e.toString());
     }

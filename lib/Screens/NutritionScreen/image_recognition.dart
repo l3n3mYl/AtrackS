@@ -21,6 +21,7 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
 
   bool _isloading;
   PickedFile _image;
+  String _nutritionMass = '100';
   String _product;
   List<String> _nutritionList;
 
@@ -125,7 +126,7 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                             width: 100,
                             height: 50,
                             child: Text(
-                                'Carbs',
+                                'Calories',
                                 style: TextStyle(
                                   fontFamily: 'PTSerif',
                                   fontSize: 18.0,
@@ -163,7 +164,67 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                                     borderSide: BorderSide(color: accentColor)),
                                 border: UnderlineInputBorder(
                                     borderSide: BorderSide(color: accentColor))),
-                            onChanged: (emailField) {},
+                            onChanged: (calorieField) {
+                              _nutritionList[1] = double.parse(calorieField)
+                                  .toStringAsFixed(2);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                            alignment: Alignment.center,
+                            width: 100,
+                            height: 50,
+                            child: Text(
+                              'Carbs',
+                              style: TextStyle(
+                                  fontFamily: 'PTSerif',
+                                  fontSize: 18.0,
+                                  color: Colors.white54
+                              ),
+                            )),
+                        Container(
+                          width: 200,
+                          height: 50,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(right: 50.0),
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            maxLines: 1,
+                            keyboardType: TextInputType.emailAddress,
+                            style: TextStyle(
+                                color: textColor,
+                                fontFamily: 'SourceSansPro',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w200),
+                            cursorColor: accentColor,
+                            decoration: InputDecoration(
+                                hintText: _nutritionList == null
+                                    ? ''
+                                    : '${_nutritionList[2]}',
+                                hintStyle: TextStyle(
+                                    color: textColor,
+                                    fontFamily: 'SourceSansPro',
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w200),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor)),
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: accentColor))),
+                            onChanged: (carbsField) {
+                              _nutritionList[2] = double.parse(carbsField)
+                                  .toStringAsFixed(2);
+                            },
                           ),
                         ),
                       ],
@@ -205,7 +266,7 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                             decoration: InputDecoration(
                                 hintText: _nutritionList == null
                                     ? ''
-                                    : '${_nutritionList[2]}',
+                                    : '${_nutritionList[3]}',
                                 hintStyle: TextStyle(
                                     color: textColor,
                                     fontFamily: 'SourceSansPro',
@@ -217,7 +278,10 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                                     borderSide: BorderSide(color: accentColor)),
                                 border: UnderlineInputBorder(
                                     borderSide: BorderSide(color: accentColor))),
-                            onChanged: (emailField) {},
+                            onChanged: (fatsField) {
+                              _nutritionList[3] = double.parse(fatsField)
+                                  .toStringAsFixed(2);
+                            },
                           ),
                         ),
                       ],
@@ -259,7 +323,7 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                             decoration: InputDecoration(
                                 hintText: _nutritionList == null
                                     ? ''
-                                    : '${_nutritionList[3]}',
+                                    : '${_nutritionList[4]}',
                                 hintStyle: TextStyle(
                                     color: textColor,
                                     fontFamily: 'SourceSansPro',
@@ -271,7 +335,10 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                                     borderSide: BorderSide(color: accentColor)),
                                 border: UnderlineInputBorder(
                                     borderSide: BorderSide(color: accentColor))),
-                            onChanged: (emailField) {},
+                            onChanged: (proteinField) {
+                              _nutritionList[4] = double.parse(proteinField)
+                                  .toStringAsFixed(2);
+                            },
                           ),
                         ),
                       ],
@@ -288,7 +355,7 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                             width: 100,
                             height: 50,
                             child: Text(
-                              'Calories',
+                              'Grams',
                               style: TextStyle(
                                   fontFamily: 'PTSerif',
                                   fontSize: 18.0,
@@ -311,9 +378,7 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                                 fontWeight: FontWeight.w200),
                             cursorColor: accentColor,
                             decoration: InputDecoration(
-                                hintText: _nutritionList == null
-                                    ? ''
-                                    : '${_nutritionList[4]}',
+                                hintText: '100',
                                 hintStyle: TextStyle(
                                     color: textColor,
                                     fontFamily: 'SourceSansPro',
@@ -325,7 +390,10 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                                     borderSide: BorderSide(color: accentColor)),
                                 border: UnderlineInputBorder(
                                     borderSide: BorderSide(color: accentColor))),
-                            onChanged: (emailField) {},
+                            onChanged: (massField) {
+                              _nutritionMass = double.parse(massField)
+                                  .toStringAsFixed(2);
+                            },
                           ),
                         ),
                       ],
@@ -336,7 +404,8 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                     GestureDetector(
                       onTap: () async {
                         DatabaseManagement(widget.user)
-                            .updateNutritionWithProduct(_nutritionList);
+                            .updateNutritionWithProduct(_nutritionList,
+                              _nutritionMass);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 25.0),
