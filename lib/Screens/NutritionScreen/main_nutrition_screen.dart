@@ -307,7 +307,7 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
                         borderRadius: BorderRadius.circular(56.0),
                         color: Colors.black,
                       ),
-                      child: Icon(FontAwesomeIcons.qrcode,
+                      child: Icon(FontAwesomeIcons.image,
                         size: 36.0,
                         color: textColor,
                       ),
