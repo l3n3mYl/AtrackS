@@ -259,7 +259,8 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
                                           fontFamily: 'LibreBaskerville'),
                                     )
                                   : Text(
-                                      nutritionTotal,
+                                      // nutritionTotal,
+                                      widget.field == 'Calorie' ? '${int.parse(nutritionTotal)}' : '$nutritionTotal',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 30.0,
