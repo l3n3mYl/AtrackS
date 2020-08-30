@@ -5,12 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite/tflite.dart';
+import 'package:http/http.dart' as http;
+import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart' as parser;
 
 class ImageRecognitionScreen extends StatefulWidget {
   final image;
   final User user;
+  final String barcode;
 
-  ImageRecognitionScreen({this.image, this.user});
+  ImageRecognitionScreen({this.image, this.user, this.barcode});
 
   @override
   _ImageRecognitionScreenState createState() => _ImageRecognitionScreenState();
@@ -23,18 +27,50 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
   PickedFile _image;
   String _nutritionMass = '100';
   String _product;
-  List<String> _nutritionList;
+  List<String> _nutritionList = new List<String>();
+  // List<String> _nutrList = new List<String>();
+  dom.Document _doc;
 
   @override
   void initState() {
     super.initState();
     _isloading = true;
-    loadTFModel().then((value) {
+    if(widget.image != null){
+      loadTFModel().then((value) {
       setState(() {
         runModelOnImage(widget.image);
         _isloading = false;
+        });
       });
-    });
+    } else {
+      getData();
+    }
+  }
+
+  void getData() async {
+    var _url = 'https://world.openfoodfacts.org/product/${widget.barcode}';
+    var _result = await http.get(_url);
+    _doc = parser.parse(_result.body);
+
+    getValues();
+  }
+
+  void getValues() {
+    if(_doc != null) {
+
+      final List<String> _nutriments = ['energy-kcal', 'fat',
+        'carbohydrates', 'proteins'];
+      var mainClass, nutriment;
+      _nutritionList.add('none');
+      for(var i = 0; i < 4; ++i) {
+        mainClass = _doc.getElementById('nutriment_${_nutriments[i]}_tr');
+        nutriment = mainClass.getElementsByClassName('nutriment_value ')[0]
+            .innerHtml;
+
+        _nutritionList.add(nutriment.split(' ')[0].replaceAll(new RegExp(r"\s+"), "").toString());
+      }
+      setState(() {});
+    }
   }
 
   runModelOnImage(PickedFile image) async {
@@ -104,7 +140,7 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                           ),
                         ),
                         Text(
-                          '$_product?',
+                          _product == null ? 'right?' : '$_product?',
                           style: TextStyle(
                               decoration: TextDecoration.underline,
                               color: textColor,
@@ -150,7 +186,7 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                                 fontWeight: FontWeight.w200),
                             cursorColor: accentColor,
                             decoration: InputDecoration(
-                                hintText: _nutritionList == null
+                                hintText: _nutritionList.length <= 0
                                     ? ''
                                     : '${_nutritionList[1]}',
                                 hintStyle: TextStyle(
@@ -207,7 +243,7 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                                 fontWeight: FontWeight.w200),
                             cursorColor: accentColor,
                             decoration: InputDecoration(
-                                hintText: _nutritionList == null
+                                hintText: _nutritionList.length <= 1
                                     ? ''
                                     : '${_nutritionList[2]}',
                                 hintStyle: TextStyle(
@@ -264,7 +300,7 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                                 fontWeight: FontWeight.w200),
                             cursorColor: accentColor,
                             decoration: InputDecoration(
-                                hintText: _nutritionList == null
+                                hintText: _nutritionList.length <= 2
                                     ? ''
                                     : '${_nutritionList[3]}',
                                 hintStyle: TextStyle(
@@ -321,7 +357,7 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                                 fontWeight: FontWeight.w200),
                             cursorColor: accentColor,
                             decoration: InputDecoration(
-                                hintText: _nutritionList == null
+                                hintText: _nutritionList.length <= 3
                                     ? ''
                                     : '${_nutritionList[4]}',
                                 hintStyle: TextStyle(

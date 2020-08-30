@@ -26,6 +26,9 @@ dependencies:
   sensors:
   tflite:
   image_picker:
+  flutter_barcode_scanner:
+  http:
+  html:
 
 
 dev_dependencies:
