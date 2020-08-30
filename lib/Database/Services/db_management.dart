@@ -180,7 +180,7 @@ class DatabaseManagement {
     }
   }
   
-  Future updateNutritionWithProduct(List<String> nutritionList,
+  Future<String> updateNutritionWithProduct(List<String> nutritionList,
       String nutritionMass) async {
 
     final List<String> nutritionNames = [
@@ -208,6 +208,8 @@ class DatabaseManagement {
                 },
               },
       });
+
+      return 'Success';
     } catch (e) {
       print(e.toString());
     }
