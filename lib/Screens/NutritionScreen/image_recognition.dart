@@ -28,7 +28,6 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
   String _nutritionMass = '100';
   String _product;
   List<String> _nutritionList = new List<String>();
-  // List<String> _nutrList = new List<String>();
   dom.Document _doc;
 
   @override
@@ -57,19 +56,24 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
 
   void getValues() {
     if(_doc != null) {
-
-      final List<String> _nutriments = ['energy-kcal', 'fat',
+      try {
+        final List<String> _nutriments = ['energy-kcal', 'fat',
         'carbohydrates', 'proteins'];
-      var mainClass, nutriment;
-      _nutritionList.add('none');
-      for(var i = 0; i < 4; ++i) {
-        mainClass = _doc.getElementById('nutriment_${_nutriments[i]}_tr');
-        nutriment = mainClass.getElementsByClassName('nutriment_value ')[0]
-            .innerHtml;
+        var mainClass, nutriment;
+        _nutritionList.add('none');
+        for(var i = 0; i < 4; ++i) {
+          mainClass = _doc.getElementById('nutriment_${_nutriments[i]}_tr');
+          nutriment = mainClass.getElementsByClassName('nutriment_value ')[0]
+              .innerHtml;
 
-        _nutritionList.add(nutriment.split(' ')[0].replaceAll(new RegExp(r"\s+"), "").toString());
+          _nutritionList.add(nutriment.split(' ')[0].replaceAll(new RegExp(r"\s+"), "").toString());
+          print(_nutritionList);
+        }
+        setState(() {});
+      } catch (e) {
+        _nutritionList = ['0', '0', '0', '0', '0'];
+        setState(() {});
       }
-      setState(() {});
     }
   }
 
@@ -439,9 +443,16 @@ class _ImageRecognitionScreenState extends State<ImageRecognitionScreen> {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        DatabaseManagement(widget.user)
+                        await DatabaseManagement(widget.user)
                             .updateNutritionWithProduct(_nutritionList,
-                              _nutritionMass);
+                              _nutritionMass).then((value) {
+                                if(value == 'Success') {
+                                  Navigator.of(context).pop();
+                                } else {
+                                  print('Error upon updating the Database');
+                                }
+                              }
+                            );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 25.0),
