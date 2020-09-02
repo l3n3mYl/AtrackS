@@ -44,8 +44,8 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
     Color.fromRGBO(189, 253, 255, 1), //blue
     Color.fromRGBO(255, 188, 122, 1), //orange
     Color.fromRGBO(156, 255, 162, 1), //green
-    Color.fromRGBO(255, 163, 163, 1), //pink
     Color.fromRGBO(246, 255, 125, 1), //yellow
+    Color.fromRGBO(255, 163, 163, 1), //pink
   ];
 
   DatabaseManagement _management;
@@ -162,22 +162,22 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
         measure: 'mg',
       ),
       IndividualNutritionScreen(
-        division: 1,
-        appBarTitle: 'Protein Consumption',
-        user: widget._user,
-        accentColor: _colorPal[3],
-        field: 'Protein',
-        popupText: 'Edit me plis',
-        measure: 'mg',
-      ),
-      IndividualNutritionScreen(
         division: 100,
         appBarTitle: 'Calorie Consumption',
         user: widget._user,
-        accentColor: _colorPal[4],
+        accentColor: _colorPal[3],
         field: 'Calories',
         popupText: 'Edit me plis',
         measure: 'kcal',
+      ),
+      IndividualNutritionScreen(
+        division: 1,
+        appBarTitle: 'Protein Consumption',
+        user: widget._user,
+        accentColor: _colorPal[4],
+        field: 'Protein',
+        popupText: 'Edit me plis',
+        measure: 'mg',
       ),
 
     ];

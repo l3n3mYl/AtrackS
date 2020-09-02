@@ -125,7 +125,7 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
         .getSingleFieldInfo('nutrition', widget.field)
         .then((value) {
       setState(() {
-        nutritionTotal = value;
+        nutritionTotal = double.parse(value).toStringAsFixed(1);
       });
     });
     await _management
@@ -135,8 +135,8 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
         nutritionGoal = value;
       });
     });
-    if(double.parse(nutritionTotal) >= double.parse(nutritionGoal)){
-      nutritionTotal = nutritionGoal;
+    if(double.parse(nutritionTotal) >= 1000.0){
+      nutritionTotal = double.parse(nutritionTotal).toStringAsFixed(0);
     }
   }
 
@@ -260,7 +260,7 @@ class _IndividualNutritionScreenState extends State<IndividualNutritionScreen> {
                                     )
                                   : Text(
                                       // nutritionTotal,
-                                      widget.field == 'Calorie' ? '${int.parse(nutritionTotal)}' : '$nutritionTotal',
+                                      widget.field == 'Calorie' ? '${int.parse(nutritionTotal)}' : '${nutritionTotal}',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 30.0,
