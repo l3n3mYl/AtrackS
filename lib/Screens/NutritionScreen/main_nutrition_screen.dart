@@ -14,10 +14,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-import 'package:http/http.dart' as http;
-import 'package:html/dom.dart' as dom;
-import 'package:html/parser.dart' as parser;
-
 class MainNutritionScreenRootClass {
   final User user;
 
@@ -187,6 +183,74 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
     Map<String, dynamic> newMap = nutritionInfo;
     newMap.remove('LastUpdated');
     if (nutritionInfo != null) {
+      cardList.add(
+        Stack(
+          children: [
+            Container(
+              child: AspectRatio(
+                aspectRatio: 18 / 9,
+                  child: Opacity(
+                    opacity: 0.69,
+                    child: Image(
+                      image: AssetImage('images/nutrition.jpg'),
+                      fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: _width,
+              height: _height * 0.24,
+              alignment: Alignment.topLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding:
+                    const EdgeInsets.only(top: 16.0, left: 16.0),
+                    child: Container(
+                      child: Text(
+                        'EAT WELL',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 100.0),
+                    child: Container(
+                      child: Text(
+                        'LIVE WELL',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: 16.0, left: 200.0),
+                    child: Container(
+                      child: Text(
+                        'BE WELL',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+
       for (var i = 0; i < newMap.length; ++i) {
         cardList.add(GestureDetector(
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => _screens[i])),
@@ -403,21 +467,6 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
                     Container(
                       child: Column(
                         children: <Widget>[
-                          Container(
-                            child: AspectRatio(
-                              aspectRatio: 18 / 9,
-                              child: Opacity(
-                                opacity: 0.69,
-                                child: Image(
-                                  image: AssetImage('images/nutrition.jpg'),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 30.0,
-                          ),
                           Flexible(
                             child: SingleChildScrollView(
                               child: Container(
@@ -430,231 +479,13 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
                         ],
                       ),
                     ),
-                    Container(
-                      width: _width,
-                      height: _height * 0.24,
-                      alignment: Alignment.topLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(top: 16.0, left: 16.0),
-                            child: Container(
-                              child: Text(
-                                'EAT WELL',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 100.0),
-                            child: Container(
-                              child: Text(
-                                'LIVE WELL',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 16.0, left: 200.0),
-                            child: Container(
-                              child: Text(
-                                'BE WELL',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
-              ));
-  }
-}
-
-// class BarcodeScannerScreen extends StatefulWidget {
-//   @override
-//   _BarcodeScannerScreenState createState() => _BarcodeScannerScreenState();
-// }
-//
-// class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
-//
-//   String _scanBarcode = 'Unknown';
-//
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
-//
-//   void startBarcodeScan() async {
-//     FlutterBarcodeScanner.getBarcodeStreamReceiver(
-//         "#ff6666", "Cancel", true, ScanMode.BARCODE).listen((event)
-//           => print(event));
-//   }
-//
-//   Future<void> scanQR() async {
-//     String _result;
-//
-//     try{
-//       await FlutterBarcodeScanner.scanBarcode(
-//           "#ff6666", "Cancel", true, ScanMode.QR).then((value) => {
-//         _result = value,
-//         Navigator.of(context).push(MaterialPageRoute(builder: (_) => InformationGetter(_result))),
-//       });
-//       print(_result);
-//     } catch (e) {
-//       print(e.toString());
-//     }
-//
-//     if(!mounted) return;
-//
-//     setState(() {
-//       _scanBarcode = _result;
-//     });
-//   }
-//
-//   Future<void> scanNormal() async {
-//     String _result;
-//
-//     try {
-//       await FlutterBarcodeScanner.scanBarcode(
-//           "#ff6666", "Cancel", true, ScanMode.BARCODE).then((value) => {
-//             _result = value,
-//             Navigator.of(context).push(MaterialPageRoute(builder: (_) => InformationGetter(_result))),
-//       });
-//       print(_result);
-//     } catch (e) {
-//       print(e.toString());
-//     }
-//
-//     if(!mounted) return;
-//
-//     setState(() {
-//       _scanBarcode = _result;
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       body: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: [
-//           FlatButton(
-//             onPressed: () => scanNormal(),
-//             child: Container(
-//               alignment: Alignment.center,
-//               child: Text('Normal'),
-//             ),
-//           ),
-//           FlatButton(
-//             onPressed: () => scanQR(),
-//             child: Container(
-//               alignment: Alignment.center,
-//               child: Text('QR'),
-//             ),
-//           ),
-//           FlatButton(
-//             onPressed: () => startBarcodeScan(),
-//             child: Container(
-//               alignment: Alignment.center,
-//               child: Text('Stream'),
-//             ),
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-class InformationGetter extends StatefulWidget {
-
-  final String barcode;
-
-  InformationGetter(this.barcode);
-
-  @override
-  _InformationGetterState createState() => _InformationGetterState();
-}
-
-class _InformationGetterState extends State<InformationGetter> {
-  
-  String kcal, carbs, fats, protein;
-  List<String> _nutrList = new List<String>();
-  dom.Document _doc;
-
-  @override
-  void initState() {
-    super.initState();
-
-    getData();
-  }
-
-  void getData() async {
-    var _url = 'https://world.openfoodfacts.org/product/${widget.barcode}';
-    var _result = await http.get(_url);
-    _doc = parser.parse(_result.body);
-
-    getValues();
-  }
-
-  void getValues() {
-    if(_doc != null) {
-
-      final List<String> _nutriments = ['energy-kcal', 'fat',
-        'carbohydrates', 'proteins'];
-      var mainClass, nutriment;
-
-      for(var i = 0; i < 4; ++i) {
-        mainClass = _doc.getElementById('nutriment_${_nutriments[i]}_tr');
-        nutriment = mainClass.getElementsByClassName('nutriment_value ')[0]
-            .innerHtml;
-
-        _nutrList.add(nutriment.split(' ')[0].replaceAll(new RegExp(r"\s+"), "").toString());
-      }
-      setState(() {});
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            child: Text(_nutrList.length <= 0 ? '' : '${_nutrList[0]} kcal', style: TextStyle(color: Colors.black),),
-          ),
-          Container(
-            child: Text(_nutrList.length <= 1 ? '' : '${_nutrList[1]} fat', style: TextStyle(color: Colors.black),),
-          ),
-          Container(
-            child: Text(_nutrList.length <= 2 ? '' : '${_nutrList[1]} carbs', style: TextStyle(color: Colors.black),),
-          ),
-          Container(
-            child: Text(_nutrList.length <= 3 ? '' : '${_nutrList[1]} protein', style: TextStyle(color: Colors.black),),
-          ),
-        ],
-      ),
+              )
     );
   }
 }
+
+
 
 
