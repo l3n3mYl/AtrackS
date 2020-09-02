@@ -1,5 +1,6 @@
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
+import 'package:com/Screens/ExerciseScreen/exercise_manage.dart';
 import 'package:com/Screens/ExerciseScreen/individual_exercise_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
@@ -270,7 +271,9 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                    print('tips');
+                                  },
                                   child: Container(
                                     width: 100.0,
                                     height: 32,
@@ -291,7 +294,7 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ExerciseManage())),
                                   child: Container(
                                     width: 100.0,
                                     height: 32,
