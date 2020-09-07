@@ -197,6 +197,87 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
     double _height = MediaQuery.of(context).size.height;
     Map<String, dynamic> newMap = nutritionInfo;
     newMap.remove('LastUpdated');
+
+    // cardList.add(
+    //     Container(
+    //         height: _height * 0.3,
+    //         child: AspectRatio(
+    //           aspectRatio: 18 / 9,
+    //           child: Opacity(
+    //             opacity: 0.69,
+    //             child: Image(
+    //               image: AssetImage('images/exercise.jpg'),
+    //               fit: BoxFit.cover,
+    //             ),
+    //           ),
+    //         ),
+    //       ));
+    // cardList.add(
+    //       Container(
+    //         padding: EdgeInsets.only(top: 10.0),
+    //         width: _width,
+    //         height: 50.0,
+    //         child: Row(
+    //           mainAxisAlignment: MainAxisAlignment.spaceAround,
+    //           children: <Widget>[
+    //             GestureDetector(
+    //               onTap: () {
+    //                 print('tips');
+    //               },
+    //               child: Container(
+    //                 width: 100.0,
+    //                 height: 32,
+    //                 color: textColor,
+    //                 child: Container(
+    //                   alignment: Alignment.topCenter,
+    //                   margin: EdgeInsets.all(2.0),
+    //                   color: Colors.black,
+    //                   child: Text(
+    //                     'Tips',
+    //                     style: TextStyle(
+    //                         fontSize: 20.0,
+    //                         fontFamily: 'PTSerif',
+    //                         color: textColor
+    //                     ),
+    //                   ),
+    //                 ),
+    //               ),
+    //             ),
+    //             GestureDetector(
+    //               onTap: () {
+    //                 Navigator.of(context).push(MaterialPageRoute(builder: (_) => ExerciseManage(
+    //                   _preferences.getString('exerciseSettings')
+    //                 ))).then((value) {
+    //                   setState(() {
+    //                     cardList.clear();
+    //                     getExerciseInfo();
+    //                   });
+    //                 });
+    //               },
+    //               child: Container(
+    //                 width: 100.0,
+    //                 height: 32,
+    //                 color: textColor,
+    //                 child: Container(
+    //                   alignment: Alignment.topCenter,
+    //                   margin: EdgeInsets.all(2.0),
+    //                   color: Colors.black,
+    //                   child: Text(
+    //                     'Manage',
+    //                     style: TextStyle(
+    //                         fontSize: 20.0,
+    //                         fontFamily: 'PTSerif',
+    //                         color: textColor
+    //                     ),
+    //                   ),
+    //                 ),
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    // );
+
     if (nutritionInfo != null) {
       for (var i = 0; i < newMap.length; ++i) {
         if(json.decode(_preferences.getString('exerciseSettings'))
@@ -291,103 +372,106 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
                     Container(
                       width: _width,
                       height: _height,
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            height: _height * 0.3,
-                            child: AspectRatio(
-                              aspectRatio: 18 / 9,
-                              child: Opacity(
-                                opacity: 0.69,
-                                child: Image(
-                                  image: AssetImage('images/exercise.jpg'),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(top: 10.0),
-                            width: _width,
-                            height: 50.0,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                GestureDetector(
-                                  onTap: () {
-                                    print('tips');
-                                  },
-                                  child: Container(
-                                    width: 100.0,
-                                    height: 32,
-                                    color: textColor,
-                                    child: Container(
-                                      alignment: Alignment.topCenter,
-                                      margin: EdgeInsets.all(2.0),
-                                      color: Colors.black,
-                                      child: Text(
-                                        'Tips',
-                                        style: TextStyle(
-                                            fontSize: 20.0,
-                                            fontFamily: 'PTSerif',
-                                            color: textColor
-                                        ),
-                                      ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                height: _height * 0.3,
+                                child: AspectRatio(
+                                  aspectRatio: 18 / 9,
+                                  child: Opacity(
+                                    opacity: 0.69,
+                                    child: Image(
+                                      image: AssetImage('images/exercise.jpg'),
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => ExerciseManage(
-                                      _preferences.getString('exerciseSettings')
-                                    ))).then((value) {
-                                      setState(() {
-                                        cardList.clear();
-                                        getExerciseInfo();
-                                      });
-                                    });
-                                  },
-                                  child: Container(
-                                    width: 100.0,
-                                    height: 32,
-                                    color: textColor,
-                                    child: Container(
-                                      alignment: Alignment.topCenter,
-                                      margin: EdgeInsets.all(2.0),
-                                      color: Colors.black,
-                                      child: Text(
-                                        'Manage',
-                                        style: TextStyle(
-                                            fontSize: 20.0,
-                                            fontFamily: 'PTSerif',
-                                            color: textColor
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(top: 10.0),
+                                width: _width,
+                                height: 50.0,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      onTap: () {
+                                        print('tips');
+                                      },
+                                      child: Container(
+                                        width: 100.0,
+                                        height: 32,
+                                        color: textColor,
+                                        child: Container(
+                                          alignment: Alignment.topCenter,
+                                          margin: EdgeInsets.all(2.0),
+                                          color: Colors.black,
+                                          child: Text(
+                                            'Tips',
+                                            style: TextStyle(
+                                                fontSize: 20.0,
+                                                fontFamily: 'PTSerif',
+                                                color: textColor
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => ExerciseManage(
+                                          _preferences.getString('exerciseSettings')
+                                        ))).then((value) {
+                                          setState(() {
+                                            cardList.clear();
+                                            getExerciseInfo();
+                                          });
+                                        });
+                                      },
+                                      child: Container(
+                                        width: 100.0,
+                                        height: 32,
+                                        color: textColor,
+                                        child: Container(
+                                          alignment: Alignment.topCenter,
+                                          margin: EdgeInsets.all(2.0),
+                                          color: Colors.black,
+                                          child: Text(
+                                            'Manage',
+                                            style: TextStyle(
+                                                fontSize: 20.0,
+                                                fontFamily: 'PTSerif',
+                                                color: textColor
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            width: _width,
-                            height: _height * 0.52,
-                            child: GridView.builder(
-                              itemCount: cardList.length,
-                              padding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 35.0),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisSpacing: 50.0,
-                                mainAxisSpacing: 50.0,
-                                crossAxisCount: 2,
                               ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return cardList[index];
-                              },
-                            ),
-                          )
-                        ],
-                      ),
+                              Container(
+                                width: _width,
+                                child: GridView.builder(
+                                  itemCount: cardList.length,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 35.0),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisSpacing: 50.0,
+                                    mainAxisSpacing: 50.0,
+                                    crossAxisCount: 2,
+                                  ),
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return cardList[index];
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                     ),
                   ],
                 ),
