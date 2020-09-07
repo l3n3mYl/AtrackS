@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
 import 'package:com/Screens/ExerciseScreen/exercise_manage.dart';
 import 'package:com/Screens/ExerciseScreen/individual_exercise_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
+import 'package:com/Utilities/exercise_json_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainExerciseScreenRootClass {
   final User user;
@@ -30,6 +34,12 @@ class MainExerciseScreen extends StatefulWidget {
 }
 
 class _MainExerciseScreenState extends State<MainExerciseScreen> {
+
+  DatabaseManagement _management;
+  List<Widget> cardList = new List<Widget>();
+  Map<String, Map<String, dynamic>> _exerciseDisplaySettings;
+  SharedPreferences _preferences;
+  
   final List<Color> _colorPal = [
     Color.fromRGBO(181, 217, 156, 1), //yellow
     Color.fromRGBO(181, 217, 156, 1), //yellow
@@ -48,14 +58,53 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
     'images/Icons/Jogging.png',
   ];
 
-  DatabaseManagement _management;
-  List<Widget> cardList = new List<Widget>();
 
   @override
   void initState() {
     super.initState();
     getExerciseInfo();
+    _exerciseDisplaySettings = {};
+    _initSettings();
   }
+
+  void _checkSettings() {
+
+    ExerciseJsonManipulation _ejm = new ExerciseJsonManipulation();
+
+    Map<String, bool> _controlSettings = {
+      'Cycling':true,
+      'Jogging':true,
+      'Pull-Ups':true,
+      'Push-Ups':true,
+      'Sit-Ups':true,
+      'Steps':true,
+    };
+
+    if(_exerciseDisplaySettings["exerciseSettings"] == null) {
+      _exerciseDisplaySettings["exerciseSettings"] = _controlSettings;
+      _preferences.setString("exerciseSettings", json.encode(
+          _ejm.encodeMap(_exerciseDisplaySettings)));
+    }
+  }
+
+  void _initSettings() async {
+    _preferences = await SharedPreferences.getInstance();
+    setState(() {
+      _exerciseDisplaySettings = Map<String, Map<String, dynamic>>.from(
+        json.decode(_preferences.getString("exerciseSettings"))
+      );
+    });
+    _checkSettings();
+  }
+
+  // Map<String, Map<String, dynamic>> encodeMap(Map<String, Map<String, dynamic>> map) {
+  //   Map<String, Map<String, dynamic>> newMap = {};
+  //   map.forEach((key, value) {
+  //     newMap[key.toString()] = map[key];
+  //   });
+  //
+  //   return newMap;
+  // }
 
   void getExerciseInfo() async {
     _management = DatabaseManagement(widget._user);
@@ -294,7 +343,12 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ExerciseManage())),
+                                  onTap: () {
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => ExerciseManage(
+                                      _preferences.getString('exerciseSettings')
+                                    )));
+                                    // print(_preferences.getString('exerciseSettings'));
+                                  },
                                   child: Container(
                                     width: 100.0,
                                     height: 32,
