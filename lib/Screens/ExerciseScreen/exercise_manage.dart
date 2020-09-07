@@ -1,12 +1,18 @@
+import 'dart:convert';
+
 import 'package:com/Design/colours.dart';
+import 'package:com/Utilities/exercise_json_manipulation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ExerciseManage extends StatelessWidget {
+
+  final String _settings;
+
+  ExerciseManage(this._settings);
+
   @override
   Widget build(BuildContext context) {
-
-    Size _size = MediaQuery.of(context).size;
 
     return Material(
       color: Colors.transparent,
@@ -15,7 +21,7 @@ class ExerciseManage extends StatelessWidget {
           color: mainColor,
           child: SingleChildScrollView(
             child: Center(
-              child: CheckboxList(),
+              child: CheckboxList(_settings),
             ),
           ),
         ),
@@ -25,23 +31,37 @@ class ExerciseManage extends StatelessWidget {
 
 
 class CheckboxList extends StatefulWidget {
+
+  final String _settings;
+
+  CheckboxList(this._settings);
+
   @override
   _CheckboxListState createState() => _CheckboxListState();
 }
 
 class _CheckboxListState extends State<CheckboxList> {
 
-  Map<String, bool> _exListSort = {
-    'Cycling':true,
-    'Jogging':true,
-    'Pull-Ups':true,
-    'Push-Ups':true,
+  bool _loaded = false;
+  SharedPreferences _preferences;
+  ExerciseJsonManipulation _ejm = new ExerciseJsonManipulation();
+  Map<String, dynamic> _exListSort = {
+    'Cycling':false,
+    'Jogging':false,
+    'Pull-Ups':false,
+    'Push-Ups':false,
     'Sit-Ups':true,
     'Steps':true,
   };
 
   @override
   Widget build(BuildContext context) {
+
+    if(!_loaded) {
+      _exListSort = jsonDecode(widget._settings)['exerciseSettings'];
+      _loaded = true;
+    }
+
     return Column(
       children: [
         CheckboxListTile(
@@ -97,6 +117,17 @@ class _CheckboxListState extends State<CheckboxList> {
               _exListSort.update('Steps', (value) => stepValue);
             });
           },
+        ),
+        FlatButton(
+          onPressed: () async {
+            _preferences = await SharedPreferences.getInstance();
+            if(_preferences != null) {
+              _preferences.setString("exerciseSettings",
+                  json.encode(_ejm.encodeMap({'exerciseSettings':_exListSort})));
+              Navigator.of(context).pop();
+            }
+          },
+          child: Text('Save and Exit'),
         ),
       ],
     );
