@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:com/Design/colours.dart';
+import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:com/Utilities/exercise_json_manipulation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,17 +15,42 @@ class ExerciseManage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    Size size = MediaQuery.of(context).size;
+
     return Material(
       color: Colors.transparent,
       child: Container(
-          alignment: Alignment.center,
-          color: mainColor,
-          child: SingleChildScrollView(
-            child: Center(
-              child: CheckboxList(_settings),
+        child: Stack(
+          children: [
+            BackgroundTriangle(),
+            Container(
+              width: size.width,
+              height: size.height,
+              child: AspectRatio(
+                aspectRatio: 18 / 9,
+                child: Opacity(
+                  opacity: 0.2,
+                  child: Image(
+                    image: AssetImage('images/main_pattern.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             ),
-          ),
+            Container(
+                alignment: Alignment.center,
+                width: size.width,
+                height: size.height,
+                color: mainColor.withOpacity(0.3),
+                child: SingleChildScrollView(
+                  child: Center(
+                    child: CheckboxList(_settings),
+                  ),
+                ),
+              ),
+          ],
         ),
+      ),
     );
   }
 }
@@ -65,7 +91,14 @@ class _CheckboxListState extends State<CheckboxList> {
     return Column(
       children: [
         CheckboxListTile(
-          title: const Text('Cycling'),
+          activeColor: accentColor,
+          checkColor: Colors.black,
+          title: Text('Cycling', style: TextStyle(
+              color: textColor,
+              fontFamily: 'PTSerif',
+              fontSize: 18
+            ),
+          ),
           value: _exListSort['Cycling'],
           onChanged: (bool cycValue) {
             setState(() {
@@ -74,7 +107,14 @@ class _CheckboxListState extends State<CheckboxList> {
           },
         ),
         CheckboxListTile(
-          title: const Text('Jogging'),
+          activeColor: accentColor,
+          checkColor: Colors.black,
+          title: Text('Jogging', style: TextStyle(
+              color: textColor,
+              fontFamily: 'PTSerif',
+              fontSize: 18
+            ),
+          ),
           value: _exListSort['Jogging'],
           onChanged: (bool jogValue) {
             setState(() {
@@ -83,7 +123,14 @@ class _CheckboxListState extends State<CheckboxList> {
           },
         ),
         CheckboxListTile(
-          title: const Text('Pull-Ups'),
+          activeColor: accentColor,
+          checkColor: Colors.black,
+          title: Text('Pull-Ups', style: TextStyle(
+              color: textColor,
+              fontFamily: 'PTSerif',
+              fontSize: 18
+            ),
+          ),
           value: _exListSort['Pull-Ups'],
           onChanged: (bool pullValue) {
             setState(() {
@@ -92,7 +139,14 @@ class _CheckboxListState extends State<CheckboxList> {
           },
         ),
         CheckboxListTile(
-          title: const Text('Push-Ups'),
+          activeColor: accentColor,
+          checkColor: Colors.black,
+          title: Text('Push-Ups', style: TextStyle(
+              color: textColor,
+              fontFamily: 'PTSerif',
+              fontSize: 18
+            ),
+          ),
           value: _exListSort['Push-Ups'],
           onChanged: (bool pushValue) {
             setState(() {
@@ -101,7 +155,14 @@ class _CheckboxListState extends State<CheckboxList> {
           },
         ),
         CheckboxListTile(
-          title: const Text('Sit-Ups'),
+          activeColor: accentColor,
+          checkColor: Colors.black,
+          title: Text('Sit-Ups', style: TextStyle(
+              color: textColor,
+              fontFamily: 'PTSerif',
+              fontSize: 18
+            ),
+          ),
           value: _exListSort['Sit-Ups'],
           onChanged: (bool sitValue) {
             setState(() {
@@ -110,7 +171,14 @@ class _CheckboxListState extends State<CheckboxList> {
           },
         ),
         CheckboxListTile(
-          title: const Text('Steps'),
+          activeColor: accentColor,
+          checkColor: Colors.black,
+          title: Text('Steps', style: TextStyle(
+              color: textColor,
+              fontFamily: 'PTSerif',
+              fontSize: 18
+            ),
+          ),
           value: _exListSort['Steps'],
           onChanged: (bool stepValue) {
             setState(() {
@@ -118,8 +186,11 @@ class _CheckboxListState extends State<CheckboxList> {
             });
           },
         ),
-        FlatButton(
-          onPressed: () async {
+        SizedBox(
+          height: 69.0,
+        ),
+        GestureDetector(
+          onTap: () async {
             _preferences = await SharedPreferences.getInstance();
             if(_preferences != null) {
               _preferences.setString("exerciseSettings",
@@ -127,7 +198,32 @@ class _CheckboxListState extends State<CheckboxList> {
               Navigator.of(context).pop();
             }
           },
-          child: Text('Save and Exit'),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Container(
+              width: 120,
+              height: 50,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(56.0),
+                  color: Color.fromRGBO(155, 144, 130, 1)),
+              child: Container(
+                margin: const EdgeInsets.all(2.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(56.0),
+                    color: Colors.black),
+                child: Center(
+                    child: Text(
+                      'Save',
+                      style: TextStyle(
+                          color: Color.fromRGBO(155, 144, 130, 1),
+                          fontFamily: 'PTSerif',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w200
+                      ),
+                    )),
+              ),
+            ),
+          ),
         ),
       ],
     );
