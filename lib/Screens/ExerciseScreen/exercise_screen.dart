@@ -97,15 +97,6 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
     _checkSettings();
   }
 
-  // Map<String, Map<String, dynamic>> encodeMap(Map<String, Map<String, dynamic>> map) {
-  //   Map<String, Map<String, dynamic>> newMap = {};
-  //   map.forEach((key, value) {
-  //     newMap[key.toString()] = map[key];
-  //   });
-  //
-  //   return newMap;
-  // }
-
   void getExerciseInfo() async {
     _management = DatabaseManagement(widget._user);
     await _management.retrieveExerciseInfoMap().then((value) {
@@ -208,48 +199,51 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
     newMap.remove('LastUpdated');
     if (nutritionInfo != null) {
       for (var i = 0; i < newMap.length; ++i) {
-        cardList.add(GestureDetector(
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => _screens[i])),
-          child: GridTile(
-            child: Container(
-              width: _width,
-              height: _height,
-              decoration: BoxDecoration(
-                border: Border.all(
-                    width: 2.0, color: _colorPal[i]
-                ),
-                color: _colorPal[i].withOpacity(0.35),
-              ),
+        if(json.decode(_preferences.getString('exerciseSettings'))
+          ['exerciseSettings'][newMap.keys.elementAt(i)]){
+          cardList.add(GestureDetector(
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => _screens[i])),
+            child: GridTile(
               child: Container(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset(
-                          _icons[i],
-                          color: _colorPal[i],
-                          width: 50.0,
-                          height: 50.0,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Container(width: _width, height: 2.0, color: _colorPal[i],),
-                      ),
-                      Text(
-                          newMap.keys.elementAt(i),
-                        style: TextStyle(
-                          fontFamily: 'PTSerif',
-                          fontSize: 24.0,
-                          color: _colorPal[i]
-                        ),
-                      ),
-                    ],
+                width: _width,
+                height: _height,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      width: 2.0, color: _colorPal[i]
                   ),
+                  color: _colorPal[i].withOpacity(0.35),
+                ),
+                child: Container(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Image.asset(
+                            _icons[i],
+                            color: _colorPal[i],
+                            width: 50.0,
+                            height: 50.0,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Container(width: _width, height: 2.0, color: _colorPal[i],),
+                        ),
+                        Text(
+                            newMap.keys.elementAt(i),
+                          style: TextStyle(
+                            fontFamily: 'PTSerif',
+                            fontSize: 24.0,
+                            color: _colorPal[i]
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-          ),
-        );
+          );
+        }
       }
     }
   }
@@ -346,8 +340,12 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
                                   onTap: () {
                                     Navigator.of(context).push(MaterialPageRoute(builder: (_) => ExerciseManage(
                                       _preferences.getString('exerciseSettings')
-                                    )));
-                                    // print(_preferences.getString('exerciseSettings'));
+                                    ))).then((value) {
+                                      setState(() {
+                                        cardList.clear();
+                                        getExerciseInfo();
+                                      });
+                                    });
                                   },
                                   child: Container(
                                     width: 100.0,
