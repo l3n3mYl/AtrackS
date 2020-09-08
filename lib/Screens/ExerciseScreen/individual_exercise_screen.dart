@@ -232,7 +232,7 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
     });
   }
 
-  void onStepCountError(error) => print(error);
+  void onStepCountError(error) => print('$error StepCountError');
 
   //Pedometer Initialization
   Future<void> startListening() async {
@@ -283,13 +283,6 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
       print(e.toString());
     }
   }
-
-//  void _onError(error) => print('Error: $error');
-//
-//  //When done listening, reset to count from 0
-//  void _onDone() async {
-//    reset = true;
-//  }
 
   void getInitExercInfo() async {
     _management = DatabaseManagement(widget.user);
@@ -379,7 +372,6 @@ class _IndividualExerciseScreenState extends State<IndividualExerciseScreen> {
   @override
   void dispose() {
     super.dispose();
-//    if (widget.stepCounter) _subscription.cancel();
     if(widget.stepCounter) return;//TODO delete if statement
     else if (!widget.stepCounter && !widget.timeCounter)
       _updateUpsCalories(totalCaloriesBurned.floor());
