@@ -58,6 +58,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
 
   void _initPreferences() async {
     _preferences = await SharedPreferences.getInstance();
+  }
 
   @override
   void initState() {
