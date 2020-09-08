@@ -57,32 +57,17 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
     'images/Icons/Jogging.png',
   ];
 
-  void _checkSettings() {
-    ExerciseJsonManipulation _ejm = new ExerciseJsonManipulation();
-
-    Map<String, bool> _controlSettings = {
-      'Cycling': true,
-      'Jogging': true,
-      'Pull-Ups': true,
-      'Push-Ups': true,
-      'Sit-Ups': true,
-      'Steps': true,
-    };
-
-    if (_exerciseDisplaySettings["exerciseSettings"] == null) {
-      _exerciseDisplaySettings["exerciseSettings"] = _controlSettings;
-      _preferences.setString("exerciseSettings",
-          json.encode(_ejm.encodeMap(_exerciseDisplaySettings)));
-    }
-  }
-
   void _initSettings() async {
     _preferences = await SharedPreferences.getInstance();
-    setState(() {
-      _exerciseDisplaySettings = Map<String, Map<String, dynamic>>.from(
-          json.decode(_preferences.getString("exerciseSettings")));
-    });
-    _checkSettings();
+    ExerciseJsonManipulation _ejm = new ExerciseJsonManipulation();
+
+    Map<String, Map<String, dynamic>> result = await _ejm.initSettings();
+
+    if(result != null) {
+      setState(() {
+        _exerciseDisplaySettings = result;
+      });
+    }
   }
 
   @override
