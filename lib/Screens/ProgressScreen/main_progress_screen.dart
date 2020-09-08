@@ -416,10 +416,10 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
                       ),
                     ),
                   ),
-                  Center(
+                  Container(
                     child: SingleChildScrollView(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: children.length == 0
                             ? awaitResult('Calculating Your Progress')
