@@ -37,7 +37,6 @@ class MainProgressScreen extends StatefulWidget {
 
 class _MainProgressScreenState extends State<MainProgressScreen> {
   SharedPreferences _preferences;
-  Map<String, Map<String, dynamic>> _exerciseDisplaySettings = {};
 
   final List<Color> _colorPal = [
     Color.fromRGBO(222, 222, 222, 1),
@@ -57,23 +56,14 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
     'images/Icons/Jogging.png',
   ];
 
-  void _initSettings() async {
+  void _initPreferences() async {
     _preferences = await SharedPreferences.getInstance();
-    ExerciseJsonManipulation _ejm = new ExerciseJsonManipulation();
-
-    Map<String, Map<String, dynamic>> result = await _ejm.initSettings();
-
-    if(result != null) {
-      setState(() {
-        _exerciseDisplaySettings = result;
-      });
-    }
   }
 
   @override
   void initState() {
     super.initState();
-    _initSettings();
+    _initPreferences();
   }
 
   @override
