@@ -8,7 +8,6 @@ import 'package:com/Screens/ProgressScreen/walking_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
-import 'package:com/Utilities/exercise_json_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
