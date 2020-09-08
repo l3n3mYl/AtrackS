@@ -6,7 +6,6 @@ import 'package:com/Screens/ExerciseScreen/exercise_manage.dart';
 import 'package:com/Screens/ExerciseScreen/individual_exercise_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
-import 'package:com/Utilities/exercise_json_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +35,6 @@ class MainExerciseScreen extends StatefulWidget {
 class _MainExerciseScreenState extends State<MainExerciseScreen> {
   DatabaseManagement _management;
   List<Widget> cardList = new List<Widget>();
-  Map<String, Map<String, dynamic>> _exerciseDisplaySettings;
   SharedPreferences _preferences;
 
   final List<Color> _colorPal = [
@@ -61,36 +59,11 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
   void initState() {
     super.initState();
     getExerciseInfo();
-    _exerciseDisplaySettings = {};
-    _initSettings();
+    _initPreferences();
   }
 
-  void _checkSettings() {
-    ExerciseJsonManipulation _ejm = new ExerciseJsonManipulation();
-
-    Map<String, bool> _controlSettings = {
-      'Cycling': true,
-      'Jogging': true,
-      'Pull-Ups': true,
-      'Push-Ups': true,
-      'Sit-Ups': true,
-      'Steps': true,
-    };
-
-    if (_exerciseDisplaySettings["exerciseSettings"] == null) {
-      _exerciseDisplaySettings["exerciseSettings"] = _controlSettings;
-      _preferences.setString("exerciseSettings",
-          json.encode(_ejm.encodeMap(_exerciseDisplaySettings)));
-    }
-  }
-
-  void _initSettings() async {
+  void _initPreferences() async {
     _preferences = await SharedPreferences.getInstance();
-    setState(() {
-      _exerciseDisplaySettings = Map<String, Map<String, dynamic>>.from(
-          json.decode(_preferences.getString("exerciseSettings")));
-    });
-    _checkSettings();
   }
 
   void getExerciseInfo() async {
