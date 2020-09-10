@@ -1,4 +1,5 @@
 import 'package:com/Design/colours.dart';
+import 'package:com/Screens/SettingsScreen/edit_profile_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:com/main.dart';
@@ -64,7 +65,9 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   GestureDetector(
-                    onTap: (){},
+                    onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => EditProfileScreen())),
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),

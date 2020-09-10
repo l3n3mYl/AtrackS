@@ -2,6 +2,7 @@ import 'package:com/Database/Models/user.dart';
 import 'package:com/Screens/Registration/final_registration_screen.dart';
 import 'package:com/SecretMenu/menu_management.dart';
 import 'package:com/Database/Services/auth.dart';
+import 'package:com/Utilities/input_manipulation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -20,19 +21,20 @@ class _FirstRegistrationScreenState extends State<FirstRegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final AuthService _authService = AuthService();
+  final InputManipulation _input = new InputManipulation();
   final double btnSize = 40.0;
 
-  bool isNumeric(String s){
-    bool numeric = true;
-    if(s == null) return false;
-    try{
-      int.parse(s);
-    } catch (error) {
-      numeric = false;
-    }
-    if(numeric) return true;
-    else return false;
-  }
+  // bool isNumeric(String s){
+  //   bool numeric = true;
+  //   if(s == null) return false;
+  //   try{
+  //     int.parse(s);
+  //   } catch (error) {
+  //     numeric = false;
+  //   }
+  //   if(numeric) return true;
+  //   else return false;
+  // }
 
   String error = '';
 
@@ -259,7 +261,7 @@ class _FirstRegistrationScreenState extends State<FirstRegistrationScreen> {
                           child: TextFormField(
                             validator: (ageField) {
                               if(ageField.isNotEmpty){
-                                if(!isNumeric(ageField)) return 'Wrong format';
+                                if(!_input.isNumeric(ageField)) return 'Wrong format';
                                 if(int.parse(ageField) < 3 || int.parse(ageField) >= 99) return 'Leave the field empty or enter a valid age';
                                 else return null;
                               }
