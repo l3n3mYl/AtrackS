@@ -167,7 +167,7 @@ class DatabaseManagement {
     }
   }
 
-  Future updateSingleField(
+  Future<void> updateSingleField(
       String collection, String field, String count) async {
     Map<String, String> data = {field: count};
     try {
@@ -175,6 +175,19 @@ class DatabaseManagement {
           .collection(collection)
           .doc(_user.uid)
           .update(data);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+  
+  Future<void> updateUserInformation(Map<String, String> info) async {
+    try{
+      info.forEach((key, value) async {
+        await _reference
+            .collection('users')
+            .doc(_user.uid)
+            .update({key:value});
+      });
     } catch (e) {
       print(e.toString());
     }

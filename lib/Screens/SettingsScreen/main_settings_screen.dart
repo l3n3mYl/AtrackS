@@ -67,7 +67,7 @@ class SettingsScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (_) => EditProfileScreen())),
+                            builder: (_) => EditProfileScreen(_user))),
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),
@@ -78,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                              '• Edit Profile',
+                              '• Edit User Information',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 19.0,
@@ -102,6 +102,45 @@ class SettingsScreen extends StatelessWidget {
                             width: 2.0
                           )
                         )
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: (){},
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.only(left: 6.9),
+                      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 40.0),
+                      width: _width,
+                      height: 50.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '• Edit User Account',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 19.0,
+                                fontFamily: 'PTSerif'
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Icon(
+                              FontAwesomeIcons.lock,
+                              color: Colors.white,
+                            ),
+                          )
+                        ],
+                      ),
+                      decoration: BoxDecoration(
+                          color: mainColor.withOpacity(0.3),
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: accentColor,
+                                  width: 2.0
+                              )
+                          )
                       ),
                     ),
                   ),
@@ -188,7 +227,7 @@ class SettingsScreen extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),
-                      margin: EdgeInsets.only(bottom: _height * 0.4, top: 10.0,
+                      margin: EdgeInsets.only(bottom: _height * 0.3, top: 10.0,
                         right: 40.0, left: 40.0
                       ),
                       width: _width,
