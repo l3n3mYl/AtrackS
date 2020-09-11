@@ -126,6 +126,7 @@ class EditProfileScreen extends StatelessWidget {
                                   },
                                   textAlign: TextAlign.left,
                                   maxLines: 1,
+                                  keyboardType: TextInputType.phone,
                                   style: TextStyle(
                                       color: _textColor,
                                       fontFamily: 'PTSerif',
@@ -167,6 +168,7 @@ class EditProfileScreen extends StatelessWidget {
                                   },
                                   textAlign: TextAlign.left,
                                   maxLines: 1,
+                                  keyboardType: TextInputType.phone,
                                   style: TextStyle(
                                       color: _textColor,
                                       fontFamily: 'PTSerif',
