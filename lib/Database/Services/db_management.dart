@@ -192,6 +192,22 @@ class DatabaseManagement {
       print(e.toString());
     }
   }
+
+  Future<String> updateEmailAndPassword(String email, String password) async {
+
+    String emailCheck, passCheck;
+
+    try{
+      await _user.updateEmail(email).then((value) => emailCheck = 'Success');
+      await _user.updatePassword(password).then((value) => passCheck = 'Success');
+    } catch (e) {
+      print(e.toString());
+    }
+
+    if(emailCheck != null && passCheck != null)
+      return emailCheck;
+    else return null;
+  }
   
   Future<String> updateNutritionWithProduct(List<String> nutritionList,
       String nutritionMass) async {

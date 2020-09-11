@@ -1,5 +1,5 @@
 import 'package:com/Design/colours.dart';
-import 'package:com/Screens/SettingsScreen/edit_profile_screen.dart';
+import 'package:com/Screens/SettingsScreen/edit_user_info_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:com/main.dart';
@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'edit_user_acc_screen.dart';
 
 class SettingsScreenRootClass {
   final User user;
@@ -67,7 +69,7 @@ class SettingsScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (_) => EditProfileScreen(_user))),
+                            builder: (_) => EditUserInfoScreen(_user))),
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),
@@ -106,7 +108,9 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: (){},
+                    onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => EditUserAccScreen(_user))),
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),

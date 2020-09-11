@@ -1,4 +1,3 @@
-import 'package:com/Database/Services/auth.dart';
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
@@ -6,15 +5,14 @@ import 'package:com/Utilities/input_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class EditProfileScreen extends StatelessWidget {
+class EditUserInfoScreen extends StatelessWidget {
 
   final User _user;
 
-  EditProfileScreen(this._user);
+  EditUserInfoScreen(this._user);
 
   final _formKey = GlobalKey<FormState>();
 
-  final AuthService _authService = new AuthService();
   final InputManipulation _input = new InputManipulation();
 
   final Color _textColor = Colors.white;
