@@ -1,4 +1,5 @@
 import 'package:com/Design/colours.dart';
+import 'package:com/Screens/SettingsScreen/bmi_calculator_screen.dart';
 import 'package:com/Screens/SettingsScreen/edit_user_info_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
@@ -149,7 +150,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: (){},
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => BMICalculator(_user))),
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),
@@ -160,7 +161,7 @@ class SettingsScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '• BMI Counter',
+                            '• BMI Calculator',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 19.0,
