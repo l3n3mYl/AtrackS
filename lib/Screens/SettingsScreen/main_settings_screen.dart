@@ -230,7 +230,7 @@ class SettingsScreen extends StatelessWidget {
                   // ),
                   GestureDetector(
                     onTap: ()=>Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => EditGoalsScreen())),
+                        builder: (_) => EditGoalsScreen(_user))),
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),

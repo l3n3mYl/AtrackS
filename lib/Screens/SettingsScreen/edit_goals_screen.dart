@@ -1,9 +1,16 @@
 import 'package:com/Design/colours.dart';
+import 'package:com/Screens/SettingsScreen/SetGoals/exercise_goals.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EditGoalsScreen extends StatelessWidget {
+
+  final User _user;
+
+  EditGoalsScreen(this._user);
+
   @override
   Widget build(BuildContext context) {
 
@@ -56,7 +63,9 @@ class EditGoalsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   GestureDetector(
-                    onTap: (){},
+                    onTap: ()=>Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => ExerciseGoalsSet(_user))),
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),
