@@ -1,5 +1,6 @@
 import 'package:com/Design/colours.dart';
 import 'package:com/Screens/SettingsScreen/bmi_calculator_screen.dart';
+import 'package:com/Screens/SettingsScreen/edit_goals_screen.dart';
 import 'package:com/Screens/SettingsScreen/edit_user_info_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
@@ -188,47 +189,48 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // GestureDetector(
+                  //   onTap: (){},
+                  //   child: Container(
+                  //     alignment: Alignment.centerLeft,
+                  //     padding: EdgeInsets.only(left: 6.9),
+                  //     margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 40.0),
+                  //     width: _width,
+                  //     height: 50.0,
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         Text(
+                  //           '• Change Theme',
+                  //           style: TextStyle(
+                  //               color: Colors.white,
+                  //               fontSize: 19.0,
+                  //               fontFamily: 'PTSerif'
+                  //           ),
+                  //         ),
+                  //         Padding(
+                  //           padding: const EdgeInsets.all(8.0),
+                  //           child: Icon(
+                  //             FontAwesomeIcons.adjust,
+                  //             color: Colors.white,
+                  //           ),
+                  //         )
+                  //       ],
+                  //     ),
+                  //     decoration: BoxDecoration(
+                  //         color: mainColor.withOpacity(0.3),
+                  //         border: Border(
+                  //             bottom: BorderSide(
+                  //                 color: accentColor,
+                  //                 width: 2.0
+                  //             )
+                  //         )
+                  //     ),
+                  //   ),
+                  // ),
                   GestureDetector(
-                    onTap: (){},
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.only(left: 6.9),
-                      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 40.0),
-                      width: _width,
-                      height: 50.0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '• Change Theme',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 19.0,
-                                fontFamily: 'PTSerif'
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              FontAwesomeIcons.adjust,
-                              color: Colors.white,
-                            ),
-                          )
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                          color: mainColor.withOpacity(0.3),
-                          border: Border(
-                              bottom: BorderSide(
-                                  color: accentColor,
-                                  width: 2.0
-                              )
-                          )
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: (){},
+                    onTap: ()=>Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => EditGoalsScreen())),
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),

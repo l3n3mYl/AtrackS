@@ -24,18 +24,20 @@ class _PopupScreenState extends State<PopupScreen> {
             backgroundColor: mainColor,
             title: Text(
                 widget.title,
-                style: TextStyle(
-                  color: Color.fromRGBO(222, 222, 222, 1),
-                  fontFamily: 'PTSerif',
-                ),
+                style: Theme.of(context).textTheme.headline1,
+                // style: TextStyle(
+                //   color: Color.fromRGBO(222, 222, 222, 1),
+                //   fontFamily: 'PTSerif',
+                // ),
             ),
             content: SingleChildScrollView(
               child: Text(
                   widget.text,
-                  style: TextStyle(
-                    color: Color.fromRGBO(222, 222, 222, 1),
-                    fontFamily: 'PTSerif',
-                  ),
+                  style: Theme.of(context).textTheme.headline1,
+                  // style: TextStyle(
+                  //   color: Color.fromRGBO(222, 222, 222, 1),
+                  //   fontFamily: 'PTSerif',
+                  // ),
               ),
             ),
             actions: <Widget>[
@@ -61,7 +63,8 @@ class _PopupScreenState extends State<PopupScreen> {
           height: 40,
           padding: EdgeInsets.all(2.0),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(56.0), color: textColor),
+              borderRadius: BorderRadius.circular(56.0),
+              color: textColor),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(56.0),
