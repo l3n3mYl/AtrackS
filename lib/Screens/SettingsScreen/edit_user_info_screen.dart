@@ -4,6 +4,7 @@ import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:com/Utilities/input_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EditUserInfoScreen extends StatelessWidget {
 
@@ -31,6 +32,20 @@ class EditUserInfoScreen extends StatelessWidget {
     final double _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: mainColor,
+        title: Text(
+          'Personal Information',
+          style: TextStyle(fontFamily: 'PTSerif'),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            FontAwesomeIcons.arrowLeft,
+          ),
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Container(
         color: mainColor,
         child: Stack(

@@ -1,6 +1,7 @@
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
+import 'package:com/Utilities/input_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,6 +18,14 @@ class BMICalculator extends StatefulWidget {
 
 class _BMICalculatorState extends State<BMICalculator> {
 
+  TextEditingController _weightController = new TextEditingController();
+  TextEditingController _heightController = new TextEditingController();
+  final _formKey = new GlobalKey<FormState>();
+  final _input = new InputManipulation();
+
+  String gender;
+  int weight, height, age;
+  double bmi;
 
   @override
   void initState() {
@@ -51,10 +60,6 @@ class _BMICalculatorState extends State<BMICalculator> {
     }
   }
 
-  String _error, gender;
-  int weight, height, age;
-  double bmi;
-
   @override
   Widget build(BuildContext context) {
 
@@ -62,6 +67,20 @@ class _BMICalculatorState extends State<BMICalculator> {
     final double _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: mainColor,
+        title: Text(
+          'BMI Calculator',
+          style: TextStyle(fontFamily: 'PTSerif'),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            FontAwesomeIcons.arrowLeft,
+          ),
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Container(
         color: mainColor,
         child: Stack(
@@ -92,7 +111,6 @@ class _BMICalculatorState extends State<BMICalculator> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: _height * 0.2,),
                     Container(
                       alignment: Alignment.center,
                       width: _width * 0.6,
@@ -106,7 +124,30 @@ class _BMICalculatorState extends State<BMICalculator> {
                         ),
                       ),
                     ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        bmi == null ? 'N/A'
+                            : bmi < 18.5 ? 'Underweight'
+                            : bmi >= 18.5 && bmi <= 25 ? 'Normal'
+                            : bmi < 30 && bmi > 25 ? 'Overweight'
+                            : 'Obese',
+                        style: TextStyle(
+                          color: bmi == null ? Colors.white
+                              : bmi < 18.5 ? Colors.amber
+                              : bmi >= 18.5 && bmi <= 25 ? Colors.green
+                              : bmi < 30 && bmi > 25 ? Colors.amber
+                              : Colors.red,
+                          fontFamily: 'PTSerif',
+                          fontSize: 19.0
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 69.9,
+                    ),
                     Form(
+                      key: _formKey,
                       child: Column(
                         children: [
                           SizedBox(height: 20.0,),
@@ -131,6 +172,11 @@ class _BMICalculatorState extends State<BMICalculator> {
                                 margin: EdgeInsets.symmetric(horizontal: 20.0),
                                 width: _width * 0.4,
                                 child: TextFormField(
+                                  validator: (heightField) {
+                                    if(!_input.isNumeric(heightField)) return 'Wrong format';
+                                    else return null;
+                                  },
+                                  controller: _heightController,
                                   textAlign: TextAlign.center,
                                   maxLines: 1,
                                   keyboardType: TextInputType.phone,
@@ -155,7 +201,10 @@ class _BMICalculatorState extends State<BMICalculator> {
                                       border: UnderlineInputBorder(
                                           borderSide:
                                           BorderSide(color: accentColor, width: 2.0))),
-                                  onChanged: (emailField){
+                                  onChanged: (heightField){
+                                    setState(() {
+                                      height = int.parse(heightField);
+                                    });
                                   },
                                 ),
                               ),
@@ -205,6 +254,11 @@ class _BMICalculatorState extends State<BMICalculator> {
                                 margin: EdgeInsets.symmetric(horizontal: 20.0),
                                 width: _width * 0.4,
                                 child: TextFormField(
+                                  validator: (weightField) {
+                                    if(!_input.isNumeric(weightField)) return 'Wrong format';
+                                    else return null;
+                                  },
+                                  controller: _weightController,
                                   textAlign: TextAlign.center,
                                   maxLines: 1,
                                   keyboardType: TextInputType.phone,
@@ -229,7 +283,10 @@ class _BMICalculatorState extends State<BMICalculator> {
                                       border: UnderlineInputBorder(
                                           borderSide:
                                           BorderSide(color: accentColor, width: 2.0))),
-                                  onChanged: (emailField){
+                                  onChanged: (weightField){
+                                    setState(() {
+                                      weight = int.parse(weightField);
+                                    });
                                   },
                                 ),
                               ),
@@ -257,94 +314,14 @@ class _BMICalculatorState extends State<BMICalculator> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 25.0,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                onPressed: (){
-                                  if(gender == 'Male'){
-                                    setState(() {
-                                      gender = 'Female';
-                                    });
-                                  } else {
-                                    setState(() {
-                                      gender = 'Male';
-                                    });
-                                  }
-                                },
-                                icon: Icon(
-                                  FontAwesomeIcons.arrowLeft,
-                                  color: textColor,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 20.0),
-                                width: _width * 0.3,
-                                child: TextFormField(
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  keyboardType: TextInputType.text,
-                                  style: TextStyle(color: Colors.white,
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w200
-                                  ),
-                                  cursorColor: accentColor,
-                                  decoration: InputDecoration(
-                                      hintText: gender == null ? 'Gender' : gender,
-                                      hintStyle: TextStyle(color: Colors.white,
-                                          fontFamily: 'PTSerif',
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w200),
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0)),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0)),
-                                      border: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0))),
-                                  onChanged: (emailField){
-                                  },
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: (){
-                                  if(gender == 'Male'){
-                                    setState(() {
-                                      gender = 'Female';
-                                    });
-                                  } else {
-                                    setState(() {
-                                      gender = 'Male';
-                                    });
-                                  }
-                                },
-                                icon: Icon(
-                                  FontAwesomeIcons.arrowRight,
-                                  color: textColor,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 18,
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 25.0,),
-                          Center(
-                            child: Text(
-                              _error == null ? '' : _error,
-                              style: TextStyle(
-                                  fontFamily: 'PTSerif',
-                                  color: Colors.red
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: _height * 0.1),
+                          SizedBox(height: _height * 0.2),
                           GestureDetector(
                             onTap: () {
+                              setState(() {
+                                countBMI();
+                                _weightController.clear();
+                                _heightController.clear();
+                              });
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 25.0),

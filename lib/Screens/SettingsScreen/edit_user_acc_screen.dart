@@ -3,6 +3,7 @@ import 'package:com/Design/colours.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EditUserAccScreen extends StatelessWidget {
 
@@ -24,6 +25,20 @@ class EditUserAccScreen extends StatelessWidget {
     final double _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: mainColor,
+        title: Text(
+          'Account Settings',
+          style: TextStyle(fontFamily: 'PTSerif'),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            FontAwesomeIcons.arrowLeft,
+          ),
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Container(
         color: mainColor,
         child: Stack(
