@@ -104,10 +104,6 @@ class _WalkingScreenState extends State<WalkingScreen> {
   void startListening() async {
     _stepCountStream = await Pedometer.stepCountStream;
     _stepCountStream.listen(onStepCount).onError(onStepCountError);
-
-//    _pedometer = new Pedometer();
-//    _subscription = _pedometer.pedometerStream.listen(_onData,
-//        onError: _onError, onDone: _onDone, cancelOnError: true);
   }
 
   //On received data, handle and sort

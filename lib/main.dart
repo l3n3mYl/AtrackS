@@ -1,4 +1,5 @@
 import 'package:com/Screens/SignIn/sign_in_screen.dart';
+import 'package:com/Theme/basic_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
     precacheImage(AssetImage("images/main_pattern.jpg"), context);
 
     return MaterialApp(
+      theme: basicTheme(),
       debugShowCheckedModeBanner: false,
       home: SignInScreen(),
     );

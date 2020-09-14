@@ -3,6 +3,7 @@ import 'package:com/Screens/ExerciseScreen/exercise_screen.dart';
 import 'package:com/Screens/MeditationScreen/meditation_screen.dart';
 import 'package:com/Screens/NutritionScreen/main_nutrition_screen.dart';
 import 'package:com/Screens/ProgressScreen/main_progress_screen.dart';
+import 'package:com/Screens/SettingsScreen/main_settings_screen.dart';
 import 'package:com/SecretMenu/menu_background.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,80 +19,11 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-
-//TODO: DELETE THIS SCREEN AND REPLACE WITH A NORMAL ONE
-
-final Screen secondScreen = new Screen(
-    title: 'Delete this after',
-    contentBuilder: (builder){
-      return  Scaffold(
-        body: Container(
-          color: Colors.green,
-          width: double.infinity,
-          height: double.infinity,
-        ),
-      );
-    }
-);
-final Screen thirdScreen = new Screen(
-    title: 'Delete this after',
-    contentBuilder: (builder){
-      return  Scaffold(
-        body: Container(
-          color: Colors.blue,
-          width: double.infinity,
-          height: double.infinity,
-        ),
-      );
-    }
-);
-final Screen fourthScreen = new Screen(
-    title: 'Delete this after',
-    contentBuilder: (builder){
-      return  Scaffold(
-        body: Container(
-          color: Colors.amber,
-          width: double.infinity,
-          height: double.infinity,
-        ),
-      );
-    }
-);
-
-final Screen fifthScreen = new Screen(
-    title: 'Delete this after',
-    contentBuilder: (builder){
-      return  Scaffold(
-        body: Container(
-          color: Colors.deepOrange,
-          width: double.infinity,
-          height: double.infinity,
-          child: Column(
-            children: <Widget>[
-              Text('asd')
-            ],
-          ),
-        ),
-      );
-    }
-);
-final Screen settingsScreen = new Screen(
-    title: 'Delete this after',
-    contentBuilder: (builder){
-      return  Scaffold(
-        body: Container(
-          color: Colors.cyanAccent,
-          width: double.infinity,
-          height: double.infinity,
-//          child: StepCounter(),
-        ),
-      );
-    }
-);
-
 class _MainScreenState extends State<MainScreen> {
 
-  var selectedMenuItemScreen = '7';//TODO: CHANGE TO A NORMAL ID
+  var activeScreen;
+
+  var selectedMenuItemScreen = '1';
 
   final menu = new Menu(items: [
     MenuItem(id: '1', title: 'Progress'),
@@ -103,15 +35,14 @@ class _MainScreenState extends State<MainScreen> {
     MenuItem(id: '7', title: 'Settings'),
   ]);
 
-  var activeScreen = settingsScreen;
+  @override
+  void initState() {
+    super.initState();
+    activeScreen = new MainProgressScreenRootClass(widget._user).screen();
+  }
 
   @override
   Widget build(BuildContext context) {
-
-//    var activeScreen = new MainProgressScreenRootClass(widget._user).screen();
-
-//    var activeScreen = progressScreen;
-
     return ZoomScaffold(
       menuScreen: new MenuScreen(
         selectedItemId: selectedMenuItemScreen,
@@ -140,7 +71,7 @@ class _MainScreenState extends State<MainScreen> {
             });
           } else if(itemId == '7'){
             setState(() {
-              activeScreen = settingsScreen;
+              activeScreen = new SettingsScreenRootClass(widget._user).screen();
             });
           }
         },

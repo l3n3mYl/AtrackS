@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
-import 'package:com/Screens/ExerciseScreen/exercise_manage.dart';
+import 'file:///D:/FlutProjects/FitnessTracker/atraxs/lib/Utilities/exercise_manage.dart';
 import 'package:com/Screens/ExerciseScreen/individual_exercise_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';

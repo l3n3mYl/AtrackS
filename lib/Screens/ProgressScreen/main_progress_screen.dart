@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:com/Design/colours.dart';
 import 'package:com/PopUps/progress_indicator.dart';
-import 'package:com/Screens/ExerciseScreen/exercise_manage.dart';
+import 'file:///D:/FlutProjects/FitnessTracker/atraxs/lib/Utilities/exercise_manage.dart';
 import 'package:com/Screens/ProgressScreen/exercise_screen.dart';
 import 'package:com/Screens/ProgressScreen/walking_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';

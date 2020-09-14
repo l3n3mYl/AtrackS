@@ -167,7 +167,7 @@ class DatabaseManagement {
     }
   }
 
-  Future updateSingleField(
+  Future<void> updateSingleField(
       String collection, String field, String count) async {
     Map<String, String> data = {field: count};
     try {
@@ -178,6 +178,57 @@ class DatabaseManagement {
     } catch (e) {
       print(e.toString());
     }
+  }
+  
+  Future<void> updateUserInformation(Map<String, String> info) async {
+    try{
+      info.forEach((key, value) async {
+        await _reference
+            .collection('users')
+            .doc(_user.uid)
+            .update({key:value});
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+  
+  Future<void> updateGoals(Map<String, String> goals, String collection) async {
+    try{
+      goals.forEach((key, value) async {
+        if(value != null){
+          await _reference.collection(collection).doc(_user.uid)
+              .update({key:value});
+        }
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> updateMeditationGoal(String time) async {
+    try{
+      await _reference.collection('meditation').doc(_user.uid)
+          .update({'Goal':time});
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<String> updateEmailAndPassword(String email, String password) async {
+
+    String emailCheck, passCheck;
+
+    try{
+      await _user.updateEmail(email).then((value) => emailCheck = 'Success');
+      await _user.updatePassword(password).then((value) => passCheck = 'Success');
+    } catch (e) {
+      print(e.toString());
+    }
+
+    if(emailCheck != null && passCheck != null)
+      return emailCheck;
+    else return null;
   }
   
   Future<String> updateNutritionWithProduct(List<String> nutritionList,

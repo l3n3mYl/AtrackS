@@ -17,8 +17,7 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore _reference = FirebaseFirestore.instance;
-  final UserModel.NewUser newUser = UserModel.NewUser(); //TODO
-//  final User newUser = User();
+  final UserModel.NewUser newUser = UserModel.NewUser();
 
   final Meditation _meditation = Meditation(
     current: '00:00',
@@ -274,7 +273,16 @@ class AuthService {
     }
   }
 
-  Future signOutFacebook() async {
+  Future<void> signOutEmailAndPass() async {
+    try {
+      await _auth.signOut();
+      print('Signed Out From Firebase');
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> signOutFacebook() async {
     try {
       await FacebookLogin().logOut();
       print('Signed Out From Facebook');
@@ -284,7 +292,7 @@ class AuthService {
     }
   }
 
-  Future signOutGoogle() async {
+  Future<void> signOutGoogle() async {
     try {
       await _googleSignIn.signOut();
       print('Signed out from Google');
