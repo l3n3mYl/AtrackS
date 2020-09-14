@@ -24,20 +24,18 @@ class _PopupScreenState extends State<PopupScreen> {
             backgroundColor: mainColor,
             title: Text(
                 widget.title,
-                style: Theme.of(context).textTheme.headline1,
-                // style: TextStyle(
-                //   color: Color.fromRGBO(222, 222, 222, 1),
-                //   fontFamily: 'PTSerif',
-                // ),
+                style: TextStyle(
+                  color: Color.fromRGBO(222, 222, 222, 1),
+                  fontFamily: 'PTSerif',
+                ),
             ),
             content: SingleChildScrollView(
               child: Text(
                   widget.text,
-                  style: Theme.of(context).textTheme.headline1,
-                  // style: TextStyle(
-                  //   color: Color.fromRGBO(222, 222, 222, 1),
-                  //   fontFamily: 'PTSerif',
-                  // ),
+                  style: TextStyle(
+                    color: Color.fromRGBO(222, 222, 222, 1),
+                    fontFamily: 'PTSerif',
+                  ),
               ),
             ),
             actions: <Widget>[

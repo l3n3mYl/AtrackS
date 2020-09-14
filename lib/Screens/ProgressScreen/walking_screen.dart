@@ -302,8 +302,8 @@ class _WalkingScreenState extends State<WalkingScreen> {
             title: 'Steps Tracking Information',
             text:
                 'In this screen your steps will be monitored automatically.\n\n'
-                'Circular Progress indicator at the top indicates todays steps. '
-                'It fills in with every step untill the goal is reached.\n\n'
+                'Circular Progress indicator at the top indicates today\'s steps. '
+                'It fills in with every step until the goal is reached.\n\n'
                 'The bottom graph shows weekly/monthly average progress for steps. '
                 'Press the "Monthly/Weekly" button, at the top of the graph '
                 'to switch between modes. \n\n At the bottom of the weekly '
