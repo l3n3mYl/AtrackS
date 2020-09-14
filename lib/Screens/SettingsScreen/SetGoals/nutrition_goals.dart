@@ -19,11 +19,11 @@ class NutritionGoalSet extends StatefulWidget {
 class _NutritionGoalSetState extends State<NutritionGoalSet> {
 
   Map<String, String> _nutritionSettings = {
-    'Calories': null,
-    'Carbs': null,
-    'Fats': null,
-    'Protein': null,
-    'Water': null
+    'Calories_Goals': null,
+    'Carbs_Goals': null,
+    'Fats_Goals': null,
+    'Protein_Goals': null,
+    'Water_Goals': null
   };
 
   String _error;
@@ -44,7 +44,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
     DatabaseManagement _management = DatabaseManagement(widget._user);
     
     _nutritionSettings.forEach((key, value) async {
-      await _management.getSingleFieldInfo('nutrition_goals', '${key}_Goals').then((newValue) {
+      await _management.getSingleFieldInfo('nutrition_goals', '$key').then((newValue) {
         setState(() {
           _nutritionSettings[key] = newValue;
         });
@@ -130,7 +130,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    if(minField.isEmpty) return 'Empty';
                                     else if(!_input.isNumeric(minField)) return 'Wrong Format';
                                     else return null;
                                   },
@@ -144,7 +144,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: _nutritionSettings['Calories'] == null ? '' : _nutritionSettings['Calories'],
+                                      hintText: _nutritionSettings['Calories_Goals'] == null ? '' : _nutritionSettings['Calories_Goals'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -160,7 +160,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                           BorderSide(color: accentColor, width: 2.0))),
                                   onChanged: (calField){
                                     setState(() {
-                                      _nutritionSettings['Calories'] = calField;
+                                      _nutritionSettings['Calories_Goals'] = calField;
                                     });
                                   },
                                 ),
@@ -202,7 +202,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    if(minField.isEmpty) return 'Empty';
                                     else if(!_input.isNumeric(minField)) return 'Wrong Format';
                                     else return null;
                                   },
@@ -216,7 +216,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: _nutritionSettings['Carbs'] == null ? '' : _nutritionSettings['Carbs'],
+                                      hintText: _nutritionSettings['Carbs_Goals'] == null ? '' : _nutritionSettings['Carbs_Goals'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -232,7 +232,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                           BorderSide(color: accentColor, width: 2.0))),
                                   onChanged: (carbsField){
                                     setState(() {
-                                      _nutritionSettings['Carbs'] = carbsField;
+                                      _nutritionSettings['Carbs_Goals'] = carbsField;
                                     });
                                   },
                                 ),
@@ -274,7 +274,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    if(minField.isEmpty) return 'Empty';
                                     else if(!_input.isNumeric(minField)) return 'Wrong Format';
                                     else return null;
                                   },
@@ -288,7 +288,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: _nutritionSettings['Fats'] == null ? '' : _nutritionSettings['Fats'],
+                                      hintText: _nutritionSettings['Fats_Goals'] == null ? '' : _nutritionSettings['Fats_Goals'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -304,7 +304,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                           BorderSide(color: accentColor, width: 2.0))),
                                   onChanged: (fatsField){
                                     setState(() {
-                                      _nutritionSettings['Fats'] = fatsField;
+                                      _nutritionSettings['Fats_Goals'] = fatsField;
                                     });
                                   },
                                 ),
@@ -343,7 +343,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    if(minField.isEmpty) return 'Empty';
                                     else if(!_input.isNumeric(minField)) return 'Wrong Format';
                                     else return null;
                                   },
@@ -357,7 +357,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: _nutritionSettings['Fats'] == null ? '' : _nutritionSettings['Fats'],
+                                      hintText: _nutritionSettings['Protein_Goals'] == null ? '' : _nutritionSettings['Protein_Goals'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -373,7 +373,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                           BorderSide(color: accentColor, width: 2.0))),
                                   onChanged: (proteinField){
                                     setState(() {
-                                      _nutritionSettings['Protein'] = proteinField;
+                                      _nutritionSettings['Protein_Goals'] = proteinField;
                                     });
                                   },
                                 ),
@@ -412,7 +412,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    if(minField.isEmpty) return 'Empty';
                                     else if(!_input.isNumeric(minField)) return 'Wrong Format';
                                     else return null;
                                   },
@@ -426,7 +426,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: _nutritionSettings['Water'] == null ? '' : _nutritionSettings['Water'],
+                                      hintText: _nutritionSettings['Water_Goals'] == null ? '' : _nutritionSettings['Water_Goals'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -442,7 +442,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                           BorderSide(color: accentColor, width: 2.0))),
                                   onChanged: (waterField){
                                     setState(() {
-                                      _nutritionSettings['Water'] = waterField;
+                                      _nutritionSettings['Water_Goals'] = waterField;
                                     });
                                   },
                                 ),

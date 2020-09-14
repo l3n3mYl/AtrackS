@@ -386,7 +386,7 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    if(minField.isEmpty) return 'Empty';
                                     else if(!_input.isNumeric(minField)) return 'Wrong Format';
                                     else return null;
                                   },
@@ -457,7 +457,7 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    if(minField.isEmpty) return 'Empty';
                                     else if(!_input.isNumeric(minField)) return 'Wrong Format';
                                     else return null;
                                   },
@@ -528,7 +528,7 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    if(minField.isEmpty) return 'Empty';
                                     else if(!_input.isNumeric(minField)) return 'Wrong Format';
                                     else return null;
                                   },
@@ -599,7 +599,7 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    if(minField.isEmpty) return 'Empty';
                                     else if(!_input.isNumeric(minField)) return 'Wrong Format';
                                     else return null;
                                   },
