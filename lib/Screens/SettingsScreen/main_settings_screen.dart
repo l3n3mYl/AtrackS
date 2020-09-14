@@ -1,7 +1,9 @@
+import 'package:com/Database/Services/auth.dart';
 import 'package:com/Design/colours.dart';
 import 'package:com/Screens/SettingsScreen/bmi_calculator_screen.dart';
 import 'package:com/Screens/SettingsScreen/edit_goals_screen.dart';
 import 'package:com/Screens/SettingsScreen/edit_user_info_screen.dart';
+import 'package:com/Screens/SignIn/sign_in_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:com/main.dart';
@@ -271,7 +273,13 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () async {
+                      AuthService _auth = new AuthService();
+                      await _auth.signOutGoogle();
+                      await _auth.signOutEmailAndPass();
+                      await _auth.signOutFacebook();
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => SignInScreen()));
+                    },
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),

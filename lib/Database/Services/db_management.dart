@@ -192,6 +192,28 @@ class DatabaseManagement {
       print(e.toString());
     }
   }
+  
+  Future<void> updateGoals(Map<String, String> goals, String collection) async {
+    try{
+      goals.forEach((key, value) async {
+        if(value != null){
+          await _reference.collection(collection).doc(_user.uid)
+              .update({key:value});
+        }
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> updateMeditationGoal(String time) async {
+    try{
+      await _reference.collection('meditation').doc(_user.uid)
+          .update({'Goal':time});
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   Future<String> updateEmailAndPassword(String email, String password) async {
 

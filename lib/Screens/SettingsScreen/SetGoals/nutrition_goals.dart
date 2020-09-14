@@ -1,23 +1,56 @@
+import 'package:com/Database/Services/db_management.dart';
 import 'package:com/Design/colours.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:com/Utilities/input_manipulation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class NutritionGoalSet extends StatefulWidget {
+
+  final User _user;
+
+  NutritionGoalSet(this._user);
+
   @override
   _NutritionGoalSetState createState() => _NutritionGoalSetState();
 }
 
 class _NutritionGoalSetState extends State<NutritionGoalSet> {
 
-  int cycMin, cycSec, jogMin, jogSec;
+  Map<String, String> _nutritionSettings = {
+    'Calories': null,
+    'Carbs': null,
+    'Fats': null,
+    'Protein': null,
+    'Water': null
+  };
+
   String _error;
 
   final Color _textColor = Colors.white;
 
   final _formKey = GlobalKey<FormState>();
   final _input = new InputManipulation();
+  
+  @override
+  void initState() {
+    super.initState();
+    getInitValues();
+  }
+  
+  void getInitValues() async {
+    
+    DatabaseManagement _management = DatabaseManagement(widget._user);
+    
+    _nutritionSettings.forEach((key, value) async {
+      await _management.getSingleFieldInfo('nutrition_goals', '${key}_Goals').then((newValue) {
+        setState(() {
+          _nutritionSettings[key] = newValue;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,13 +97,12 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
               ),
             ),
             Container(
-              alignment: Alignment.center,
               width: _width,
               height: _height,
               color: Colors.transparent,
               child: SingleChildScrollView(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Form(
@@ -85,245 +117,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 13.0),
                                 child: Text(
-                                  'Cycling time:',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18.0
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 50.0,
-                                height: 50.0,
-                                child: TextFormField(
-                                  validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
-                                    else if(!_input.isNumeric(minField)) return 'Wrong Format';
-                                    else return null;
-                                  },
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  keyboardType: TextInputType.phone,
-                                  style: TextStyle(color: _textColor,
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w200
-                                  ),
-                                  cursorColor: accentColor,
-                                  decoration: InputDecoration(
-                                      hintText: 'min',
-                                      hintStyle: TextStyle(color: _textColor,
-                                          fontFamily: 'PTSerif',
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w200),
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0)),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0)),
-                                      border: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0))),
-                                  onChanged: (minField){
-                                    setState(() {
-                                      cycMin = int.parse(minField);
-                                    });
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 2.0, right: 26.0),
-                                child: Text(
-                                  'min',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18.0
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 50.0,
-                                height: 50.0,
-                                child: TextFormField(
-                                  validator: (secField) {
-                                    if(secField.isEmpty) return 'This Field Is Required';
-                                    else return null;
-                                  },
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  keyboardType: TextInputType.phone,
-                                  style: TextStyle(color: _textColor,
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w200
-                                  ),
-                                  cursorColor: accentColor,
-                                  decoration: InputDecoration(
-                                      hintText: 'sec',
-                                      hintStyle: TextStyle(color: _textColor,
-                                          fontFamily: 'PTSerif',
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w200),
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0)),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0)),
-                                      border: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0))),
-                                  onChanged: (secField){
-                                    setState(() {
-                                      cycSec = int.parse(secField);
-                                    });
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 6.0),
-                                child: Text(
-                                  'sec',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18.0
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20.0,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 13.0),
-                                child: Text(
-                                  'Jogging time:',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18.0
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 50.0,
-                                height: 50.0,
-                                child: TextFormField(
-                                  validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
-                                    else if(!_input.isNumeric(minField)) return 'Wrong Format';
-                                    else return null;
-                                  },
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  keyboardType: TextInputType.phone,
-                                  style: TextStyle(color: _textColor,
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w200
-                                  ),
-                                  cursorColor: accentColor,
-                                  decoration: InputDecoration(
-                                      hintText: 'min',
-                                      hintStyle: TextStyle(color: _textColor,
-                                          fontFamily: 'PTSerif',
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w200),
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0)),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0)),
-                                      border: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0))),
-                                  onChanged: (minField){
-                                    setState(() {
-                                      jogMin = int.parse(minField);
-                                    });
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 2.0, right: 26.0),
-                                child: Text(
-                                  'min',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18.0
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 50.0,
-                                height: 50.0,
-                                child: TextFormField(
-                                  validator: (secField) {
-                                    if(secField.isEmpty) return 'This Field Is Required';
-                                    else return null;
-                                  },
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  keyboardType: TextInputType.phone,
-                                  style: TextStyle(color: _textColor,
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w200
-                                  ),
-                                  cursorColor: accentColor,
-                                  decoration: InputDecoration(
-                                      hintText: 'sec',
-                                      hintStyle: TextStyle(color: _textColor,
-                                          fontFamily: 'PTSerif',
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w200),
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0)),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0)),
-                                      border: UnderlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: accentColor, width: 2.0))),
-                                  onChanged: (secField){
-                                    setState(() {
-                                      jogSec = int.parse(secField);
-                                    });
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 6.0),
-                                child: Text(
-                                  'sec',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'PTSerif',
-                                      fontSize: 18.0
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20.0,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 13.0),
-                                child: Text(
-                                  'Push Up Daily Goal:',
+                                  'Daily Calories:',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'PTSerif',
@@ -350,7 +144,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: '0',
+                                      hintText: _nutritionSettings['Calories'] == null ? '' : _nutritionSettings['Calories'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -364,9 +158,9 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                       border: UnderlineInputBorder(
                                           borderSide:
                                           BorderSide(color: accentColor, width: 2.0))),
-                                  onChanged: (minField){
+                                  onChanged: (calField){
                                     setState(() {
-                                      jogMin = int.parse(minField);
+                                      _nutritionSettings['Calories'] = calField;
                                     });
                                   },
                                 ),
@@ -374,7 +168,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 2.0, right: 26.0),
                                 child: Text(
-                                  'times',
+                                  'kcal',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'PTSerif',
@@ -389,10 +183,13 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              SizedBox(
+                                width: 13.0,
+                              ),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 13.0),
                                 child: Text(
-                                  'Pull Up Daily Goal:',
+                                  'Daily Carbs:',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'PTSerif',
@@ -419,7 +216,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: '0',
+                                      hintText: _nutritionSettings['Carbs'] == null ? '' : _nutritionSettings['Carbs'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -433,9 +230,9 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                       border: UnderlineInputBorder(
                                           borderSide:
                                           BorderSide(color: accentColor, width: 2.0))),
-                                  onChanged: (minField){
+                                  onChanged: (carbsField){
                                     setState(() {
-                                      jogMin = int.parse(minField);
+                                      _nutritionSettings['Carbs'] = carbsField;
                                     });
                                   },
                                 ),
@@ -443,7 +240,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 2.0, right: 26.0),
                                 child: Text(
-                                  'times',
+                                  'mg',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'PTSerif',
@@ -458,10 +255,13 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              SizedBox(
+                                width: 20.0,
+                              ),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 13.0),
                                 child: Text(
-                                  'Sit Up Daily Goal:',
+                                  'Daily Fats:',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'PTSerif',
@@ -488,7 +288,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: '0',
+                                      hintText: _nutritionSettings['Fats'] == null ? '' : _nutritionSettings['Fats'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -502,9 +302,9 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                       border: UnderlineInputBorder(
                                           borderSide:
                                           BorderSide(color: accentColor, width: 2.0))),
-                                  onChanged: (minField){
+                                  onChanged: (fatsField){
                                     setState(() {
-                                      jogMin = int.parse(minField);
+                                      _nutritionSettings['Fats'] = fatsField;
                                     });
                                   },
                                 ),
@@ -512,7 +312,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 2.0, right: 26.0),
                                 child: Text(
-                                  'times',
+                                  'mg',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'PTSerif',
@@ -528,9 +328,9 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 13.0),
+                                padding: EdgeInsets.symmetric(horizontal: 10.0),
                                 child: Text(
-                                  'Daily:',
+                                  'Daily Protein:',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'PTSerif',
@@ -539,7 +339,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                 ),
                               ),
                               Container(
-                                width: 150.0,
+                                width: 69.0,
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
@@ -557,7 +357,7 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: '0',
+                                      hintText: _nutritionSettings['Fats'] == null ? '' : _nutritionSettings['Fats'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -571,9 +371,9 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                                       border: UnderlineInputBorder(
                                           borderSide:
                                           BorderSide(color: accentColor, width: 2.0))),
-                                  onChanged: (minField){
+                                  onChanged: (proteinField){
                                     setState(() {
-                                      jogMin = int.parse(minField);
+                                      _nutritionSettings['Protein'] = proteinField;
                                     });
                                   },
                                 ),
@@ -581,7 +381,76 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 2.0, right: 26.0),
                                 child: Text(
-                                  'steps',
+                                  'mg',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'PTSerif',
+                                      fontSize: 18.0
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20.0,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 13.0),
+                                child: Text(
+                                  'Daily Water:',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'PTSerif',
+                                      fontSize: 18.0
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 69.0,
+                                height: 50.0,
+                                child: TextFormField(
+                                  validator: (minField) {
+                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    else if(!_input.isNumeric(minField)) return 'Wrong Format';
+                                    else return null;
+                                  },
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  keyboardType: TextInputType.phone,
+                                  style: TextStyle(color: _textColor,
+                                      fontFamily: 'PTSerif',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w200
+                                  ),
+                                  cursorColor: accentColor,
+                                  decoration: InputDecoration(
+                                      hintText: _nutritionSettings['Water'] == null ? '' : _nutritionSettings['Water'],
+                                      hintStyle: TextStyle(color: _textColor,
+                                          fontFamily: 'PTSerif',
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w200),
+                                      enabledBorder: UnderlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: accentColor, width: 2.0)),
+                                      focusedBorder: UnderlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: accentColor, width: 2.0)),
+                                      border: UnderlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: accentColor, width: 2.0))),
+                                  onChanged: (waterField){
+                                    setState(() {
+                                      _nutritionSettings['Water'] = waterField;
+                                    });
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 2.0, right: 26.0),
+                                child: Text(
+                                  'ml',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'PTSerif',
@@ -605,10 +474,10 @@ class _NutritionGoalSetState extends State<NutritionGoalSet> {
                           GestureDetector(
                             onTap: () async {
                               if(_formKey.currentState.validate()) {
-                                // await DatabaseManagement(widget._user)
-                                //     // .updateEmailAndPassword(email, password2)
-                                //     .then((value) => Navigator.of(context).pop())
-                                //     .catchError((error) => _error = error);
+                                await DatabaseManagement(widget._user)
+                                    .updateGoals(_nutritionSettings, 'nutrition_goals')
+                                    .then((value) => Navigator.of(context).pop())
+                                    .catchError((error) => _error = error);
                               }
                             },
                             child: Padding(

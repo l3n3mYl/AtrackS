@@ -1,5 +1,7 @@
 import 'package:com/Design/colours.dart';
 import 'package:com/Screens/SettingsScreen/SetGoals/exercise_goals.dart';
+import 'package:com/Screens/SettingsScreen/SetGoals/meditation_goals.dart';
+import 'package:com/Screens/SettingsScreen/SetGoals/nutrition_goals.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +94,9 @@ class EditGoalsScreen extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: (){},
+                    onTap: ()=>Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => NutritionGoalSet(_user))),
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),
@@ -119,7 +123,9 @@ class EditGoalsScreen extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: (){},
+                    onTap: ()=>Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => MeditationGoalSet(_user))),
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(left: 6.9),

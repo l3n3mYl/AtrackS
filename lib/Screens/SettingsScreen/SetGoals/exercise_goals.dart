@@ -20,7 +20,7 @@ class ExerciseGoalsSet extends StatefulWidget {
 class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
 
   final Color _textColor = Colors.white;
-  Map<String, String> exercSettings = {
+  Map<String, String> _exercSettings = {
     'Cycling_Goal': null,
     'Jogging_Goal': null,
     'Pull-Ups_Goal': null,
@@ -35,6 +35,24 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
   final _formKey = GlobalKey<FormState>();
   final _input = new InputManipulation();
 
+  @override
+  void initState() {
+    super.initState();
+    getInitValues();
+  }
+
+  void getInitValues() async {
+
+    DatabaseManagement _management = DatabaseManagement(widget._user);
+
+    _exercSettings.forEach((key, value) async {
+      await _management.getSingleFieldInfo('exercise_goals', '$key').then((newValue) {
+        setState(() {
+          _exercSettings[key] = newValue;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,8 +134,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    if(minField.isEmpty) return 'Empty';
                                     else if(!_input.isNumeric(minField)) return 'Wrong Format';
+                                    else if(int.parse(minField) > 59) return '<59';
                                     else return null;
                                   },
                                   textAlign: TextAlign.center,
@@ -130,7 +149,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: 'min',
+                                      hintText: _exercSettings['Cycling_Goal'] == null
+                                          ? ''
+                                          : _exercSettings['Cycling_Goal'].split(':')[0],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -167,7 +188,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (secField) {
-                                    if(secField.isEmpty) return 'This Field Is Required';
+                                    if(secField.isEmpty) return 'Empty';
+                                    else if(!_input.isNumeric(secField)) return 'Wrong Format';
+                                    else if(int.parse(secField) > 59) return '<59';
                                     else return null;
                                   },
                                   textAlign: TextAlign.center,
@@ -180,7 +203,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: 'sec',
+                                      hintText: _exercSettings['Cycling_Goal'] == null
+                                          ? ''
+                                          : _exercSettings['Cycling_Goal'].split(':')[1],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -235,8 +260,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (minField) {
-                                    if(minField.isEmpty) return 'This Field Is Required';
+                                    if(minField.isEmpty) return 'Empty';
                                     else if(!_input.isNumeric(minField)) return 'Wrong Format';
+                                    else if(int.parse(minField) > 59) return '<59';
                                     else return null;
                                   },
                                   textAlign: TextAlign.center,
@@ -249,7 +275,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: 'min',
+                                      hintText: _exercSettings['Jogging_Goal'] == null
+                                          ? ''
+                                          : _exercSettings['Jogging_Goal'].split(':')[0],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -286,7 +314,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                 height: 50.0,
                                 child: TextFormField(
                                   validator: (secField) {
-                                    if(secField.isEmpty) return 'This Field Is Required';
+                                    if(secField.isEmpty) return 'Empty';
+                                    else if(!_input.isNumeric(secField)) return 'Wrong Format';
+                                    else if(int.parse(secField) > 59) return '<59';
                                     else return null;
                                   },
                                   textAlign: TextAlign.center,
@@ -299,7 +329,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: 'sec',
+                                      hintText: _exercSettings['Jogging_Goal'] == null
+                                          ? ''
+                                          : _exercSettings['Jogging_Goal'].split(':')[1],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -368,7 +400,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: '0',
+                                      hintText: _exercSettings['Push-Ups_Goal'] == null
+                                          ? ''
+                                          : _exercSettings['Push-Ups_Goal'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -437,7 +471,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: '0',
+                                      hintText: _exercSettings['Pull-Ups_Goal'] == null
+                                          ? ''
+                                          : _exercSettings['Pull-Ups_Goal'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -506,7 +542,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: '0',
+                                      hintText: _exercSettings['Sit-Ups_Goal'] == null
+                                          ? ''
+                                          : _exercSettings['Sit-Ups_Goal'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -575,7 +613,9 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                                   ),
                                   cursorColor: accentColor,
                                   decoration: InputDecoration(
-                                      hintText: '0',
+                                      hintText: _exercSettings['Steps_Goal'] == null
+                                          ? ''
+                                          : _exercSettings['Steps_Goal'],
                                       hintStyle: TextStyle(color: _textColor,
                                           fontFamily: 'PTSerif',
                                           fontSize: 18,
@@ -623,10 +663,10 @@ class _ExerciseGoalsSetState extends State<ExerciseGoalsSet> {
                           GestureDetector(
                             onTap: () async {
                               if(_formKey.currentState.validate()) {
-                                // await DatabaseManagement(widget._user)
-                                //     // .updateEmailAndPassword(email, password2)
-                                //     .then((value) => Navigator.of(context).pop())
-                                //     .catchError((error) => _error = error);
+                                await DatabaseManagement(widget._user)
+                                    .updateGoals(_exercSettings, 'exercise_goals')
+                                    .then((value) => Navigator.of(context).pop())
+                                    .catchError((error) => _error = error);
                               }
                             },
                             child: Padding(
