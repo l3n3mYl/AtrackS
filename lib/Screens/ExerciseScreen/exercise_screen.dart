@@ -97,13 +97,13 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
         accentColor: _colorPal[1],
         icon: _icons[1],
         appBarTitle: 'Cycling',
-        popupText: 'Press and hold onto the cycling icon to choose the pace '
+        popupText: 'Press and hold the cycling icon to choose the pace '
             'you will be cycling.\n\n'
-            'The default pace is set to 9 km/h. This will determine the amount '
-            'of burned calories.\n\n'
+            'The default pace is set to 9 km/h. This will determine how much '
+            'and how fast you will burn the calories.\n\n'
             'The Daily goal can always be changed in the settings.\n\n'
             'Calories will be counted by your weight, time and pace you are '
-            'cycling.',
+            'cycling.\n\n If you leave this screen, the timer will reset.',
         timeCounter: true,
       ),
       IndividualExerciseScreen(
@@ -116,10 +116,10 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
             'facing up\n\n'
             'Tap the Sit Up icon when in the lowest sit up position to '
             'indicate your first sit up.\n\n'
-            'Repeat for all of the situps.\n\n'
-            'The Calories will be calculated according to the amount of situps '
+            'Repeat for all of the sit-ups.\n\n'
+            'The Calories will be calculated according to the amount of sit-ups '
             'you have made and the time it took you between even number of '
-            'situps.\n\n'
+            'sit-ups.\n\n'
             'Your weight will also be taken into the calculations for a better '
             'accuracy.',
       ),
@@ -141,8 +141,7 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
         accentColor: _colorPal[4],
         icon: _icons[4],
         appBarTitle: 'Pull-Ups',
-        popupText: 'Try to get creative with this exercise tracking.\n\n'
-            'One pull up burns around 1 calorie.\n\nYou can tap the screen for '
+        popupText: 'One pull up will burn around 1 calorie.\n\nYou can tap the screen for '
             'the amount of pull ups you have made or try to tap the screen '
             'after each pull up in a more creative way.',
       ),
@@ -158,7 +157,7 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
             'Daily goal can always be set in the settings.\n\n'
             'Don\'t forget that you can pause and continue at any time when '
             'jogging.\n\n'
-            'If you leave this screen, the timer will be reset.',
+            'If you leave this screen, the timer will reset.',
         timeCounter: true,
       ),
     ];

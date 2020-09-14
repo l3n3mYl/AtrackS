@@ -40,8 +40,8 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
     Color.fromRGBO(189, 253, 255, 1), //blue
     Color.fromRGBO(255, 188, 122, 1), //orange
     Color.fromRGBO(156, 255, 162, 1), //green
-    Color.fromRGBO(246, 255, 125, 1), //yellow
     Color.fromRGBO(255, 163, 163, 1), //pink
+    Color.fromRGBO(246, 255, 125, 1), //yellow
   ];
 
   DatabaseManagement _management;
@@ -136,7 +136,11 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
         user: widget._user,
         accentColor: _colorPal[0],
         field: 'Water',
-        popupText: 'Edit me plis',
+        popupText: 'This screen shows the progress of the water'
+            ' you drank during the day. \n\nPress the bottles in order to add '
+            'water and press and hold to remove the same amount from today\'s '
+            'progress. \n\nWater bottles adds 100ml, 200ml, 500ml and 1l '
+            'respectively. \n\nThe graph shows monthly and weekly progress.',
         measure: 'ml',
       ),
       IndividualNutritionScreen(
@@ -145,7 +149,9 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
         user: widget._user,
         accentColor: _colorPal[1],
         field: 'Carbs',
-        popupText: 'Edit me plis',
+        popupText: 'This screen shows the progress of the carbohydrates'
+            ' consumed today. Weekly and monthly progress can be seen in the '
+            'graph.',
         measure: 'mg',
       ),
       IndividualNutritionScreen(
@@ -154,26 +160,32 @@ class _MainNutritionScreenState extends State<MainNutritionScreen> {
         user: widget._user,
         accentColor: _colorPal[2],
         field: 'Fats',
-        popupText: 'Edit me plis',
+        popupText: 'This screen shows the progress of the fats'
+            ' consumed today. Weekly and monthly progress can be seen in the '
+            'graph.',
+        measure: 'mg',
+      ),
+      IndividualNutritionScreen(
+        division: 1,
+        appBarTitle: 'Protein Consumption',
+        user: widget._user,
+        accentColor: _colorPal[3],
+        field: 'Protein',
+        popupText: 'This screen shows the progress of the protein'
+            ' consumed today. Weekly and monthly progress can be seen in the '
+            'graph.',
         measure: 'mg',
       ),
       IndividualNutritionScreen(
         division: 100,
         appBarTitle: 'Calorie Consumption',
         user: widget._user,
-        accentColor: _colorPal[3],
-        field: 'Calories',
-        popupText: 'Edit me plis',
-        measure: 'kcal',
-      ),
-      IndividualNutritionScreen(
-        division: 1,
-        appBarTitle: 'Protein Consumption',
-        user: widget._user,
         accentColor: _colorPal[4],
-        field: 'Protein',
-        popupText: 'Edit me plis',
-        measure: 'mg',
+        field: 'Calories',
+        popupText: 'This screen shows the progress of the calories'
+            ' consumed today. Weekly and monthly progress can be seen in the '
+            'graph.',
+        measure: 'kcal',
       ),
 
     ];

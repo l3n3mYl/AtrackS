@@ -8,7 +8,6 @@ import 'package:com/Screens/ProgressScreen/walking_screen.dart';
 import 'package:com/SecretMenu/zoom_scaffold.dart';
 import 'package:com/Database/Services/db_management.dart';
 import 'package:com/UiComponents/background_triangle_clipper.dart';
-import 'package:com/Utilities/exercise_json_manipulation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -81,7 +80,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         appBarTitle: 'Cycling Progress',
         field: 'Cycling',
         popupText:
-            'Circular Progress indicator at the top indicates todays Cycling minutes. '
+            'Circular Progress indicator at the top indicates today\'s Cycling minutes. '
             'The bottom graph shows weekly/monthly average progress. '
             'Press the "Monthly/Weekly" button, at the top of the graph '
             'to switch between modes. \n\n At the bottom of the weekly '
@@ -98,7 +97,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         appBarTitle: 'Sit-Ups Progress',
         field: 'Sit-Ups',
         popupText:
-            'Circular Progress indicator at the top indicates todays Sit-Ups progress. '
+            'Circular Progress indicator at the top indicates today\'s Sit-Ups progress. '
             'The bottom graph shows weekly/monthly average progress. '
             'Press the "Monthly/Weekly" button, at the top of the graph '
             'to switch between modes. \n\n At the bottom of the weekly '
@@ -115,7 +114,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         appBarTitle: 'Push-Ups Progress',
         field: 'Push-Ups',
         popupText:
-            'Circular Progress indicator at the top indicates todays Push-Ups progress. '
+            'Circular Progress indicator at the top indicates today\'s Push-Ups progress. '
             'The bottom graph shows weekly/monthly average progress. '
             'Press the "Monthly/Weekly" button, at the top of the graph '
             'to switch between modes. \n\n At the bottom of the weekly '
@@ -132,7 +131,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         appBarTitle: 'Pull-Ups Progress',
         field: 'Pull-Ups',
         popupText:
-            'Circular Progress indicator at the top indicates todays Pull-Ups progress. '
+            'Circular Progress indicator at the top indicates today\'s Pull-Ups progress. '
             'The bottom graph shows weekly/monthly average progress. '
             'Press the "Monthly/Weekly" button, at the top of the graph '
             'to switch between modes. \n\n At the bottom of the weekly '
@@ -149,7 +148,7 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
         appBarTitle: 'Jogging Progress',
         field: 'Jogging',
         popupText:
-            'Circular Progress indicator at the top indicates todays Jogging minutes. '
+            'Circular Progress indicator at the top indicates today\'s Jogging minutes. '
             'The bottom graph shows weekly/monthly average progress. '
             'Press the "Monthly/Weekly" button, at the top of the graph '
             'to switch between modes. \n\n At the bottom of the weekly '
