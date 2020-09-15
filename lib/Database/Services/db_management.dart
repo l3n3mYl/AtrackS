@@ -127,16 +127,24 @@ class DatabaseManagement {
   }
 
   Future<Map<String, dynamic>> retrieveExerciseInfoMap() async {
-    Map<String, dynamic> exerciseInfo = new Map();
+    Map<String, dynamic> exerciseInfo;
     try {
-      await _reference.collection('exercises').get().then((value) {
-        value.docs.forEach((doc) {
-          exerciseInfo = doc.data();
-        });
+      await _reference.collection('exercises').doc(_user.uid).get().then((value) {
+        exerciseInfo = value.data();
+        // return value.data();
       });
-      return exerciseInfo;
+      // await _reference.collection('exercises').get().then((value) {
+      //   value.docs.forEach((doc) {
+      //     print('${doc.data()} doooooooooc');
+      //     exerciseInfo = doc.data();
+      //   });
+      // });
+      // return exerciseInfo;
+      if(exerciseInfo != null) {
+        return exerciseInfo;
+      }
     } catch (e) {
-      print(e.toString());
+      print('${e.toString()} ERRORORROOROROROROROROR');
       return null;
     }
   }

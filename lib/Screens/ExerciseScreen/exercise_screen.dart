@@ -170,7 +170,7 @@ class _MainExerciseScreenState extends State<MainExerciseScreen> {
     if (nutritionInfo != null) {
       for (var i = 0; i < newMap.length; ++i) {
         if (json.decode(
-                _preferences.getString('exerciseSettings'))['exerciseSettings']
+                _preferences.getString('exerciseSettings'))
             [newMap.keys.elementAt(i)]) {
           cardList.add(
             GestureDetector(

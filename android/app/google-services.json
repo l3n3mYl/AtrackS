@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "804718803215-qj24nit26s78itt85qq4snh74i80f7pp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "AtraxS.com",
+            "certificate_hash": "4e893afa7246e87e3c9ac245a2ddeb0a56fd1266"
+          }
+        },
+        {
           "client_id": "804718803215-phqglml80qr8mr40ftqeoqc8vicqu60k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

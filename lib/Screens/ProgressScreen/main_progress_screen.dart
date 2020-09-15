@@ -214,9 +214,20 @@ class _MainProgressScreenState extends State<MainProgressScreen> {
                   ),
                 ],
               ));
+                if(_preferences.getString('exerciseSettings') == null) {
+
+                  Map<String, dynamic> _exListSort = {
+                    'Cycling':true,
+                    'Jogging':true,
+                    'Pull-Ups':true,
+                    'Push-Ups':true,
+                    'Sit-Ups':true,
+                    'Steps':true,
+                  };
+                  _preferences.setString('exerciseSettings', json.encode(_exListSort));
+                }
               for (var i = 0; i < exerciseLen; ++i) {
-                if (json.decode(_preferences.getString('exerciseSettings'))[
-                    'exerciseSettings'][exerciseInfoList.keys.elementAt(i)]) {
+                if (json.decode(_preferences.getString('exerciseSettings'))[exerciseInfoList.keys.elementAt(i)]) {
                   children.add(Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: GestureDetector(

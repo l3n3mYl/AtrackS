@@ -31,7 +31,7 @@ class AuthService {
     jogging: '00:00, 00:00, 00:00, 00:00',
     pullUps: '0, 0, 0, 0',
     pushUps: '0, 0, 0, 0',
-    sitUps: '0, 0, 0, 0,',
+    sitUps: '0, 0, 0, 0',
     steps: '0, 0, 0, 0',
     lastTimeUpdated: '${DateTime.now().toString()}1',
   );

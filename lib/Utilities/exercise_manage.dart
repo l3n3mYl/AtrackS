@@ -68,7 +68,6 @@ class CheckboxList extends StatefulWidget {
 
 class _CheckboxListState extends State<CheckboxList> {
 
-  bool _loaded = false;
   SharedPreferences _preferences;
   ExerciseJsonManipulation _ejm = new ExerciseJsonManipulation();
   Map<String, dynamic> _exListSort = {
@@ -81,12 +80,13 @@ class _CheckboxListState extends State<CheckboxList> {
   };
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    _exListSort = json.decode(widget._settings);
+  }
 
-    if(!_loaded) {
-      _exListSort = jsonDecode(widget._settings)['exerciseSettings'];
-      _loaded = true;
-    }
+  @override
+  Widget build(BuildContext context) {
 
     return Column(
       children: [
@@ -193,8 +193,7 @@ class _CheckboxListState extends State<CheckboxList> {
           onTap: () async {
             _preferences = await SharedPreferences.getInstance();
             if(_preferences != null) {
-              _preferences.setString("exerciseSettings",
-                  json.encode(_ejm.encodeMap({'exerciseSettings':_exListSort})));
+              _preferences.setString('exerciseSettings', json.encode(_exListSort));
               Navigator.of(context).pop();
             }
           },
